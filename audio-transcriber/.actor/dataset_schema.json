@@ -1,0 +1,40 @@
+{
+    "actorSpecification": 1,
+    "fields": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+            "url": { "type": "string", "description": "Input file URL" },
+            "fileName": { "type": ["string", "null"], "description": "File name from the server or URL" },
+            "language": { "type": ["string", "null"], "description": "Detected or given language" },
+            "durationSeconds": { "type": "number", "description": "Transcribed audio length" },
+            "billedMinutes": { "type": "integer", "description": "Charged minutes (started minutes, at least 1)" },
+            "model": { "type": "string", "description": "Whisper model used" },
+            "text": { "type": "string", "description": "Full transcript" },
+            "segments": { "type": "array", "description": "Timestamped segments: start, end (seconds), text" },
+            "srtUrl": { "type": "string", "description": "Download link of the SRT subtitles" },
+            "vttUrl": { "type": "string", "description": "Download link of the WebVTT subtitles" },
+            "warnings": { "type": "array", "items": { "type": "string" } },
+            "seconds": { "type": "number", "description": "Processing time" },
+            "error": { "type": "string", "description": "Why the file could not be transcribed (not charged)" }
+        },
+        "required": ["url"]
+    },
+    "views": {
+        "overview": {
+            "title": "Overview",
+            "transformation": { "fields": ["url", "language", "durationSeconds", "text", "srtUrl", "error"] },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "url": { "label": "File", "format": "link" },
+                    "language": { "label": "Language" },
+                    "durationSeconds": { "label": "Seconds", "format": "number" },
+                    "text": { "label": "Transcript", "format": "text" },
+                    "srtUrl": { "label": "SRT", "format": "link" },
+                    "error": { "label": "Error" }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,45 @@
+{
+    "title": "Audio & Video Transcriber",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "sources": {
+            "title": "Audio or video URLs",
+            "type": "array",
+            "description": "Public URLs of audio or video files: MP3, WAV, M4A, AAC, OGG, OPUS, FLAC, MP4, MOV, MKV, WebM, AVI and more. Long files are split automatically. Files in your own Apify key-value store work too: set the store's access to \"Anyone with ID can read\" and use https://api.apify.com/v2/key-value-stores/<store ID>/records/<key>.",
+            "editor": "requestListSources",
+            "prefill": [{ "url": "https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/speech-en.mp3" }],
+            "default": [{ "url": "https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/speech-en.mp3" }]
+        },
+        "language": {
+            "title": "Language",
+            "type": "string",
+            "description": "ISO 639-1 code of the spoken language (en, uk, de, es, fr, pl, ru, ...). Leave empty to detect it automatically; setting it improves accuracy for short or noisy recordings.",
+            "editor": "textfield",
+            "default": ""
+        },
+        "quality": {
+            "title": "Model",
+            "type": "string",
+            "description": "accurate = Whisper large-v3 (best for Ukrainian and other non-English languages); fast = Whisper large-v3-turbo. Same price.",
+            "editor": "select",
+            "enum": ["accurate", "fast"],
+            "enumTitles": ["Accurate (Whisper large-v3)", "Fast (Whisper large-v3-turbo)"],
+            "default": "accurate"
+        },
+        "vocabulary": {
+            "title": "Vocabulary hint",
+            "type": "string",
+            "description": "Optional names, terms and spellings that appear in the recording (e.g. \"Lviv, Kyivstar, PrivatBank\"). Helps the model spell them correctly.",
+            "editor": "textarea",
+            "default": ""
+        },
+        "subtitles": {
+            "title": "SRT and VTT subtitles",
+            "type": "boolean",
+            "description": "Also save SRT and VTT subtitle files with download links (free).",
+            "default": true
+        }
+    },
+    "required": ["sources"]
+}
