@@ -1,0 +1,18 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
+  "name": "io.github.AndriyVK/apify-document-tools",
+  "title": "Document & media tools (Apify)",
+  "description": "PDF/OCR/Office to Markdown, Office to PDF/PDF-A, PDF and image conversion, audio/video transcription.",
+  "repository": {
+    "url": "https://github.com/AndriyVK/-apify-document-tools",
+    "source": "github",
+    "subfolder": "mcp-server"
+  },
+  "version": "0.1.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.apify.com?tools=ai_admin/document-to-markdown,ai_admin/office-to-pdf,ai_admin/pdf-image-converter,ai_admin/audio-transcriber"
+    }
+  ]
+}

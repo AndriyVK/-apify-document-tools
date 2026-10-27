@@ -13,6 +13,12 @@ from Apify Store, call them from your code, or plug them into AI agents through 
 Ready-made examples (Apify tasks): [document-to-markdown examples](https://apify.com/ai_admin/document-to-markdown/examples),
 [office-to-pdf examples](https://apify.com/ai_admin/office-to-pdf/examples).
 
+## Use from AI agents (MCP)
+
+All four Actors are available as MCP tools — hosted (no install):
+`https://mcp.apify.com?tools=ai_admin/document-to-markdown,ai_admin/office-to-pdf,ai_admin/pdf-image-converter,ai_admin/audio-transcriber`
+— or as a local stdio server in [mcp-server/](mcp-server/).
+
 ## Built with
 
 LibreOffice, Tesseract OCR, [pdfplumber](https://github.com/jsvine/pdfplumber), [pypdfium2](https://github.com/pypdfium2-team/pypdfium2),

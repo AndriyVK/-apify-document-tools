@@ -1,0 +1,16 @@
+# Smithery configuration: https://smithery.ai/docs/config
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    required:
+      - apifyToken
+    properties:
+      apifyToken:
+        type: string
+        description: Your Apify API token (Apify Console → Settings → API & Integrations). Runs are billed to your Apify account.
+  commandFunction: |-
+    (config) => ({ command: 'python', args: ['server.py'], env: { APIFY_TOKEN: config.apifyToken } })
+build:
+  dockerfile: Dockerfile
+  dockerBuildPath: .
