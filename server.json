@@ -2,7 +2,7 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
   "name": "io.github.AndriyVK/apify-document-tools",
   "title": "Document & media tools (Apify)",
-  "description": "PDF/OCR/Office to Markdown, Office to PDF/PDF-A, PDF and image conversion, audio/video transcription.",
+  "description": "PDF/OCR/Office to Markdown, Office to PDF/PDF-A, PDF and image conversion, audio transcription.",
   "repository": {
     "url": "https://github.com/AndriyVK/-apify-document-tools",
     "source": "github",
