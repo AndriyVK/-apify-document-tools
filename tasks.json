@@ -1,0 +1,474 @@
+{
+ "_comment": "Published Actor tasks = search-engine and AI-agent landing pages. Samples live in the public-by-ID key-value store document-to-markdown-test-corpus (FloomuI2DrQCJazY8); do not delete it.",
+ "sampleBase": "https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/",
+ "actors": {
+  "rjJ9rgDEj2QDspQ0M": [
+   {
+    "name": "pdf-tables-to-json",
+    "title": "Extract tables from PDF to JSON",
+    "description": "Pull every table out of PDF reports, invoices and price lists as JSON rows (header first) plus Markdown — ready for Excel, Google Sheets or a database.",
+    "samples": [
+     "text-en.pdf"
+    ],
+    "input": {
+     "includeTables": true
+    },
+    "fields": [
+     "sources",
+     "includeTables"
+    ]
+   },
+   {
+    "name": "ocr-ukrainian-scanned-pdf",
+    "title": "OCR Ukrainian scanned PDFs to text",
+    "description": "Recognise text in scanned Ukrainian documents (Cyrillic) and get clean Markdown — contracts, certificates, letters. English in the same scan is read too.",
+    "samples": [
+     "scan-uk.pdf"
+    ],
+    "input": {
+     "ocrLanguages": [
+      "ukr",
+      "eng"
+     ]
+    },
+    "fields": [
+     "sources",
+     "ocrLanguages"
+    ]
+   },
+   {
+    "name": "ocr-russian-scanned-pdf",
+    "title": "OCR Russian scanned PDFs to text",
+    "description": "Turn scanned Russian-language documents into searchable Markdown text with Tesseract OCR — Cyrillic and Latin on the same page.",
+    "samples": [
+     "scan-ru.pdf"
+    ],
+    "input": {
+     "ocrLanguages": [
+      "rus",
+      "eng"
+     ]
+    },
+    "fields": [
+     "sources",
+     "ocrLanguages"
+    ]
+   },
+   {
+    "name": "scanned-pdf-to-markdown",
+    "title": "Convert scanned PDF to Markdown with OCR",
+    "description": "OCR scanned and photographed PDF pages into Markdown. Pages that already have a text layer are read directly and billed as cheap text pages.",
+    "samples": [
+     "scan-en.pdf",
+     "scan-noisy-en.pdf"
+    ],
+    "input": {
+     "ocrMode": "auto"
+    },
+    "fields": [
+     "sources",
+     "ocrMode",
+     "ocrLanguages"
+    ]
+   },
+   {
+    "name": "pdf-to-rag-chunks",
+    "title": "Split PDF into RAG chunks for vector databases",
+    "description": "Convert PDFs to Markdown and split them into chunks with their nearest heading — ready for embeddings, vector databases and LLM retrieval (RAG).",
+    "samples": [
+     "text-3p-en.pdf"
+    ],
+    "input": {
+     "chunkSize": 1000
+    },
+    "fields": [
+     "sources",
+     "chunkSize"
+    ]
+   },
+   {
+    "name": "word-docx-to-markdown",
+    "title": "Convert Word DOCX to Markdown",
+    "description": "Convert Word documents to clean Markdown with headings, lists and tables for LLM prompts, wikis and documentation sites.",
+    "samples": [
+     "doc-en.docx"
+    ],
+    "input": {},
+    "fields": [
+     "sources"
+    ]
+   },
+   {
+    "name": "excel-xlsx-to-json",
+    "title": "Convert Excel XLSX sheets to JSON and Markdown",
+    "description": "Read every sheet of an Excel workbook as JSON rows and Markdown tables. Text cells stay exactly as typed, numbers follow the cell format.",
+    "samples": [
+     "sheet-en.xlsx"
+    ],
+    "input": {
+     "includeTables": true
+    },
+    "fields": [
+     "sources",
+     "includeTables"
+    ]
+   },
+   {
+    "name": "powerpoint-pptx-to-text",
+    "title": "Extract text from PowerPoint PPTX slides",
+    "description": "Get slide titles, bullet points and tables from PowerPoint presentations as Markdown, one section per slide.",
+    "samples": [
+     "slides-en.pptx"
+    ],
+    "input": {},
+    "fields": [
+     "sources"
+    ]
+   },
+   {
+    "name": "legacy-doc-xls-ppt-to-markdown",
+    "title": "Convert old DOC, XLS, PPT and RTF files to Markdown",
+    "description": "Legacy Microsoft Office and OpenDocument files (DOC, XLS, PPT, RTF, ODT) converted to Markdown and JSON tables — no Office installation needed.",
+    "samples": [
+     "legacy-doc-uk.doc",
+     "legacy-sheet-uk.xls",
+     "legacy-slides-uk.ppt",
+     "legacy-doc-en.rtf"
+    ],
+    "input": {},
+    "fields": [
+     "sources"
+    ]
+   },
+   {
+    "name": "image-ocr-to-text",
+    "title": "Extract text from images (PNG, JPG, TIFF) with OCR",
+    "description": "OCR text from screenshots, photos and scanned images in 11 languages, including Ukrainian and Russian, and get it as Markdown.",
+    "samples": [
+     "image-en.png"
+    ],
+    "input": {
+     "ocrLanguages": [
+      "eng"
+     ]
+    },
+    "fields": [
+     "sources",
+     "ocrLanguages"
+    ]
+   }
+  ],
+  "gwRuM7Y7jiidFkCRC": [
+   {
+    "name": "word-docx-to-pdf",
+    "title": "Convert Word DOCX to PDF in bulk",
+    "description": "Convert Word documents to PDF in bulk with a download link for every file. Layout is kept with Calibri/Cambria-compatible fonts.",
+    "samples": [
+     "doc-en.docx"
+    ],
+    "input": {},
+    "fields": [
+     "sources"
+    ]
+   },
+   {
+    "name": "docx-to-pdf-a-archive",
+    "title": "Convert DOCX to PDF/A for archives and e-filing",
+    "description": "Produce PDF/A-2b files from Word documents — the archival format required by courts, tax portals and document archives.",
+    "samples": [
+     "doc-en.docx"
+    ],
+    "input": {
+     "pdfA": true
+    },
+    "fields": [
+     "sources",
+     "pdfA"
+    ]
+   },
+   {
+    "name": "excel-xlsx-to-pdf",
+    "title": "Convert Excel XLSX to PDF",
+    "description": "Turn Excel workbooks, price lists and reports into PDF files, all sheets included, with a download link per file.",
+    "samples": [
+     "sheet-en.xlsx"
+    ],
+    "input": {},
+    "fields": [
+     "sources"
+    ]
+   },
+   {
+    "name": "powerpoint-pptx-to-pdf",
+    "title": "Convert PowerPoint PPTX to PDF",
+    "description": "Convert PowerPoint presentations to PDF handouts in bulk — one page per slide, ready to share or print.",
+    "samples": [
+     "slides-en.pptx"
+    ],
+    "input": {},
+    "fields": [
+     "sources"
+    ]
+   },
+   {
+    "name": "html-to-pdf",
+    "title": "Convert HTML files to PDF",
+    "description": "Render HTML documents and saved web pages to PDF with LibreOffice — simple, fast and without a browser.",
+    "samples": [
+     "page-en.html"
+    ],
+    "input": {},
+    "fields": [
+     "sources"
+    ]
+   },
+   {
+    "name": "merge-office-files-into-one-pdf",
+    "title": "Merge Word, Excel and PowerPoint files into one PDF",
+    "description": "Convert a set of DOCX, XLSX and PPTX files and merge them into a single PDF in the given order, plus a separate PDF of each file.",
+    "samples": [
+     "doc-en.docx",
+     "sheet-en.xlsx",
+     "slides-en.pptx"
+    ],
+    "input": {
+     "mergeIntoOne": true
+    },
+    "fields": [
+     "sources",
+     "mergeIntoOne"
+    ]
+   },
+   {
+    "name": "legacy-doc-to-pdf",
+    "title": "Convert old Word DOC files to PDF",
+    "description": "Convert legacy Word 97-2003 .doc files to PDF without Microsoft Office. Damaged files are reported and not charged.",
+    "samples": [
+     "legacy-doc-uk.doc"
+    ],
+    "input": {},
+    "fields": [
+     "sources"
+    ]
+   },
+   {
+    "name": "odt-opendocument-to-pdf",
+    "title": "Convert OpenDocument ODT, ODS, ODP to PDF",
+    "description": "Convert LibreOffice and OpenOffice documents, spreadsheets and presentations (ODT, ODS, ODP) to PDF or PDF/A.",
+    "samples": [
+     "legacy-doc-uk.odt"
+    ],
+    "input": {},
+    "fields": [
+     "sources",
+     "pdfA"
+    ]
+   },
+   {
+    "name": "images-to-pdf",
+    "title": "Convert images (PNG, JPG, TIFF) to PDF",
+    "description": "Wrap scans, photos and screenshots into PDF files — or one merged PDF — with a download link for each.",
+    "samples": [
+     "image-en.png",
+     "image-uk.png"
+    ],
+    "input": {},
+    "fields": [
+     "sources",
+     "mergeIntoOne"
+    ]
+   },
+   {
+    "name": "rtf-to-pdf",
+    "title": "Convert RTF documents to PDF",
+    "description": "Convert Rich Text Format (RTF) documents to PDF or archival PDF/A in bulk.",
+    "samples": [
+     "legacy-doc-en.rtf"
+    ],
+    "input": {},
+    "fields": [
+     "sources",
+     "pdfA"
+    ]
+   }
+  ],
+  "l9zg7OIxw7cNXE8Fx": [
+   {
+    "name": "pdf-to-png",
+    "title": "Convert PDF pages to PNG images",
+    "description": "Render every PDF page to a PNG image at the resolution you choose, with a download link per page and an optional ZIP.",
+    "samples": [
+     "text-3p-en.pdf"
+    ],
+    "input": {
+     "outputFormat": "png",
+     "dpi": 150
+    },
+    "fields": [
+     "sources",
+     "outputFormat",
+     "dpi",
+     "pages"
+    ]
+   },
+   {
+    "name": "pdf-to-jpg-300-dpi",
+    "title": "Convert PDF to high-quality JPG (300 DPI)",
+    "description": "Print-quality JPG images from PDF pages at 300 DPI — for catalogs, brochures and scanned documents.",
+    "samples": [
+     "text-uk.pdf"
+    ],
+    "input": {
+     "outputFormat": "jpg",
+     "dpi": 300,
+     "quality": 92
+    },
+    "fields": [
+     "sources",
+     "dpi",
+     "quality"
+    ]
+   },
+   {
+    "name": "pdf-thumbnails",
+    "title": "Create PDF page thumbnails",
+    "description": "Small WebP thumbnails of PDF pages (72 DPI, max 400 px wide) for previews, galleries and document lists.",
+    "samples": [
+     "text-3p-en.pdf"
+    ],
+    "input": {
+     "outputFormat": "webp",
+     "dpi": 72,
+     "maxWidth": 400
+    },
+    "fields": [
+     "sources",
+     "maxWidth",
+     "pages"
+    ]
+   },
+   {
+    "name": "pdf-first-page-preview",
+    "title": "Get the first page of a PDF as an image",
+    "description": "Render only page 1 of each PDF to PNG — cover images and previews for a whole list of documents in one run.",
+    "samples": [
+     "text-3p-en.pdf",
+     "scan-en.pdf"
+    ],
+    "input": {
+     "outputFormat": "png",
+     "pages": "1"
+    },
+    "fields": [
+     "sources",
+     "pages"
+    ]
+   },
+   {
+    "name": "heic-to-jpg",
+    "title": "Convert iPhone HEIC photos to JPG",
+    "description": "Turn iPhone HEIC/HEIF photos into widely compatible JPG files in bulk, with EXIF rotation applied and optional resizing.",
+    "samples": [
+     "photo-sample.heic"
+    ],
+    "input": {
+     "outputFormat": "jpg",
+     "quality": 90
+    },
+    "fields": [
+     "sources",
+     "quality",
+     "maxWidth"
+    ]
+   },
+   {
+    "name": "images-to-one-pdf",
+    "title": "Merge images into one PDF",
+    "description": "Combine photos, scans and screenshots (JPG, PNG, HEIC, TIFF) into a single PDF in the given order, plus one PDF per image.",
+    "samples": [
+     "image-en.png",
+     "photo-sample.heic",
+     "multi-frame.tiff"
+    ],
+    "input": {
+     "outputFormat": "pdf",
+     "mergeImagesIntoOnePdf": true
+    },
+    "fields": [
+     "sources",
+     "mergeImagesIntoOnePdf"
+    ]
+   },
+   {
+    "name": "png-to-webp",
+    "title": "Convert PNG and JPG images to WebP",
+    "description": "Shrink images for the web: convert PNG and JPG to WebP with adjustable quality and optional max width.",
+    "samples": [
+     "image-en.png"
+    ],
+    "input": {
+     "outputFormat": "webp",
+     "quality": 80
+    },
+    "fields": [
+     "sources",
+     "quality",
+     "maxWidth"
+    ]
+   },
+   {
+    "name": "multi-page-tiff-to-png",
+    "title": "Split multi-page TIFF into PNG images",
+    "description": "Extract every frame of multi-page TIFF files (fax, scanner output) as separate PNG images.",
+    "samples": [
+     "multi-frame.tiff"
+    ],
+    "input": {
+     "outputFormat": "png"
+    },
+    "fields": [
+     "sources",
+     "outputFormat"
+    ]
+   },
+   {
+    "name": "pdf-to-webp",
+    "title": "Convert PDF pages to WebP",
+    "description": "Lightweight WebP images of PDF pages for websites and apps — choose DPI, pages and quality.",
+    "samples": [
+     "text-3p-en.pdf"
+    ],
+    "input": {
+     "outputFormat": "webp",
+     "dpi": 120,
+     "quality": 80
+    },
+    "fields": [
+     "sources",
+     "dpi",
+     "quality",
+     "pages"
+    ]
+   },
+   {
+    "name": "resize-images-bulk",
+    "title": "Resize images in bulk",
+    "description": "Downscale large photos and scans to a maximum width and save them as JPG — keeps aspect ratio and EXIF orientation.",
+    "samples": [
+     "image-en.png",
+     "photo-sample.heic"
+    ],
+    "input": {
+     "outputFormat": "jpg",
+     "maxWidth": 800,
+     "zipAll": true
+    },
+    "fields": [
+     "sources",
+     "maxWidth",
+     "zipAll"
+    ]
+   }
+  ]
+ }
+}

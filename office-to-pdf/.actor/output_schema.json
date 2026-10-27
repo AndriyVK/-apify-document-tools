@@ -1,0 +1,19 @@
+{
+    "actorOutputSchemaVersion": 1,
+    "title": "Converted PDFs",
+    "description": "One dataset item per document with a download link to its PDF, plus the merged PDF when requested.",
+    "properties": {
+        "documents": {
+            "type": "string",
+            "title": "Converted documents",
+            "description": "Dataset items: url, format, pdfUrl, pages, bytes, pdfA or error for every input URL.",
+            "template": "{{links.apiDefaultDatasetUrl}}/items"
+        },
+        "files": {
+            "type": "string",
+            "title": "PDF files",
+            "description": "All PDFs (and merged.pdf) in the run's key-value store.",
+            "template": "{{links.apiDefaultKeyValueStoreUrl}}/keys"
+        }
+    }
+}

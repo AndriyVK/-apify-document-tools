@@ -1,0 +1,19 @@
+{
+    "actorOutputSchemaVersion": 1,
+    "title": "Converted files",
+    "description": "One dataset item per input file with download links to the produced images or PDFs.",
+    "properties": {
+        "results": {
+            "type": "string",
+            "title": "Conversion results",
+            "description": "Dataset items: url, kind, outputFormat, count, files (key, url, bytes) or error.",
+            "template": "{{links.apiDefaultDatasetUrl}}/items"
+        },
+        "files": {
+            "type": "string",
+            "title": "Produced files",
+            "description": "All images, PDFs, merged.pdf and all-files.zip in the run's key-value store.",
+            "template": "{{links.apiDefaultKeyValueStoreUrl}}/keys"
+        }
+    }
+}

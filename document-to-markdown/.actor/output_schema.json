@@ -1,0 +1,19 @@
+{
+    "actorOutputSchemaVersion": 1,
+    "title": "Converted documents",
+    "description": "One item per input document: Markdown text, tables as JSON rows, optional RAG chunks, page counts and errors.",
+    "properties": {
+        "documents": {
+            "title": "Converted documents",
+            "description": "Dataset items with markdown, tables, chunks, textPages, ocrPages, metadata, warnings or error for every document URL.",
+            "template": "{{links.apiDefaultDatasetUrl}}/items",
+            "type": "string"
+        },
+        "fullMarkdown": {
+            "title": "Full Markdown of very long documents",
+            "description": "Key-value store records markdown-NNNNN with the complete Markdown when it exceeds 4 million characters.",
+            "template": "{{links.apiDefaultKeyValueStoreUrl}}/keys",
+            "type": "string"
+        }
+    }
+}

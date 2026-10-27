@@ -1,0 +1,45 @@
+{
+    "actorSpecification": 1,
+    "fields": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+            "url": { "type": "string", "description": "Input document URL" },
+            "fileName": { "type": ["string", "null"], "description": "File name from the server or URL" },
+            "format": { "type": "string", "description": "Detected format, e.g. pdf, docx, xlsx, png" },
+            "sourcePages": { "type": ["integer", "null"], "description": "Pages (or image frames) in the source file" },
+            "textPages": { "type": "integer", "description": "Billable pages read from a text layer" },
+            "ocrPages": { "type": "integer", "description": "Billable pages read with OCR" },
+            "characters": { "type": "integer", "description": "Length of the Markdown" },
+            "metadata": { "type": "object", "description": "Title, author and similar document properties when available" },
+            "markdown": { "type": "string", "description": "Document as Markdown with headings, lists and tables" },
+            "markdownKey": { "type": "string", "description": "Key-value store record with the full Markdown if it was truncated" },
+            "tables": { "type": "array", "description": "Tables as rows of cells, header row first" },
+            "chunks": { "type": "array", "description": "RAG chunks: index, heading, text (only when chunkSize > 0)" },
+            "warnings": { "type": "array", "items": { "type": "string" } },
+            "seconds": { "type": "number", "description": "Processing time" },
+            "error": { "type": "string", "description": "Why the document could not be converted (not charged)" }
+        },
+        "required": ["url"]
+    },
+    "views": {
+        "overview": {
+            "title": "Overview",
+            "transformation": {
+                "fields": ["url", "format", "textPages", "ocrPages", "characters", "markdown", "error"]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "url": { "label": "Document", "format": "link" },
+                    "format": { "label": "Format" },
+                    "textPages": { "label": "Text pages", "format": "number" },
+                    "ocrPages": { "label": "OCR pages", "format": "number" },
+                    "characters": { "label": "Characters", "format": "number" },
+                    "markdown": { "label": "Markdown", "format": "text" },
+                    "error": { "label": "Error" }
+                }
+            }
+        }
+    }
+}

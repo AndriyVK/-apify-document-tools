@@ -1,0 +1,103 @@
+{
+    "title": "Document to Markdown",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "sources": {
+            "title": "Document URLs",
+            "type": "array",
+            "description": "Public URLs of the documents (PDF, scanned PDF, PNG/JPG/TIFF, DOCX, DOC, XLSX, XLS, PPTX, PPT, ODT, ODS, ODP, RTF, HTML, CSV, TXT). Files in your own Apify key-value store work too: set the store's access to \"Anyone with ID can read\" and use https://api.apify.com/v2/key-value-stores/<store ID>/records/<key>.",
+            "editor": "requestListSources",
+            "prefill": [
+                {
+                    "url": "https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/text-en.pdf"
+                }
+            ],
+            "default": [
+                {
+                    "url": "https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/text-en.pdf"
+                }
+            ]
+        },
+        "ocrMode": {
+            "title": "OCR",
+            "type": "string",
+            "description": "auto: OCR only pages without a text layer (scans). always: OCR every PDF page. never: text layer only.",
+            "editor": "select",
+            "enum": [
+                "auto",
+                "always",
+                "never"
+            ],
+            "enumTitles": [
+                "Auto (scanned pages only)",
+                "Always",
+                "Never"
+            ],
+            "default": "auto"
+        },
+        "ocrLanguages": {
+            "title": "OCR languages",
+            "type": "array",
+            "description": "Languages expected in scans and images. More languages are slightly slower.",
+            "editor": "select",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "eng",
+                    "ukr",
+                    "rus",
+                    "deu",
+                    "fra",
+                    "spa",
+                    "ita",
+                    "por",
+                    "pol",
+                    "nld",
+                    "ces"
+                ],
+                "enumTitles": [
+                    "English",
+                    "Ukrainian",
+                    "Russian",
+                    "German",
+                    "French",
+                    "Spanish",
+                    "Italian",
+                    "Portuguese",
+                    "Polish",
+                    "Dutch",
+                    "Czech"
+                ]
+            },
+            "default": [
+                "eng"
+            ]
+        },
+        "includeTables": {
+            "title": "Tables as JSON",
+            "type": "boolean",
+            "description": "Also return every table as rows of cells (header row first).",
+            "default": true
+        },
+        "chunkSize": {
+            "title": "RAG chunk size (characters)",
+            "type": "integer",
+            "description": "Split the Markdown into chunks of at most this many characters, each with its nearest heading. 0 = no chunks.",
+            "minimum": 0,
+            "maximum": 20000,
+            "default": 0
+        },
+        "maxPagesPerDocument": {
+            "title": "Max pages per document",
+            "type": "integer",
+            "description": "Pages beyond this limit are skipped (and not charged).",
+            "minimum": 1,
+            "maximum": 5000,
+            "default": 500
+        }
+    },
+    "required": [
+        "sources"
+    ]
+}

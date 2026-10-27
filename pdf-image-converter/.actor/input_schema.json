@@ -1,0 +1,68 @@
+{
+    "title": "PDF to Image & Image Converter",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "sources": {
+            "title": "File URLs",
+            "type": "array",
+            "description": "Public URLs of PDFs or images (PNG, JPG, WebP, TIFF, GIF, BMP, HEIC/HEIF, AVIF). PDFs are rendered to images; images are converted to the output format. Files in your own Apify key-value store work too: set the store's access to \"Anyone with ID can read\" and use https://api.apify.com/v2/key-value-stores/<store ID>/records/<key>.",
+            "editor": "requestListSources",
+            "prefill": [{ "url": "https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/text-3p-en.pdf" }],
+            "default": [{ "url": "https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/text-3p-en.pdf" }]
+        },
+        "outputFormat": {
+            "title": "Output format",
+            "type": "string",
+            "description": "png, jpg, webp or tiff for PDF pages and images; pdf to turn images into PDF.",
+            "editor": "select",
+            "enum": ["png", "jpg", "webp", "tiff", "pdf"],
+            "enumTitles": ["PNG", "JPG", "WebP", "TIFF", "PDF (images only)"],
+            "default": "png"
+        },
+        "dpi": {
+            "title": "DPI for PDF pages",
+            "type": "integer",
+            "description": "Rendering resolution: 72 = screen thumbnail, 150 = good default, 300 = print quality.",
+            "minimum": 36,
+            "maximum": 600,
+            "default": 150
+        },
+        "pages": {
+            "title": "PDF pages",
+            "type": "string",
+            "description": "Pages to render, e.g. \"1-3,5,8-\". Empty = all pages.",
+            "editor": "textfield",
+            "default": ""
+        },
+        "quality": {
+            "title": "JPG/WebP quality",
+            "type": "integer",
+            "description": "10 (smallest) to 100 (best).",
+            "minimum": 10,
+            "maximum": 100,
+            "default": 85
+        },
+        "maxWidth": {
+            "title": "Max width (px)",
+            "type": "integer",
+            "description": "Downscale wider images to this width, keeping the aspect ratio. 0 = keep size.",
+            "minimum": 0,
+            "maximum": 20000,
+            "default": 0
+        },
+        "mergeImagesIntoOnePdf": {
+            "title": "Merge images into one PDF",
+            "type": "boolean",
+            "description": "With output format \"pdf\": also return merged.pdf with all input images in order (free).",
+            "default": false
+        },
+        "zipAll": {
+            "title": "ZIP of all output files",
+            "type": "boolean",
+            "description": "Also return all-files.zip with every produced file (free).",
+            "default": false
+        }
+    },
+    "required": ["sources"]
+}

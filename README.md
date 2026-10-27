@@ -7,6 +7,7 @@ from Apify Store, call them from your code, or plug them into AI agents through 
 |---|---|---|
 | [Document to Markdown for AI](document-to-markdown/) | PDF, scanned PDF and images (OCR in 11 languages incl. Ukrainian and Russian), DOCX, XLSX, PPTX, legacy Office and HTML → Markdown, JSON tables and RAG chunks | [apify.com/ai_admin/document-to-markdown](https://apify.com/ai_admin/document-to-markdown) |
 | [Office to PDF & PDF/A](office-to-pdf/) | Word, Excel, PowerPoint, OpenDocument, RTF, HTML and images → PDF or archival PDF/A-2b, optional merge into one PDF | [apify.com/ai_admin/office-to-pdf](https://apify.com/ai_admin/office-to-pdf) |
+| [PDF to Image & Image Converter](pdf-image-converter/) | PDF pages → PNG/JPG/WebP/TIFF, images → PDF, image formats incl. iPhone HEIC, resize, ZIP | [apify.com/ai_admin/pdf-image-converter](https://apify.com/ai_admin/pdf-image-converter) |
 
 Ready-made examples (Apify tasks): [document-to-markdown examples](https://apify.com/ai_admin/document-to-markdown/examples),
 [office-to-pdf examples](https://apify.com/ai_admin/office-to-pdf/examples).
@@ -29,6 +30,9 @@ python tools/deploy.py                           # create/update the Actor on Ap
 
 cd ../office-to-pdf
 python -m tests.check local /tmp/corpus --pdfa   # Office -> PDF/A on the same corpus
+
+cd ../pdf-image-converter
+python -m tests.check /tmp/corpus                # PDF <-> image conversions
 ```
 
 Local runs need Tesseract (`eng`, `ukr`, `rus`), LibreOffice and the packages from `requirements.txt`.

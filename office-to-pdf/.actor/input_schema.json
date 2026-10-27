@@ -1,0 +1,28 @@
+{
+    "title": "Office to PDF",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "sources": {
+            "title": "Document URLs",
+            "type": "array",
+            "description": "Public URLs of the files: DOCX, DOC, ODT, RTF, TXT, HTML, XLSX, XLS, ODS, CSV, PPTX, PPT, ODP, PNG, JPG, TIFF, SVG. Files in your own Apify key-value store work too: set the store's access to \"Anyone with ID can read\" and use https://api.apify.com/v2/key-value-stores/<store ID>/records/<key>.",
+            "editor": "requestListSources",
+            "prefill": [{ "url": "https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/doc-en.docx" }],
+            "default": [{ "url": "https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/doc-en.docx" }]
+        },
+        "pdfA": {
+            "title": "PDF/A (archival)",
+            "type": "boolean",
+            "description": "Produce PDF/A-2b files for long-term archiving and e-filing portals that require PDF/A.",
+            "default": false
+        },
+        "mergeIntoOne": {
+            "title": "Also merge into one PDF",
+            "type": "boolean",
+            "description": "Besides the individual PDFs, return merged.pdf with all converted documents in input order (free).",
+            "default": false
+        }
+    },
+    "required": ["sources"]
+}

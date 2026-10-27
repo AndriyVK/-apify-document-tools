@@ -1,0 +1,14 @@
+{
+    "actorSpecification": 1,
+    "name": "pdf-image-converter",
+    "title": "PDF to Image & Image Converter: PNG, JPG, WebP, HEIC, PDF",
+    "description": "Convert PDF pages to PNG, JPG, WebP or TIFF (choose DPI and pages), images to PDF, and images between formats including iPhone HEIC. Resize, merge images into one PDF, download links and a ZIP of all files.",
+    "version": "0.1",
+    "buildTag": "latest",
+    "input": "./input_schema.json",
+    "storages": {
+        "dataset": "./dataset_schema.json"
+    },
+    "output": "./output_schema.json",
+    "dockerfile": "../Dockerfile"
+}

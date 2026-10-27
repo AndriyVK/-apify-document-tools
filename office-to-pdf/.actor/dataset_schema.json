@@ -1,0 +1,38 @@
+{
+    "actorSpecification": 1,
+    "fields": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+            "url": { "type": ["string", "null"], "description": "Input document URL (null for the merged file)" },
+            "fileName": { "type": ["string", "null"], "description": "File name from the server or URL" },
+            "format": { "type": "string", "description": "Input format, e.g. docx, xlsx, pptx" },
+            "pdfUrl": { "type": "string", "description": "Download link of the PDF" },
+            "pdfKey": { "type": "string", "description": "Key of the PDF in the run's key-value store" },
+            "pages": { "type": "integer", "description": "Pages in the PDF" },
+            "bytes": { "type": "integer", "description": "PDF size in bytes" },
+            "pdfA": { "type": "boolean", "description": "The PDF is PDF/A-2b" },
+            "merged": { "type": "boolean", "description": "This item is the merged PDF of all documents" },
+            "documents": { "type": "integer", "description": "Documents in the merged PDF" },
+            "error": { "type": "string", "description": "Why the document could not be converted (not charged)" }
+        }
+    },
+    "views": {
+        "overview": {
+            "title": "Overview",
+            "transformation": { "fields": ["url", "format", "pdfUrl", "pages", "bytes", "pdfA", "error"] },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "url": { "label": "Document", "format": "link" },
+                    "format": { "label": "Format" },
+                    "pdfUrl": { "label": "PDF", "format": "link" },
+                    "pages": { "label": "Pages", "format": "number" },
+                    "bytes": { "label": "Bytes", "format": "number" },
+                    "pdfA": { "label": "PDF/A", "format": "boolean" },
+                    "error": { "label": "Error" }
+                }
+            }
+        }
+    }
+}

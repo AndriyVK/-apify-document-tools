@@ -1,0 +1,14 @@
+{
+    "actorSpecification": 1,
+    "name": "office-to-pdf",
+    "title": "Office to PDF & PDF/A: Word, Excel, PowerPoint, HTML, Images",
+    "description": "Convert DOCX, DOC, XLSX, XLS, PPTX, PPT, ODT, ODS, ODP, RTF, TXT, CSV, HTML and images to PDF or archival PDF/A-2b with LibreOffice. Batch conversion, optional merge into one PDF, download links for every file.",
+    "version": "0.1",
+    "buildTag": "latest",
+    "input": "./input_schema.json",
+    "storages": {
+        "dataset": "./dataset_schema.json"
+    },
+    "output": "./output_schema.json",
+    "dockerfile": "../Dockerfile"
+}
