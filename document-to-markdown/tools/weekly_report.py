@@ -20,6 +20,8 @@ ACTORS = {
                           'Office to PDF & PDF/A'],
     'l9zg7OIxw7cNXE8Fx': ['pdf to image', 'pdf to png', 'pdf to jpg', 'heic to jpg', 'image converter',
                           'image to pdf', 'PDF to Image & Image Converter'],
+    'tTTOPBHdN4zAQBFNq': ['audio transcription', 'speech to text', 'mp3 to text', 'video to text', 'srt subtitles',
+                          'ukrainian transcription', 'Audio & Video Transcriber'],
 }
 
 

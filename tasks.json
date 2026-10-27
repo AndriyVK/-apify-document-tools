@@ -469,6 +469,157 @@
      "zipAll"
     ]
    }
+  ],
+  "tTTOPBHdN4zAQBFNq": [
+   {
+    "name": "transcribe-ukrainian-audio",
+    "title": "Transcribe Ukrainian audio to text",
+    "description": "Speech-to-text for Ukrainian recordings with Whisper large-v3: interviews, voice messages, meetings. Text, timestamps and SRT subtitles.",
+    "samples": [
+     "speech-uk.mp3"
+    ],
+    "input": {
+     "language": "uk",
+     "quality": "accurate"
+    },
+    "fields": [
+     "sources",
+     "language",
+     "vocabulary"
+    ]
+   },
+   {
+    "name": "mp3-to-text",
+    "title": "Convert MP3 to text",
+    "description": "Turn MP3 recordings into a clean transcript with timestamped segments. Language is detected automatically.",
+    "samples": [
+     "speech-en.mp3"
+    ],
+    "input": {},
+    "fields": [
+     "sources",
+     "language"
+    ]
+   },
+   {
+    "name": "mp4-video-to-text",
+    "title": "Transcribe MP4 video to text",
+    "description": "Extract the speech from MP4, MOV or WebM videos and get the transcript with timestamps — no manual audio extraction needed.",
+    "samples": [
+     "video-en.mp4"
+    ],
+    "input": {},
+    "fields": [
+     "sources",
+     "language"
+    ]
+   },
+   {
+    "name": "generate-srt-subtitles",
+    "title": "Generate SRT subtitles from video",
+    "description": "Create SRT and WebVTT subtitle files for your videos automatically with Whisper large-v3, in 99 languages.",
+    "samples": [
+     "video-en.mp4"
+    ],
+    "input": {
+     "subtitles": true
+    },
+    "fields": [
+     "sources",
+     "language",
+     "subtitles"
+    ]
+   },
+   {
+    "name": "meeting-recording-transcription",
+    "title": "Transcribe meeting recordings",
+    "description": "Transcribe Zoom, Teams or Google Meet recordings of any length — long files are split and stitched with continuous timestamps.",
+    "samples": [
+     "speech-en.mp3"
+    ],
+    "input": {
+     "quality": "accurate"
+    },
+    "fields": [
+     "sources",
+     "language",
+     "vocabulary"
+    ]
+   },
+   {
+    "name": "podcast-transcription",
+    "title": "Podcast transcription to text and subtitles",
+    "description": "Get full podcast transcripts and subtitle files for show notes, SEO and accessibility. Add guest names as a vocabulary hint.",
+    "samples": [
+     "speech-en.mp3"
+    ],
+    "input": {
+     "vocabulary": "Lviv"
+    },
+    "fields": [
+     "sources",
+     "vocabulary"
+    ]
+   },
+   {
+    "name": "interview-transcription",
+    "title": "Transcribe interviews to text",
+    "description": "Accurate interview transcripts with timestamps for journalists and researchers — English, Ukrainian, Polish, German and 95+ more languages.",
+    "samples": [
+     "speech-uk.mp3"
+    ],
+    "input": {
+     "language": "uk"
+    },
+    "fields": [
+     "sources",
+     "language",
+     "vocabulary"
+    ]
+   },
+   {
+    "name": "lecture-to-text",
+    "title": "Convert lecture recordings to text",
+    "description": "Turn lectures, webinars and courses into searchable text and subtitles for study notes and LLM summaries.",
+    "samples": [
+     "speech-en.mp3"
+    ],
+    "input": {},
+    "fields": [
+     "sources",
+     "language"
+    ]
+   },
+   {
+    "name": "webvtt-subtitles-for-web-video",
+    "title": "Create WebVTT subtitles for web video",
+    "description": "WebVTT captions for HTML5 video players, plus SRT for editors — generated from any audio or video file.",
+    "samples": [
+     "video-en.mp4"
+    ],
+    "input": {
+     "subtitles": true
+    },
+    "fields": [
+     "sources",
+     "subtitles"
+    ]
+   },
+   {
+    "name": "fast-speech-to-text",
+    "title": "Fast speech to text with Whisper turbo",
+    "description": "Quick transcripts with Whisper large-v3-turbo at the same price — ideal for English voice notes and short clips.",
+    "samples": [
+     "speech-en.mp3"
+    ],
+    "input": {
+     "quality": "fast"
+    },
+    "fields": [
+     "sources",
+     "quality"
+    ]
+   }
   ]
  }
 }
