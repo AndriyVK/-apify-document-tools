@@ -2,7 +2,7 @@
     "actorSpecification": 1,
     "name": "pdf-image-converter",
     "title": "PDF to Image & Image Converter: PNG, JPG, WebP, HEIC, PDF",
-    "description": "Convert PDF pages to PNG, JPG, WebP or TIFF (choose DPI and pages), images to PDF, and images between formats including iPhone HEIC. Resize, merge images into one PDF, download links and a ZIP of all files.",
+    "description": "$2 per 1,000 pages: PDF pages to PNG, JPG, WebP or TIFF (DPI, page ranges), images to PDF, and iPhone HEIC to JPG — both directions in one Actor. Resize, merge images into one PDF, download links and a ZIP of all files.",
     "version": "0.1",
     "buildTag": "latest",
     "input": "./input_schema.json",

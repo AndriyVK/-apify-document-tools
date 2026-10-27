@@ -1,0 +1,13 @@
+{
+    "actorOutputSchemaVersion": 1,
+    "title": "OCR results",
+    "description": "One dataset item per image or PDF page with the recognised text, lines and words.",
+    "properties": {
+        "results": {
+            "type": "string",
+            "title": "OCR results",
+            "description": "Dataset items: url, page, text, meanConfidence, lines, words or error.",
+            "template": "{{links.apiDefaultDatasetUrl}}/items"
+        }
+    }
+}

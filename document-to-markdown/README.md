@@ -13,6 +13,15 @@ images, DOCX/DOC, XLSX/XLS, PPTX/PPT, ODT/ODS/ODP, RTF and HTML.
 Spreadsheet cells keep their values exactly: text stays text (`96.50` is not turned into `96.5`), numbers follow the
 cell's number format (`1,234.50`).
 
+## Why this Actor
+
+| | This Actor | Typical alternatives in the Apify Store (Oct 2026) |
+|---|---|---|
+| **Price** | **$1 per 1,000 text pages, $4 per 1,000 OCR pages** — you pay per page, OCR only for scanned pages | $3–5 per 1,000 PDFs plus $15–20 per 1,000 OCR pages |
+| **Formats** | PDF, scans, images, DOCX/DOC, XLSX/XLS, PPTX/PPT, ODT/ODS/ODP, RTF, HTML — one Actor | Mostly PDF only; Office files need another tool |
+| **Structure** | Headings, lists, tables as Markdown **and** JSON rows, RAG chunks with their heading | Often plain text, tables lost |
+| **Cyrillic** | Ukrainian and Russian OCR built in | English-first OCR |
+
 ## Input
 
 ```json
@@ -75,10 +84,18 @@ Plus Apify's standard start fee of $0.05 per 1,000 runs. Failed documents and sk
 with a text layer or blank pages are never charged as OCR. The run stops before it
 would exceed your maximum charge per run.
 
-## Use with AI agents (MCP)
+## Use with AI agents and code
 
-The Actor works as a tool in the [Apify MCP server](https://mcp.apify.com): add `ai_admin/document-to-markdown` to
-your client's Actor list and ask the agent to convert a document by URL.
+- **MCP (Claude, Cursor, VS Code, any MCP client):** add `https://mcp.apify.com?tools=ai_admin/document-to-markdown` as an MCP server —
+  the agent gets one tool with this Actor's input schema and pays per use through your Apify account.
+- **One HTTP call that returns the results:**
+
+```bash
+curl -X POST "https://api.apify.com/v2/acts/ai_admin~document-to-markdown/run-sync-get-dataset-items?token=$APIFY_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"sources": [{"url": "https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/text-en.pdf"}, {"url": "https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/doc-uk.docx"}], "ocrMode": "auto", "ocrLanguages": ["eng", "ukr"], "includeTables": true}'
+```
+- **Agentic payments:** the Actor is enabled for Apify's agentic payments (x402), so autonomous agents can pay per run.
 
 Open source: [github.com/AndriyVK/-apify-document-tools](https://github.com/AndriyVK/-apify-document-tools)
 

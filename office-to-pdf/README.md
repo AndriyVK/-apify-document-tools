@@ -9,6 +9,16 @@ Word, Excel, PowerPoint, OpenDocument, RTF, TXT, CSV, HTML and images, modern an
   equivalents) keeps line and page breaks; Cyrillic, Greek and most Latin scripts are covered.
 - **Batch and merge.** Convert hundreds of files in one run and optionally get them merged into a single PDF.
 
+## Why this Actor
+
+| | This Actor | Typical alternatives |
+|---|---|---|
+| **Archival PDF/A-2b** | One switch — for courts, tax portals, e-invoicing and long-term archives | Usually plain PDF only |
+| **Legacy files** | DOC, XLS, PPT, RTF and OpenDocument convert as well as DOCX/XLSX/PPTX | Modern formats only, or none at all |
+| **Price** | **$10 per 1,000 documents**, any number of pages | Online converters: subscriptions or per-page fees; most Store PDF tools only render HTML/URLs ($5–25 per 1,000) |
+| **Batch + merge** | Hundreds of files per run, optional single merged PDF, links for every file | Often one file at a time |
+| **Privacy** | LibreOffice runs inside the Actor; files are not sent to a third-party conversion API | Many converters upload your files to an external service |
+
 ## Input
 
 ```json
@@ -59,13 +69,18 @@ Pay per event:
 Plus Apify's standard start fee of $0.05 per 1,000 runs. Merging is free. The run converts only as many documents as fit
 under your maximum charge per run.
 
-## Use with AI agents (MCP)
+## Use with AI agents and code
 
-Add `ai_admin/office-to-pdf` to the Actor list of the [Apify MCP server](https://mcp.apify.com) and ask the agent to
-turn a document into PDF.
+- **MCP (Claude, Cursor, VS Code, any MCP client):** add `https://mcp.apify.com?tools=ai_admin/office-to-pdf` as an MCP server —
+  the agent gets one tool with this Actor's input schema and pays per use through your Apify account.
+- **One HTTP call that returns the results:**
 
-Need the opposite direction — text and tables out of PDFs and scans? See
-[Document to Markdown for AI](https://apify.com/ai_admin/document-to-markdown).
+```bash
+curl -X POST "https://api.apify.com/v2/acts/ai_admin~office-to-pdf/run-sync-get-dataset-items?token=$APIFY_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"sources": [{"url": "https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/doc-en.docx"}, {"url": "https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/sheet-en.xlsx"}], "pdfA": true, "mergeIntoOne": false}'
+```
+- **Agentic payments:** the Actor is enabled for Apify's agentic payments (x402), so autonomous agents can pay per run.
 
 Open source: [github.com/AndriyVK/-apify-document-tools](https://github.com/AndriyVK/-apify-document-tools)
 

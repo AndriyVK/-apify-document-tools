@@ -1,0 +1,162 @@
+{
+    "title": "Image to Text OCR",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "sources": {
+            "title": "Image or PDF URLs",
+            "type": "array",
+            "description": "Public URLs of images (PNG, JPG, WebP, TIFF incl. multi-page, GIF, BMP, HEIC/HEIF, AVIF) or scanned PDFs. Each image or PDF page is one result. Files in your own Apify key-value store work too: set the store's access to \"Anyone with ID can read\" and use https://api.apify.com/v2/key-value-stores/<store ID>/records/<key>.",
+            "editor": "requestListSources",
+            "prefill": [
+                {
+                    "url": "https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/image-en.png"
+                }
+            ],
+            "default": [
+                {
+                    "url": "https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/image-en.png"
+                }
+            ]
+        },
+        "languages": {
+            "title": "Languages",
+            "type": "array",
+            "description": "Languages in the images. Pick one or a few (e.g. English + Ukrainian); more languages = slower and slightly less accurate.",
+            "editor": "select",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "eng",
+                    "ukr",
+                    "rus",
+                    "deu",
+                    "fra",
+                    "spa",
+                    "ita",
+                    "por",
+                    "pol",
+                    "nld",
+                    "ces",
+                    "slk",
+                    "tur",
+                    "ron",
+                    "hun",
+                    "bul",
+                    "ell",
+                    "swe",
+                    "nor",
+                    "dan",
+                    "fin",
+                    "lit",
+                    "lav",
+                    "est",
+                    "hrv",
+                    "srp",
+                    "slv",
+                    "bel",
+                    "kaz",
+                    "vie",
+                    "ind",
+                    "heb",
+                    "ara",
+                    "hin",
+                    "chi_sim",
+                    "chi_tra",
+                    "jpn",
+                    "kor"
+                ],
+                "enumTitles": [
+                    "English",
+                    "Ukrainian",
+                    "Russian",
+                    "German",
+                    "French",
+                    "Spanish",
+                    "Italian",
+                    "Portuguese",
+                    "Polish",
+                    "Dutch",
+                    "Czech",
+                    "Slovak",
+                    "Turkish",
+                    "Romanian",
+                    "Hungarian",
+                    "Bulgarian",
+                    "Greek",
+                    "Swedish",
+                    "Norwegian",
+                    "Danish",
+                    "Finnish",
+                    "Lithuanian",
+                    "Latvian",
+                    "Estonian",
+                    "Croatian",
+                    "Serbian",
+                    "Slovenian",
+                    "Belarusian",
+                    "Kazakh",
+                    "Vietnamese",
+                    "Indonesian",
+                    "Hebrew",
+                    "Arabic",
+                    "Hindi",
+                    "Chinese (Simplified)",
+                    "Chinese (Traditional)",
+                    "Japanese",
+                    "Korean"
+                ]
+            },
+            "default": [
+                "eng"
+            ]
+        },
+        "pages": {
+            "title": "Pages",
+            "type": "string",
+            "description": "For PDFs and multi-page TIFFs: pages to OCR, e.g. \"1-3,5,8-\". Empty = all.",
+            "editor": "textfield",
+            "default": ""
+        },
+        "layout": {
+            "title": "Layout",
+            "type": "string",
+            "description": "auto = documents, columns; single-block = one uniform block of text; single-line = one line (captions, labels); sparse = scattered text (screenshots, signs, receipts).",
+            "editor": "select",
+            "enum": [
+                "auto",
+                "single-block",
+                "single-line",
+                "sparse"
+            ],
+            "enumTitles": [
+                "Auto (documents)",
+                "Single block",
+                "Single line",
+                "Sparse text (screenshots, receipts)"
+            ],
+            "default": "auto"
+        },
+        "autoRotate": {
+            "title": "Auto-rotate",
+            "type": "boolean",
+            "description": "Detect pages scanned sideways or upside down and rotate them before OCR (a bit slower).",
+            "default": false
+        },
+        "includeLines": {
+            "title": "Include lines",
+            "type": "boolean",
+            "description": "Return every line with confidence (0-100) and bounding box [x, y, width, height] in pixels of the original image.",
+            "default": true
+        },
+        "includeWords": {
+            "title": "Include words",
+            "type": "boolean",
+            "description": "Also return every word with confidence and bounding box.",
+            "default": false
+        }
+    },
+    "required": [
+        "sources"
+    ]
+}

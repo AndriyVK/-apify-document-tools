@@ -2,7 +2,7 @@
     "actorSpecification": 1,
     "name": "document-to-markdown",
     "title": "Document to Markdown for AI: PDF, OCR, Word, Excel, PowerPoint",
-    "description": "Convert PDF, scanned PDF and images (OCR in 11 languages incl. Ukrainian and Russian), DOCX, DOC, XLSX, XLS, PPTX, PPT, ODT, RTF and HTML into clean Markdown with headings and tables, plus JSON tables and RAG chunks.",
+    "description": "From $1 per 1,000 pages: PDF, scanned PDF and images (OCR incl. Ukrainian and Russian), DOCX, DOC, XLSX, XLS, PPTX, PPT, ODT, RTF and HTML to clean Markdown with headings and tables, plus JSON tables and RAG chunks. OCR charged only for scanned pages.",
     "version": "0.1",
     "buildTag": "latest",
     "input": "./input_schema.json",

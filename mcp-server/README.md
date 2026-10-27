@@ -1,6 +1,6 @@
 # MCP server: document & media tools for AI agents
 
-Four tools for Claude, Cursor, ChatGPT and any other MCP client, backed by open-source Actors on Apify:
+Tools for Claude, Cursor, ChatGPT and any other MCP client, backed by open-source Actors on Apify:
 
 | Tool | What it does | Price (billed by Apify) |
 |---|---|---|
@@ -8,18 +8,19 @@ Four tools for Claude, Cursor, ChatGPT and any other MCP client, backed by open-
 | `convert_office_to_pdf` | Word, Excel, PowerPoint, OpenDocument, RTF, HTML, images → PDF or PDF/A-2b, optional merge | $10 / 1,000 documents |
 | `convert_pdf_or_images` | PDF pages → PNG/JPG/WebP/TIFF, images ↔ PDF, iPhone HEIC → JPG, resize | $2 / 1,000 images |
 | `transcribe_audio` | Audio and video → text, timestamped segments, SRT/VTT (Whisper large-v3, 99 languages) | $5 / 1,000 minutes |
+| `ocr_images` | Images and scanned PDFs → text, lines with confidence and boxes (38 languages incl. Ukrainian) | $1.50 / 1,000 images |
 
 Every tool takes public file URLs and a `max_charge_usd` safety limit per call (default $1).
 
 ## Option 1 — hosted (no install)
 
-Use Apify's hosted MCP server with exactly these four tools:
+Use Apify's hosted MCP server with exactly these tools:
 
 ```json
 {
   "mcpServers": {
     "document-tools": {
-      "url": "https://mcp.apify.com?tools=ai_admin/document-to-markdown,ai_admin/office-to-pdf,ai_admin/pdf-image-converter,ai_admin/audio-transcriber"
+      "url": "https://mcp.apify.com?tools=ai_admin/document-to-markdown,ai_admin/office-to-pdf,ai_admin/pdf-image-converter,ai_admin/audio-transcriber,ai_admin/image-to-text-ocr"
     }
   }
 }

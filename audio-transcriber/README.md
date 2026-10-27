@@ -11,6 +11,16 @@ Whisper large-v3 model — 99 languages, automatic language detection, files of 
   languages; a vocabulary hint fixes the spelling of names and terms.
 - **Subtitles included.** SRT and WebVTT files with download links, plus segments as JSON.
 
+## Why this Actor
+
+| | This Actor | Typical alternatives in the Apify Store (Oct 2026) |
+|---|---|---|
+| **Price** | **$5 per 1,000 minutes** (30 cents an hour) | $6–28 per 1,000 minutes |
+| **Model** | Whisper **large-v3** — the most accurate Whisper model — for every file | Often smaller, cheaper models, or large-v3 only in a premium mode |
+| **Subtitles** | SRT + VTT + timestamped JSON segments in every run | Often text only, or subtitles as a paid extra |
+| **No API key** | Nothing to sign up for; pay per minute through Apify | Some ask for your own OpenAI / Groq key |
+| **Long files** | Hours-long recordings are split and stitched with continuous timestamps | Tools that send the file to a Whisper API in one request hit its 25 MB limit |
+
 ## Input
 
 ```json
@@ -70,6 +80,19 @@ The speech track is sent to [Groq](https://groq.com)'s speech-to-text API, which
 - [Office to PDF & PDF/A](https://apify.com/ai_admin/office-to-pdf) · [PDF to Image & Image Converter](https://apify.com/ai_admin/pdf-image-converter)
 
 Open source: [github.com/AndriyVK/-apify-document-tools](https://github.com/AndriyVK/-apify-document-tools)
+
+## Use with AI agents and code
+
+- **MCP (Claude, Cursor, VS Code, any MCP client):** add `https://mcp.apify.com?tools=ai_admin/audio-transcriber` as an MCP server —
+  the agent gets one tool with this Actor's input schema and pays per use through your Apify account.
+- **One HTTP call that returns the results:**
+
+```bash
+curl -X POST "https://api.apify.com/v2/acts/ai_admin~audio-transcriber/run-sync-get-dataset-items?token=$APIFY_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"sources": [{"url": "https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/speech-en.mp3"}], "language": "en"}'
+```
+- **Agentic payments:** the Actor is enabled for Apify's agentic payments (x402), so autonomous agents can pay per run.
 
 ## Limits
 

@@ -24,7 +24,7 @@ mcp = MCPServer(
     instructions='Give the tools public URLs of files. Results include Markdown text, JSON tables, download links '
                  'for produced files and transcripts. Requires the APIFY_TOKEN environment variable.',
     website_url='https://github.com/AndriyVK/-apify-document-tools',
-    version='0.1.0',
+    version='0.2.0',
 )
 
 
@@ -83,6 +83,16 @@ async def transcribe_audio(urls: list[str], language: str = '', vocabulary: str 
                            max_charge_usd: float = 1.0) -> list[dict]:
     return await _run_actor('ai_admin/audio-transcriber',
                             {'sources': _urls(urls), 'language': language, 'vocabulary': vocabulary}, max_charge_usd)
+
+
+@mcp.tool(description='OCR: extract text from images (PNG, JPG, WebP, TIFF, HEIC) and scanned PDF pages; returns text '
+                      'per page plus lines with confidence and bounding boxes. languages: Tesseract codes, e.g. '
+                      '["eng", "ukr"]; pages like "1-3". Price: $1.50 per 1,000 images or pages.')
+async def ocr_images(urls: list[str], languages: list[str] | None = None, pages: str = '', auto_rotate: bool = False,
+                     max_charge_usd: float = 1.0) -> list[dict]:
+    return await _run_actor('ai_admin/image-to-text-ocr',
+                            {'sources': _urls(urls), 'languages': languages or ['eng'], 'pages': pages,
+                             'autoRotate': auto_rotate}, max_charge_usd)
 
 
 if __name__ == '__main__':

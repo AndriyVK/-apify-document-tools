@@ -9,14 +9,16 @@ from Apify Store, call them from your code, or plug them into AI agents through 
 | [Office to PDF & PDF/A](office-to-pdf/) | Word, Excel, PowerPoint, OpenDocument, RTF, HTML and images → PDF or archival PDF/A-2b, optional merge into one PDF | [apify.com/ai_admin/office-to-pdf](https://apify.com/ai_admin/office-to-pdf) |
 | [Audio & Video Transcriber](audio-transcriber/) | Audio and video → text, timestamped segments and SRT/VTT subtitles with Whisper large-v3 (via Groq), 99 languages | [apify.com/ai_admin/audio-transcriber](https://apify.com/ai_admin/audio-transcriber) |
 | [PDF to Image & Image Converter](pdf-image-converter/) | PDF pages → PNG/JPG/WebP/TIFF, images → PDF, image formats incl. iPhone HEIC, resize, ZIP | [apify.com/ai_admin/pdf-image-converter](https://apify.com/ai_admin/pdf-image-converter) |
+| [Image to Text OCR](image-to-text-ocr/) | Images and scanned PDFs → text, lines and words with confidence and boxes, 38 languages incl. Ukrainian, auto-rotate | [apify.com/ai_admin/image-to-text-ocr](https://apify.com/ai_admin/image-to-text-ocr) |
 
 Ready-made examples (Apify tasks): [document-to-markdown examples](https://apify.com/ai_admin/document-to-markdown/examples),
-[office-to-pdf examples](https://apify.com/ai_admin/office-to-pdf/examples).
+[office-to-pdf examples](https://apify.com/ai_admin/office-to-pdf/examples),
+[OCR examples](https://apify.com/ai_admin/image-to-text-ocr/examples).
 
 ## Use from AI agents (MCP)
 
-All four Actors are available as MCP tools — hosted (no install):
-`https://mcp.apify.com?tools=ai_admin/document-to-markdown,ai_admin/office-to-pdf,ai_admin/pdf-image-converter,ai_admin/audio-transcriber`
+All Actors are available as MCP tools — hosted (no install):
+`https://mcp.apify.com?tools=ai_admin/document-to-markdown,ai_admin/office-to-pdf,ai_admin/pdf-image-converter,ai_admin/audio-transcriber,ai_admin/image-to-text-ocr`
 — or as a local stdio server in [mcp-server/](mcp-server/).
 
 ## Built with
@@ -43,6 +45,9 @@ GROQ_API_KEY=... python -m tests.check /path/to/media   # real Groq calls; see t
 
 cd ../pdf-image-converter
 python -m tests.check /tmp/corpus                # PDF <-> image conversions
+
+cd ../image-to-text-ocr
+python -m tests.check /tmp/corpus                # OCR of images, scans, TIFF, HEIC, rotated pages
 ```
 
 Local runs need Tesseract (`eng`, `ukr`, `rus`), LibreOffice and the packages from `requirements.txt`.

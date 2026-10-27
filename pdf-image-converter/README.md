@@ -9,6 +9,15 @@ in bulk, with a download link for every file.
   multi-page TIFFs are split into frames; EXIF rotation is applied; optional downscaling.
 - **ZIP of everything** and per-file download links in the dataset.
 
+## Why this Actor
+
+| | This Actor | Typical alternatives in the Apify Store (Oct 2026) |
+|---|---|---|
+| **Price** | **$2 per 1,000 images or pages** | $2–10 per 1,000, often plus a per-file fee |
+| **Both directions** | PDF → images **and** images → PDF in one Actor, plus image format conversion | Often one direction per tool |
+| **iPhone HEIC** | HEIC/HEIF → JPG/PNG/WebP/PDF | Rarely supported |
+| **Control** | DPI 36–600, page ranges (`1-3,5,8-`), quality, max width, merge, ZIP | Often fixed settings |
+
 ## Input
 
 ```json
@@ -68,6 +77,19 @@ your maximum charge per run.
 - [Document to Markdown for AI](https://apify.com/ai_admin/document-to-markdown) — PDFs, scans and Office files → Markdown, tables, RAG chunks
 
 Open source: [github.com/AndriyVK/-apify-document-tools](https://github.com/AndriyVK/-apify-document-tools)
+
+## Use with AI agents and code
+
+- **MCP (Claude, Cursor, VS Code, any MCP client):** add `https://mcp.apify.com?tools=ai_admin/pdf-image-converter` as an MCP server —
+  the agent gets one tool with this Actor's input schema and pays per use through your Apify account.
+- **One HTTP call that returns the results:**
+
+```bash
+curl -X POST "https://api.apify.com/v2/acts/ai_admin~pdf-image-converter/run-sync-get-dataset-items?token=$APIFY_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"sources": [{"url": "https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/text-3p-en.pdf"}], "outputFormat": "jpg", "dpi": 150, "pages": "1-2"}'
+```
+- **Agentic payments:** the Actor is enabled for Apify's agentic payments (x402), so autonomous agents can pay per run.
 
 ## Limits
 

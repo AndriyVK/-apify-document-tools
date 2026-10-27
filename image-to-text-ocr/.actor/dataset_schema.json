@@ -1,0 +1,109 @@
+{
+    "actorSpecification": 1,
+    "fields": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+            "url": {
+                "type": "string",
+                "description": "Input file URL"
+            },
+            "fileName": {
+                "type": [
+                    "string",
+                    "null"
+                ],
+                "description": "File name from the server or URL"
+            },
+            "kind": {
+                "type": "string",
+                "description": "image or pdf"
+            },
+            "page": {
+                "type": "integer",
+                "description": "Page or frame number (1 for a single image)"
+            },
+            "totalPages": {
+                "type": "integer",
+                "description": "Pages or frames in the file"
+            },
+            "languages": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "text": {
+                "type": "string",
+                "description": "Recognised text; paragraphs separated by a blank line"
+            },
+            "meanConfidence": {
+                "type": [
+                    "number",
+                    "null"
+                ],
+                "description": "Average word confidence 0-100"
+            },
+            "lines": {
+                "type": "array",
+                "description": "Lines: text, confidence, bbox [x, y, width, height]"
+            },
+            "words": {
+                "type": "array",
+                "description": "Words: text, confidence, bbox (when Include words is on)"
+            },
+            "width": {
+                "type": "integer"
+            },
+            "height": {
+                "type": "integer"
+            },
+            "rotated": {
+                "type": "integer",
+                "description": "Degrees the page was rotated (Auto-rotate)"
+            },
+            "error": {
+                "type": "string",
+                "description": "Why the file could not be processed (not charged)"
+            }
+        }
+    },
+    "views": {
+        "overview": {
+            "title": "Overview",
+            "transformation": {
+                "fields": [
+                    "url",
+                    "page",
+                    "meanConfidence",
+                    "text",
+                    "error"
+                ]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "url": {
+                        "label": "File",
+                        "format": "link"
+                    },
+                    "page": {
+                        "label": "Page",
+                        "format": "number"
+                    },
+                    "meanConfidence": {
+                        "label": "Confidence",
+                        "format": "number"
+                    },
+                    "text": {
+                        "label": "Text",
+                        "format": "text"
+                    },
+                    "error": {
+                        "label": "Error"
+                    }
+                }
+            }
+        }
+    }
+}

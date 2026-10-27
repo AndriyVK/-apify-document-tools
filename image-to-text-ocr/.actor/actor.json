@@ -1,0 +1,14 @@
+{
+    "actorSpecification": 1,
+    "name": "image-to-text-ocr",
+    "title": "Image to Text OCR: Bulk Images & Scanned PDFs, 38 Languages",
+    "description": "Extract text from images (PNG, JPG, WebP, TIFF, HEIC) and scanned PDF pages in bulk. Returns plain text plus lines and words with confidence and bounding boxes. 38 languages incl. Ukrainian, Chinese, Arabic. Auto-rotate.",
+    "version": "0.1",
+    "buildTag": "latest",
+    "input": "./input_schema.json",
+    "storages": {
+        "dataset": "./dataset_schema.json"
+    },
+    "output": "./output_schema.json",
+    "dockerfile": "../Dockerfile"
+}

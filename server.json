@@ -8,11 +8,11 @@
     "source": "github",
     "subfolder": "mcp-server"
   },
-  "version": "0.1.0",
+  "version": "0.2.0",
   "remotes": [
     {
       "type": "streamable-http",
-      "url": "https://mcp.apify.com?tools=ai_admin/document-to-markdown,ai_admin/office-to-pdf,ai_admin/pdf-image-converter,ai_admin/audio-transcriber"
+      "url": "https://mcp.apify.com?tools=ai_admin/document-to-markdown,ai_admin/office-to-pdf,ai_admin/pdf-image-converter,ai_admin/audio-transcriber,ai_admin/image-to-text-ocr"
     }
   ]
 }
