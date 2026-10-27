@@ -80,6 +80,8 @@ would exceed your maximum charge per run.
 The Actor works as a tool in the [Apify MCP server](https://mcp.apify.com): add `ai_admin/document-to-markdown` to
 your client's Actor list and ask the agent to convert a document by URL.
 
+Open source: [github.com/AndriyVK/-apify-document-tools](https://github.com/AndriyVK/-apify-document-tools)
+
 ## Limits
 
 - Tables are detected in PDFs with a text layer and in Office/HTML files. Tables in scanned pages come out as OCR text.

@@ -67,6 +67,8 @@ turn a document into PDF.
 Need the opposite direction — text and tables out of PDFs and scans? See
 [Document to Markdown for AI](https://apify.com/ai_admin/document-to-markdown).
 
+Open source: [github.com/AndriyVK/-apify-document-tools](https://github.com/AndriyVK/-apify-document-tools)
+
 ## Limits
 
 - Password-protected files are not supported. Maximum download size is 200 MB per file.
