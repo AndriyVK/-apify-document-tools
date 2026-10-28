@@ -1,0 +1,92 @@
+{
+    "actorSpecification": 1,
+    "fields": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+            "url": {
+                "type": "string",
+                "description": "Document URL, or \"text\""
+            },
+            "voice": {
+                "type": "string"
+            },
+            "language": {
+                "type": "string"
+            },
+            "format": {
+                "type": "string"
+            },
+            "characters": {
+                "type": "integer",
+                "description": "Characters read"
+            },
+            "truncated": {
+                "type": "boolean",
+                "description": "Text was longer than the limit and was cut"
+            },
+            "durationSeconds": {
+                "type": "number"
+            },
+            "sentences": {
+                "type": "integer"
+            },
+            "audioUrl": {
+                "type": "string",
+                "description": "Download link of the audio"
+            },
+            "srtUrl": {
+                "type": "string"
+            },
+            "vttUrl": {
+                "type": "string"
+            },
+            "error": {
+                "type": "string",
+                "description": "Why the item failed (not charged)"
+            }
+        }
+    },
+    "views": {
+        "overview": {
+            "title": "Overview",
+            "transformation": {
+                "fields": [
+                    "url",
+                    "durationSeconds",
+                    "characters",
+                    "audioUrl",
+                    "srtUrl",
+                    "error"
+                ]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "url": {
+                        "label": "Source"
+                    },
+                    "durationSeconds": {
+                        "label": "Seconds",
+                        "format": "number"
+                    },
+                    "characters": {
+                        "label": "Characters",
+                        "format": "number"
+                    },
+                    "audioUrl": {
+                        "label": "Audio",
+                        "format": "link"
+                    },
+                    "srtUrl": {
+                        "label": "SRT",
+                        "format": "link"
+                    },
+                    "error": {
+                        "label": "Error"
+                    }
+                }
+            }
+        }
+    }
+}

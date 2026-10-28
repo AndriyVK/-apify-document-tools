@@ -2,17 +2,17 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
   "name": "io.github.AndriyVK/apify-document-tools",
   "title": "Document & media tools (Apify)",
-  "description": "PDF/OCR/Office to Markdown, Office to PDF/PDF-A, PDF and image conversion, audio transcription.",
+  "description": "Documents to Markdown and PDF, OCR, transcription, TTS, screenshots, domain checks, video frames.",
   "repository": {
     "url": "https://github.com/AndriyVK/-apify-document-tools",
     "source": "github",
     "subfolder": "mcp-server"
   },
-  "version": "0.2.0",
+  "version": "0.3.0",
   "remotes": [
     {
       "type": "streamable-http",
-      "url": "https://mcp.apify.com?tools=ai_admin/document-to-markdown,ai_admin/office-to-pdf,ai_admin/pdf-image-converter,ai_admin/audio-transcriber,ai_admin/image-to-text-ocr"
+      "url": "https://mcp.apify.com?tools=ai_admin/document-to-markdown,ai_admin/office-to-pdf,ai_admin/pdf-image-converter,ai_admin/audio-transcriber,ai_admin/image-to-text-ocr,ai_admin/text-to-speech,ai_admin/website-screenshot,ai_admin/domain-whois-dns-ssl,ai_admin/video-frame-extractor"
     }
   ]
 }

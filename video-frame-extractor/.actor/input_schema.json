@@ -1,0 +1,116 @@
+{
+    "title": "Video Frame Extractor",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "sources": {
+            "title": "Video URLs",
+            "type": "array",
+            "description": "Direct links to video files (MP4, MOV, WebM, MKV, AVI, M4V, MPEG, 3GP\u2026), up to 2 GB each. Pages like YouTube are not supported \u2014 use a direct file link. Files in your own Apify key-value store work too: set the store's access to \"Anyone with ID can read\" and use https://api.apify.com/v2/key-value-stores/<store ID>/records/<key>.",
+            "editor": "requestListSources",
+            "prefill": [
+                {
+                    "url": "https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/video-en.mp4"
+                }
+            ],
+            "default": [
+                {
+                    "url": "https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/video-en.mp4"
+                }
+            ]
+        },
+        "mode": {
+            "title": "Mode",
+            "type": "string",
+            "description": "count = N evenly spaced frames; interval = one frame every N seconds; timestamps = exact times; scenes = a frame at every scene change; keyframes = the video's keyframes (I-frames).",
+            "editor": "select",
+            "enum": [
+                "count",
+                "interval",
+                "timestamps",
+                "scenes",
+                "keyframes"
+            ],
+            "enumTitles": [
+                "N evenly spaced frames",
+                "Every N seconds",
+                "Exact timestamps",
+                "Scene changes",
+                "Keyframes"
+            ],
+            "default": "count"
+        },
+        "frameCount": {
+            "title": "Number of frames (count)",
+            "type": "integer",
+            "description": "For mode count.",
+            "minimum": 1,
+            "maximum": 2000,
+            "default": 6
+        },
+        "intervalSeconds": {
+            "title": "Interval, seconds (interval)",
+            "type": "number",
+            "description": "For mode interval: 1 = one frame per second, 0.5 = two per second.",
+            "minimum": 0.1,
+            "default": 10
+        },
+        "timestamps": {
+            "title": "Timestamps (timestamps)",
+            "type": "array",
+            "description": "For mode timestamps: seconds (90.5) or hh:mm:ss / mm:ss (01:30). Times past the end are skipped.",
+            "editor": "stringList",
+            "default": []
+        },
+        "sceneThreshold": {
+            "title": "Scene sensitivity (scenes)",
+            "type": "number",
+            "description": "0.1 = many frames (small changes count), 0.3 = default, 0.5 = only hard cuts.",
+            "minimum": 0.01,
+            "maximum": 1,
+            "default": 0.3
+        },
+        "maxFramesPerVideo": {
+            "title": "Max frames per video",
+            "type": "integer",
+            "description": "Upper limit for any mode.",
+            "minimum": 1,
+            "maximum": 2000,
+            "default": 100
+        },
+        "format": {
+            "title": "Image format",
+            "type": "string",
+            "editor": "select",
+            "description": "JPG = small files, PNG = lossless, WebP = smallest.",
+            "enum": [
+                "jpg",
+                "png",
+                "webp"
+            ],
+            "enumTitles": [
+                "JPG",
+                "PNG",
+                "WebP"
+            ],
+            "default": "jpg"
+        },
+        "maxWidth": {
+            "title": "Max width (px)",
+            "type": "integer",
+            "description": "Downscale wider frames, keeping the aspect ratio. 0 = original size.",
+            "minimum": 0,
+            "maximum": 8000,
+            "default": 0
+        },
+        "contactSheet": {
+            "title": "Contact sheet",
+            "type": "boolean",
+            "description": "Also return one image with all frames and timecodes (free).",
+            "default": true
+        }
+    },
+    "required": [
+        "sources"
+    ]
+}

@@ -1,6 +1,7 @@
 """MCP server: document and media tools for AI agents, powered by the ai_admin Actors on Apify.
 
-Tools: convert_document_to_markdown, convert_office_to_pdf, convert_pdf_or_images, transcribe_audio.
+Tools: convert_document_to_markdown, convert_office_to_pdf, convert_pdf_or_images, transcribe_audio, ocr_images,
+text_to_speech, screenshot_website, check_domains, extract_video_frames.
 Each tool runs the matching Apify Actor synchronously with your own Apify API token (APIFY_TOKEN) and returns its
 results. Usage is billed to your Apify account at the Actors' pay-per-event prices (see each Actor's Store page).
 
@@ -20,11 +21,12 @@ SYNC_TIMEOUT = 300  # Apify keeps synchronous runs open for up to 300 s
 mcp = MCPServer(
     name='apify-document-tools',
     title='Document & media tools (Apify)',
-    description='Convert PDFs, scans, Office files and images to Markdown, PDF/PDF-A or images, and transcribe audio/video.',
+    description='Convert PDFs, scans, Office files and images to Markdown, PDF/PDF-A or images, OCR, transcribe audio/video, '
+                'text to speech, website screenshots, domain checks and video frames.',
     instructions='Give the tools public URLs of files. Results include Markdown text, JSON tables, download links '
                  'for produced files and transcripts. Requires the APIFY_TOKEN environment variable.',
     website_url='https://github.com/AndriyVK/-apify-document-tools',
-    version='0.2.0',
+    version='0.3.0',
 )
 
 
@@ -93,6 +95,53 @@ async def ocr_images(urls: list[str], languages: list[str] | None = None, pages:
     return await _run_actor('ai_admin/image-to-text-ocr',
                             {'sources': _urls(urls), 'languages': languages or ['eng'], 'pages': pages,
                              'autoRotate': auto_rotate}, max_charge_usd)
+
+
+@mcp.tool(description='Text to speech: turn text, or the text of PDF/DOCX/HTML files (urls), into natural neural speech '
+                      '(MP3/WAV/OGG) with SRT subtitles; 37 voices in 23 languages incl. 3 Ukrainian, e.g. '
+                      '"uk_UA-tetiana-high", "en_US-john-medium", "de_DE-thorsten-high". Returns download links. '
+                      'Price: $10 per 1,000 audio minutes ($40 for high-quality voices).')
+async def text_to_speech(text: str = '', urls: list[str] | None = None, voice: str = 'en_US-john-medium',
+                         speed: float = 1.0, audio_format: str = 'mp3', subtitles: bool = True,
+                         max_charge_usd: float = 1.0) -> list[dict]:
+    return await _run_actor('ai_admin/text-to-speech',
+                            {'text': text, 'sources': _urls(urls or []), 'voice': voice, 'speed': speed,
+                             'format': audio_format, 'subtitles': subtitles}, max_charge_usd)
+
+
+@mcp.tool(description='Screenshot web pages (full page, desktop/tablet/mobile, png/jpeg/webp) or save them as PDF '
+                      '(image_format="pdf"); html renders your own HTML instead of urls; selector captures one element. '
+                      'Cookie banners are hidden. Returns download links. Price: $4 per 1,000 pages.')
+async def screenshot_website(urls: list[str] | None = None, html: str = '', image_format: str = 'png',
+                             device: str = 'desktop', full_page: bool = True, selector: str = '',
+                             max_charge_usd: float = 1.0) -> list[dict]:
+    return await _run_actor('ai_admin/website-screenshot',
+                            {'urls': _urls(urls or []), 'html': html, 'format': image_format, 'device': device,
+                             'fullPage': full_page, 'selector': selector}, max_charge_usd)
+
+
+@mcp.tool(description='Check domains in bulk: WHOIS/RDAP (registrar, creation and expiry dates, days left), DNS '
+                      '(A, AAAA, MX, NS, TXT, CNAME, SOA) and the SSL certificate (issuer, valid to, days left). '
+                      'Price: $2 per 1,000 domains.')
+async def check_domains(domains: list[str], whois: bool = True, dns: bool = True, ssl: bool = True,
+                        max_charge_usd: float = 1.0) -> list[dict]:
+    return await _run_actor('ai_admin/domain-whois-dns-ssl',
+                            {'domains': [d for d in domains if d and d.strip()], 'whois': whois, 'dns': dns,
+                             'ssl': ssl}, max_charge_usd)
+
+
+@mcp.tool(description='Extract frames from videos (MP4, MOV, WebM…) with timecodes: mode "count" (frame_count evenly '
+                      'spaced), "interval" (every interval_seconds), "timestamps" (e.g. ["00:01:05", "90"]), "scenes" '
+                      '(scene changes) or "keyframes"; plus a free contact sheet. Good input for vision models. '
+                      'Returns download links. Price: $1 per 1,000 frames.')
+async def extract_video_frames(urls: list[str], mode: str = 'count', frame_count: int = 6,
+                               interval_seconds: float = 10, timestamps: list[str] | None = None,
+                               image_format: str = 'jpg', max_width: int = 0,
+                               max_charge_usd: float = 1.0) -> list[dict]:
+    return await _run_actor('ai_admin/video-frame-extractor',
+                            {'sources': _urls(urls), 'mode': mode, 'frameCount': frame_count,
+                             'intervalSeconds': interval_seconds, 'timestamps': timestamps or [],
+                             'format': image_format, 'maxWidth': max_width}, max_charge_usd)
 
 
 if __name__ == '__main__':

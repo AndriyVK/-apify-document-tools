@@ -1,625 +1,1492 @@
 {
- "_comment": "Published Actor tasks = search-engine and AI-agent landing pages. Samples live in the public-by-ID key-value store document-to-markdown-test-corpus (FloomuI2DrQCJazY8); do not delete it.",
- "sampleBase": "https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/",
- "actors": {
-  "rjJ9rgDEj2QDspQ0M": [
-   {
-    "name": "pdf-tables-to-json",
-    "title": "Extract tables from PDF to JSON",
-    "description": "Pull every table out of PDF reports, invoices and price lists as JSON rows (header first) plus Markdown — ready for Excel, Google Sheets or a database.",
-    "samples": [
-     "text-en.pdf"
+  "_comment": "Published Actor tasks = search-engine and AI-agent landing pages. Samples live in the public-by-ID key-value store document-to-markdown-test-corpus (FloomuI2DrQCJazY8); do not delete it. Apify allows at most 10 published tasks per Actor.",
+  "sampleBase": "https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/",
+  "actors": {
+    "rjJ9rgDEj2QDspQ0M": [
+      {
+        "name": "pdf-tables-to-json",
+        "title": "Extract tables from PDF to JSON",
+        "description": "Pull every table out of PDF reports, invoices and price lists as JSON rows (header first) plus Markdown — ready for Excel, Google Sheets or a database.",
+        "samples": [
+          "text-en.pdf"
+        ],
+        "input": {
+          "includeTables": true
+        },
+        "fields": [
+          "sources",
+          "includeTables"
+        ]
+      },
+      {
+        "name": "ocr-ukrainian-scanned-pdf",
+        "title": "OCR Ukrainian scanned PDFs to text",
+        "description": "Recognise text in scanned Ukrainian documents (Cyrillic) and get clean Markdown — contracts, certificates, letters. English in the same scan is read too.",
+        "samples": [
+          "scan-uk.pdf"
+        ],
+        "input": {
+          "ocrLanguages": [
+            "ukr",
+            "eng"
+          ]
+        },
+        "fields": [
+          "sources",
+          "ocrLanguages"
+        ]
+      },
+      {
+        "name": "ocr-russian-scanned-pdf",
+        "title": "OCR Russian scanned PDFs to text",
+        "description": "Turn scanned Russian-language documents into searchable Markdown text with Tesseract OCR — Cyrillic and Latin on the same page.",
+        "samples": [
+          "scan-ru.pdf"
+        ],
+        "input": {
+          "ocrLanguages": [
+            "rus",
+            "eng"
+          ]
+        },
+        "fields": [
+          "sources",
+          "ocrLanguages"
+        ]
+      },
+      {
+        "name": "scanned-pdf-to-markdown",
+        "title": "Convert scanned PDF to Markdown with OCR",
+        "description": "OCR scanned and photographed PDF pages into Markdown. Pages that already have a text layer are read directly and billed as cheap text pages.",
+        "samples": [
+          "scan-en.pdf",
+          "scan-noisy-en.pdf"
+        ],
+        "input": {
+          "ocrMode": "auto"
+        },
+        "fields": [
+          "sources",
+          "ocrMode",
+          "ocrLanguages"
+        ]
+      },
+      {
+        "name": "pdf-to-rag-chunks",
+        "title": "Split PDF into RAG chunks for vector databases",
+        "description": "Convert PDFs to Markdown and split them into chunks with their nearest heading — ready for embeddings, vector databases and LLM retrieval (RAG).",
+        "samples": [
+          "text-3p-en.pdf"
+        ],
+        "input": {
+          "chunkSize": 1000
+        },
+        "fields": [
+          "sources",
+          "chunkSize"
+        ]
+      },
+      {
+        "name": "word-docx-to-markdown",
+        "title": "Convert Word DOCX to Markdown",
+        "description": "Convert Word documents to clean Markdown with headings, lists and tables for LLM prompts, wikis and documentation sites.",
+        "samples": [
+          "doc-en.docx"
+        ],
+        "input": {},
+        "fields": [
+          "sources"
+        ]
+      },
+      {
+        "name": "excel-xlsx-to-json",
+        "title": "Convert Excel XLSX sheets to JSON and Markdown",
+        "description": "Read every sheet of an Excel workbook as JSON rows and Markdown tables. Text cells stay exactly as typed, numbers follow the cell format.",
+        "samples": [
+          "sheet-en.xlsx"
+        ],
+        "input": {
+          "includeTables": true
+        },
+        "fields": [
+          "sources",
+          "includeTables"
+        ]
+      },
+      {
+        "name": "powerpoint-pptx-to-text",
+        "title": "Extract text from PowerPoint PPTX slides",
+        "description": "Get slide titles, bullet points and tables from PowerPoint presentations as Markdown, one section per slide.",
+        "samples": [
+          "slides-en.pptx"
+        ],
+        "input": {},
+        "fields": [
+          "sources"
+        ]
+      },
+      {
+        "name": "legacy-doc-xls-ppt-to-markdown",
+        "title": "Convert old DOC, XLS, PPT and RTF files to Markdown",
+        "description": "Legacy Microsoft Office and OpenDocument files (DOC, XLS, PPT, RTF, ODT) converted to Markdown and JSON tables — no Office installation needed.",
+        "samples": [
+          "legacy-doc-uk.doc",
+          "legacy-sheet-uk.xls",
+          "legacy-slides-uk.ppt",
+          "legacy-doc-en.rtf"
+        ],
+        "input": {},
+        "fields": [
+          "sources"
+        ]
+      },
+      {
+        "name": "image-ocr-to-text",
+        "title": "Extract text from images (PNG, JPG, TIFF) with OCR",
+        "description": "OCR text from screenshots, photos and scanned images in 11 languages, including Ukrainian and Russian, and get it as Markdown.",
+        "samples": [
+          "image-en.png"
+        ],
+        "input": {
+          "ocrLanguages": [
+            "eng"
+          ]
+        },
+        "fields": [
+          "sources",
+          "ocrLanguages"
+        ]
+      }
     ],
-    "input": {
-     "includeTables": true
-    },
-    "fields": [
-     "sources",
-     "includeTables"
-    ]
-   },
-   {
-    "name": "ocr-ukrainian-scanned-pdf",
-    "title": "OCR Ukrainian scanned PDFs to text",
-    "description": "Recognise text in scanned Ukrainian documents (Cyrillic) and get clean Markdown — contracts, certificates, letters. English in the same scan is read too.",
-    "samples": [
-     "scan-uk.pdf"
+    "gwRuM7Y7jiidFkCRC": [
+      {
+        "name": "word-docx-to-pdf",
+        "title": "Convert Word DOCX to PDF in bulk",
+        "description": "Convert Word documents to PDF in bulk with a download link for every file. Layout is kept with Calibri/Cambria-compatible fonts.",
+        "samples": [
+          "doc-en.docx"
+        ],
+        "input": {},
+        "fields": [
+          "sources"
+        ]
+      },
+      {
+        "name": "docx-to-pdf-a-archive",
+        "title": "Convert DOCX to PDF/A for archives and e-filing",
+        "description": "Produce PDF/A-2b files from Word documents — the archival format required by courts, tax portals and document archives.",
+        "samples": [
+          "doc-en.docx"
+        ],
+        "input": {
+          "pdfA": true
+        },
+        "fields": [
+          "sources",
+          "pdfA"
+        ]
+      },
+      {
+        "name": "excel-xlsx-to-pdf",
+        "title": "Convert Excel XLSX to PDF",
+        "description": "Turn Excel workbooks, price lists and reports into PDF files, all sheets included, with a download link per file.",
+        "samples": [
+          "sheet-en.xlsx"
+        ],
+        "input": {},
+        "fields": [
+          "sources"
+        ]
+      },
+      {
+        "name": "powerpoint-pptx-to-pdf",
+        "title": "Convert PowerPoint PPTX to PDF",
+        "description": "Convert PowerPoint presentations to PDF handouts in bulk — one page per slide, ready to share or print.",
+        "samples": [
+          "slides-en.pptx"
+        ],
+        "input": {},
+        "fields": [
+          "sources"
+        ]
+      },
+      {
+        "name": "html-to-pdf",
+        "title": "Convert HTML files to PDF",
+        "description": "Render HTML documents and saved web pages to PDF with LibreOffice — simple, fast and without a browser.",
+        "samples": [
+          "page-en.html"
+        ],
+        "input": {},
+        "fields": [
+          "sources"
+        ]
+      },
+      {
+        "name": "merge-office-files-into-one-pdf",
+        "title": "Merge Word, Excel and PowerPoint files into one PDF",
+        "description": "Convert a set of DOCX, XLSX and PPTX files and merge them into a single PDF in the given order, plus a separate PDF of each file.",
+        "samples": [
+          "doc-en.docx",
+          "sheet-en.xlsx",
+          "slides-en.pptx"
+        ],
+        "input": {
+          "mergeIntoOne": true
+        },
+        "fields": [
+          "sources",
+          "mergeIntoOne"
+        ]
+      },
+      {
+        "name": "legacy-doc-to-pdf",
+        "title": "Convert old Word DOC files to PDF",
+        "description": "Convert legacy Word 97-2003 .doc files to PDF without Microsoft Office. Damaged files are reported and not charged.",
+        "samples": [
+          "legacy-doc-uk.doc"
+        ],
+        "input": {},
+        "fields": [
+          "sources"
+        ]
+      },
+      {
+        "name": "odt-opendocument-to-pdf",
+        "title": "Convert OpenDocument ODT, ODS, ODP to PDF",
+        "description": "Convert LibreOffice and OpenOffice documents, spreadsheets and presentations (ODT, ODS, ODP) to PDF or PDF/A.",
+        "samples": [
+          "legacy-doc-uk.odt"
+        ],
+        "input": {},
+        "fields": [
+          "sources",
+          "pdfA"
+        ]
+      },
+      {
+        "name": "images-to-pdf",
+        "title": "Convert images (PNG, JPG, TIFF) to PDF",
+        "description": "Wrap scans, photos and screenshots into PDF files — or one merged PDF — with a download link for each.",
+        "samples": [
+          "image-en.png",
+          "image-uk.png"
+        ],
+        "input": {},
+        "fields": [
+          "sources",
+          "mergeIntoOne"
+        ]
+      },
+      {
+        "name": "rtf-to-pdf",
+        "title": "Convert RTF documents to PDF",
+        "description": "Convert Rich Text Format (RTF) documents to PDF or archival PDF/A in bulk.",
+        "samples": [
+          "legacy-doc-en.rtf"
+        ],
+        "input": {},
+        "fields": [
+          "sources",
+          "pdfA"
+        ]
+      }
     ],
-    "input": {
-     "ocrLanguages": [
-      "ukr",
-      "eng"
-     ]
-    },
-    "fields": [
-     "sources",
-     "ocrLanguages"
-    ]
-   },
-   {
-    "name": "ocr-russian-scanned-pdf",
-    "title": "OCR Russian scanned PDFs to text",
-    "description": "Turn scanned Russian-language documents into searchable Markdown text with Tesseract OCR — Cyrillic and Latin on the same page.",
-    "samples": [
-     "scan-ru.pdf"
+    "l9zg7OIxw7cNXE8Fx": [
+      {
+        "name": "pdf-to-png",
+        "title": "Convert PDF pages to PNG images",
+        "description": "Render every PDF page to a PNG image at the resolution you choose, with a download link per page and an optional ZIP.",
+        "samples": [
+          "text-3p-en.pdf"
+        ],
+        "input": {
+          "outputFormat": "png",
+          "dpi": 150
+        },
+        "fields": [
+          "sources",
+          "outputFormat",
+          "dpi",
+          "pages"
+        ]
+      },
+      {
+        "name": "pdf-to-jpg-300-dpi",
+        "title": "Convert PDF to high-quality JPG (300 DPI)",
+        "description": "Print-quality JPG images from PDF pages at 300 DPI — for catalogs, brochures and scanned documents.",
+        "samples": [
+          "text-uk.pdf"
+        ],
+        "input": {
+          "outputFormat": "jpg",
+          "dpi": 300,
+          "quality": 92
+        },
+        "fields": [
+          "sources",
+          "dpi",
+          "quality"
+        ]
+      },
+      {
+        "name": "pdf-thumbnails",
+        "title": "Create PDF page thumbnails",
+        "description": "Small WebP thumbnails of PDF pages (72 DPI, max 400 px wide) for previews, galleries and document lists.",
+        "samples": [
+          "text-3p-en.pdf"
+        ],
+        "input": {
+          "outputFormat": "webp",
+          "dpi": 72,
+          "maxWidth": 400
+        },
+        "fields": [
+          "sources",
+          "maxWidth",
+          "pages"
+        ]
+      },
+      {
+        "name": "pdf-first-page-preview",
+        "title": "Get the first page of a PDF as an image",
+        "description": "Render only page 1 of each PDF to PNG — cover images and previews for a whole list of documents in one run.",
+        "samples": [
+          "text-3p-en.pdf",
+          "scan-en.pdf"
+        ],
+        "input": {
+          "outputFormat": "png",
+          "pages": "1"
+        },
+        "fields": [
+          "sources",
+          "pages"
+        ]
+      },
+      {
+        "name": "heic-to-jpg",
+        "title": "Convert iPhone HEIC photos to JPG",
+        "description": "Turn iPhone HEIC/HEIF photos into widely compatible JPG files in bulk, with EXIF rotation applied and optional resizing.",
+        "samples": [
+          "photo-sample.heic"
+        ],
+        "input": {
+          "outputFormat": "jpg",
+          "quality": 90
+        },
+        "fields": [
+          "sources",
+          "quality",
+          "maxWidth"
+        ]
+      },
+      {
+        "name": "images-to-one-pdf",
+        "title": "Merge images into one PDF",
+        "description": "Combine photos, scans and screenshots (JPG, PNG, HEIC, TIFF) into a single PDF in the given order, plus one PDF per image.",
+        "samples": [
+          "image-en.png",
+          "photo-sample.heic",
+          "multi-frame.tiff"
+        ],
+        "input": {
+          "outputFormat": "pdf",
+          "mergeImagesIntoOnePdf": true
+        },
+        "fields": [
+          "sources",
+          "mergeImagesIntoOnePdf"
+        ]
+      },
+      {
+        "name": "png-to-webp",
+        "title": "Convert PNG and JPG images to WebP",
+        "description": "Shrink images for the web: convert PNG and JPG to WebP with adjustable quality and optional max width.",
+        "samples": [
+          "image-en.png"
+        ],
+        "input": {
+          "outputFormat": "webp",
+          "quality": 80
+        },
+        "fields": [
+          "sources",
+          "quality",
+          "maxWidth"
+        ]
+      },
+      {
+        "name": "multi-page-tiff-to-png",
+        "title": "Split multi-page TIFF into PNG images",
+        "description": "Extract every frame of multi-page TIFF files (fax, scanner output) as separate PNG images.",
+        "samples": [
+          "multi-frame.tiff"
+        ],
+        "input": {
+          "outputFormat": "png"
+        },
+        "fields": [
+          "sources",
+          "outputFormat"
+        ]
+      },
+      {
+        "name": "pdf-to-webp",
+        "title": "Convert PDF pages to WebP",
+        "description": "Lightweight WebP images of PDF pages for websites and apps — choose DPI, pages and quality.",
+        "samples": [
+          "text-3p-en.pdf"
+        ],
+        "input": {
+          "outputFormat": "webp",
+          "dpi": 120,
+          "quality": 80
+        },
+        "fields": [
+          "sources",
+          "dpi",
+          "quality",
+          "pages"
+        ]
+      },
+      {
+        "name": "resize-images-bulk",
+        "title": "Resize images in bulk",
+        "description": "Downscale large photos and scans to a maximum width and save them as JPG — keeps aspect ratio and EXIF orientation.",
+        "samples": [
+          "image-en.png",
+          "photo-sample.heic"
+        ],
+        "input": {
+          "outputFormat": "jpg",
+          "maxWidth": 800,
+          "zipAll": true
+        },
+        "fields": [
+          "sources",
+          "maxWidth",
+          "zipAll"
+        ]
+      }
     ],
-    "input": {
-     "ocrLanguages": [
-      "rus",
-      "eng"
-     ]
-    },
-    "fields": [
-     "sources",
-     "ocrLanguages"
-    ]
-   },
-   {
-    "name": "scanned-pdf-to-markdown",
-    "title": "Convert scanned PDF to Markdown with OCR",
-    "description": "OCR scanned and photographed PDF pages into Markdown. Pages that already have a text layer are read directly and billed as cheap text pages.",
-    "samples": [
-     "scan-en.pdf",
-     "scan-noisy-en.pdf"
+    "tTTOPBHdN4zAQBFNq": [
+      {
+        "name": "transcribe-ukrainian-audio",
+        "title": "Transcribe Ukrainian audio to text",
+        "description": "Speech-to-text for Ukrainian recordings with Whisper large-v3: interviews, voice messages, meetings. Text, timestamps and SRT subtitles.",
+        "samples": [
+          "speech-uk.mp3"
+        ],
+        "input": {
+          "language": "uk",
+          "quality": "accurate"
+        },
+        "fields": [
+          "sources",
+          "language",
+          "vocabulary"
+        ]
+      },
+      {
+        "name": "mp3-to-text",
+        "title": "Convert MP3 to text",
+        "description": "Turn MP3 recordings into a clean transcript with timestamped segments. Language is detected automatically.",
+        "samples": [
+          "speech-en.mp3"
+        ],
+        "input": {},
+        "fields": [
+          "sources",
+          "language"
+        ]
+      },
+      {
+        "name": "mp4-video-to-text",
+        "title": "Transcribe MP4 video to text",
+        "description": "Extract the speech from MP4, MOV or WebM videos and get the transcript with timestamps — no manual audio extraction needed.",
+        "samples": [
+          "video-en.mp4"
+        ],
+        "input": {},
+        "fields": [
+          "sources",
+          "language"
+        ]
+      },
+      {
+        "name": "generate-srt-subtitles",
+        "title": "Generate SRT subtitles from video",
+        "description": "Create SRT and WebVTT subtitle files for your videos automatically with Whisper large-v3, in 99 languages.",
+        "samples": [
+          "video-en.mp4"
+        ],
+        "input": {
+          "subtitles": true
+        },
+        "fields": [
+          "sources",
+          "language",
+          "subtitles"
+        ]
+      },
+      {
+        "name": "meeting-recording-transcription",
+        "title": "Transcribe meeting recordings",
+        "description": "Transcribe Zoom, Teams or Google Meet recordings of any length — long files are split and stitched with continuous timestamps.",
+        "samples": [
+          "speech-en.mp3"
+        ],
+        "input": {
+          "quality": "accurate"
+        },
+        "fields": [
+          "sources",
+          "language",
+          "vocabulary"
+        ]
+      },
+      {
+        "name": "podcast-transcription",
+        "title": "Podcast transcription to text and subtitles",
+        "description": "Get full podcast transcripts and subtitle files for show notes, SEO and accessibility. Add guest names as a vocabulary hint.",
+        "samples": [
+          "speech-en.mp3"
+        ],
+        "input": {
+          "vocabulary": "Lviv"
+        },
+        "fields": [
+          "sources",
+          "vocabulary"
+        ]
+      },
+      {
+        "name": "interview-transcription",
+        "title": "Transcribe interviews to text",
+        "description": "Accurate interview transcripts with timestamps for journalists and researchers — English, Ukrainian, Polish, German and 95+ more languages.",
+        "samples": [
+          "speech-uk.mp3"
+        ],
+        "input": {
+          "language": "uk"
+        },
+        "fields": [
+          "sources",
+          "language",
+          "vocabulary"
+        ]
+      },
+      {
+        "name": "lecture-to-text",
+        "title": "Convert lecture recordings to text",
+        "description": "Turn lectures, webinars and courses into searchable text and subtitles for study notes and LLM summaries.",
+        "samples": [
+          "speech-en.mp3"
+        ],
+        "input": {},
+        "fields": [
+          "sources",
+          "language"
+        ]
+      },
+      {
+        "name": "webvtt-subtitles-for-web-video",
+        "title": "Create WebVTT subtitles for web video",
+        "description": "WebVTT captions for HTML5 video players, plus SRT for editors — generated from any audio or video file.",
+        "samples": [
+          "video-en.mp4"
+        ],
+        "input": {
+          "subtitles": true
+        },
+        "fields": [
+          "sources",
+          "subtitles"
+        ]
+      },
+      {
+        "name": "fast-speech-to-text",
+        "title": "Fast speech to text with Whisper turbo",
+        "description": "Quick transcripts with Whisper large-v3-turbo at the same price — ideal for English voice notes and short clips.",
+        "samples": [
+          "speech-en.mp3"
+        ],
+        "input": {
+          "quality": "fast"
+        },
+        "fields": [
+          "sources",
+          "quality"
+        ]
+      }
     ],
-    "input": {
-     "ocrMode": "auto"
-    },
-    "fields": [
-     "sources",
-     "ocrMode",
-     "ocrLanguages"
-    ]
-   },
-   {
-    "name": "pdf-to-rag-chunks",
-    "title": "Split PDF into RAG chunks for vector databases",
-    "description": "Convert PDFs to Markdown and split them into chunks with their nearest heading — ready for embeddings, vector databases and LLM retrieval (RAG).",
-    "samples": [
-     "text-3p-en.pdf"
+    "lcAfhM4QO9m0EPyjq": [
+      {
+        "name": "ocr-image-to-text",
+        "title": "Image to text (OCR)",
+        "description": "Extract text from screenshots, photos of documents and scans — plain text plus every line with confidence.",
+        "samples": [
+          "image-en.png"
+        ],
+        "input": {
+          "languages": [
+            "eng"
+          ]
+        },
+        "fields": [
+          "sources",
+          "languages"
+        ]
+      },
+      {
+        "name": "ocr-ukrainian-images",
+        "title": "OCR Ukrainian images and scans",
+        "description": "Recognise Ukrainian (Cyrillic) text in images and scanned PDFs — documents, certificates, letters.",
+        "samples": [
+          "image-uk.png",
+          "scan-noisy-uk.pdf"
+        ],
+        "input": {
+          "languages": [
+            "ukr",
+            "eng"
+          ]
+        },
+        "fields": [
+          "sources",
+          "languages"
+        ]
+      },
+      {
+        "name": "ocr-russian-images",
+        "title": "OCR Russian images to text",
+        "description": "Extract Russian text from images and scans with line confidence and bounding boxes.",
+        "samples": [
+          "image-ru.png"
+        ],
+        "input": {
+          "languages": [
+            "rus",
+            "eng"
+          ]
+        },
+        "fields": [
+          "sources",
+          "languages"
+        ]
+      },
+      {
+        "name": "scanned-pdf-to-text-ocr",
+        "title": "Scanned PDF to text (OCR)",
+        "description": "OCR every page of a scanned PDF and get text per page — choose pages like 1-3,5.",
+        "samples": [
+          "scan-en.pdf"
+        ],
+        "input": {
+          "languages": [
+            "eng"
+          ]
+        },
+        "fields": [
+          "sources",
+          "languages",
+          "pages"
+        ]
+      },
+      {
+        "name": "ocr-words-bounding-boxes",
+        "title": "OCR with word bounding boxes",
+        "description": "Every word with its confidence and pixel box — for highlighting, redaction and data extraction.",
+        "samples": [
+          "image-en.png"
+        ],
+        "input": {
+          "languages": [
+            "eng"
+          ],
+          "includeWords": true
+        },
+        "fields": [
+          "sources",
+          "languages",
+          "includeWords"
+        ]
+      },
+      {
+        "name": "ocr-receipts-screenshots",
+        "title": "OCR receipts and screenshots",
+        "description": "Read scattered text from receipts, screenshots and signs with the sparse-text layout.",
+        "samples": [
+          "image-en.png"
+        ],
+        "input": {
+          "languages": [
+            "eng"
+          ],
+          "layout": "sparse"
+        },
+        "fields": [
+          "sources",
+          "languages",
+          "layout"
+        ]
+      },
+      {
+        "name": "ocr-rotated-scans",
+        "title": "OCR rotated or upside-down scans",
+        "description": "Auto-detect page orientation and fix it before OCR — for scans fed in sideways.",
+        "samples": [
+          "scan-en.pdf"
+        ],
+        "input": {
+          "languages": [
+            "eng"
+          ],
+          "autoRotate": true
+        },
+        "fields": [
+          "sources",
+          "languages",
+          "autoRotate"
+        ]
+      },
+      {
+        "name": "ocr-multipage-tiff",
+        "title": "OCR multi-page TIFF",
+        "description": "Recognise text on every frame of multi-page TIFF files from scanners and fax.",
+        "samples": [
+          "multi-frame.tiff"
+        ],
+        "input": {
+          "languages": [
+            "eng"
+          ]
+        },
+        "fields": [
+          "sources",
+          "languages",
+          "pages"
+        ]
+      },
+      {
+        "name": "ocr-iphone-heic-photos",
+        "title": "OCR iPhone HEIC photos",
+        "description": "Extract text from iPhone HEIC photos of documents without converting them first.",
+        "samples": [
+          "photo-sample.heic"
+        ],
+        "input": {
+          "languages": [
+            "eng"
+          ]
+        },
+        "fields": [
+          "sources",
+          "languages"
+        ]
+      },
+      {
+        "name": "bulk-ocr-images",
+        "title": "Bulk OCR for many images",
+        "description": "OCR hundreds of image URLs in one run — one result per image, pay per image.",
+        "samples": [
+          "image-en.png",
+          "image-uk.png",
+          "image-ru.png"
+        ],
+        "input": {
+          "languages": [
+            "eng",
+            "ukr",
+            "rus"
+          ]
+        },
+        "fields": [
+          "sources",
+          "languages"
+        ]
+      }
     ],
-    "input": {
-     "chunkSize": 1000
-    },
-    "fields": [
-     "sources",
-     "chunkSize"
-    ]
-   },
-   {
-    "name": "word-docx-to-markdown",
-    "title": "Convert Word DOCX to Markdown",
-    "description": "Convert Word documents to clean Markdown with headings, lists and tables for LLM prompts, wikis and documentation sites.",
-    "samples": [
-     "doc-en.docx"
+    "oEbOsViJ6a0qEL1bp": [
+      {
+        "name": "ukrainian-text-to-speech",
+        "title": "Ukrainian text to speech (MP3)",
+        "description": "Natural Ukrainian neural voice: turn text into MP3 with synchronized SRT subtitles. Three Ukrainian voices.",
+        "input": {
+          "text": "Привіт! Це природний нейронний голос, який читає статті, документи та книжки українською мовою.",
+          "voice": "uk_UA-tetiana-high"
+        },
+        "fields": [
+          "text",
+          "voice",
+          "format"
+        ]
+      },
+      {
+        "name": "ukrainian-male-voice-tts",
+        "title": "Ukrainian male voice text to speech",
+        "description": "Read Ukrainian text aloud with a male neural voice and get MP3 plus subtitles — for videos, audiobooks and accessibility.",
+        "input": {
+          "text": "Привіт! Це природний нейронний голос, який читає статті, документи та книжки українською мовою.",
+          "voice": "uk_UA-mykyta-high"
+        },
+        "fields": [
+          "text",
+          "voice",
+          "speed"
+        ]
+      },
+      {
+        "name": "english-text-to-speech-mp3",
+        "title": "English text to speech MP3",
+        "description": "Convert English text into natural MP3 audio with SRT subtitles: articles, scripts, lessons. Several US and UK voices.",
+        "input": {
+          "text": "Hello! This neural voice reads your articles, documents and books aloud.",
+          "voice": "en_US-ljspeech-high"
+        },
+        "fields": [
+          "text",
+          "voice",
+          "format"
+        ]
+      },
+      {
+        "name": "pdf-to-audiobook-mp3",
+        "title": "PDF to audiobook (MP3)",
+        "description": "Turn a PDF into an audiobook: the text is extracted and read aloud by a neural voice, with subtitles for every sentence.",
+        "samples": [
+          "text-en.pdf"
+        ],
+        "input": {
+          "voice": "en_US-john-medium"
+        },
+        "fields": [
+          "sources",
+          "voice",
+          "speed"
+        ]
+      },
+      {
+        "name": "docx-to-speech-ukrainian",
+        "title": "Word document (DOCX) to speech in Ukrainian",
+        "description": "Listen to Ukrainian Word documents: DOCX is converted to MP3 with a natural Ukrainian voice and SRT subtitles.",
+        "samples": [
+          "doc-uk.docx"
+        ],
+        "input": {
+          "voice": "uk_UA-tetiana-high"
+        },
+        "fields": [
+          "sources",
+          "voice"
+        ]
+      },
+      {
+        "name": "russian-text-to-speech",
+        "title": "Russian text to speech (MP3)",
+        "description": "Russian neural voice: convert text to MP3 audio with timed subtitles.",
+        "input": {
+          "text": "Привет! Этот голос читает статьи, документы и книги вслух.",
+          "voice": "ru_RU-denis-medium"
+        },
+        "fields": [
+          "text",
+          "voice"
+        ]
+      },
+      {
+        "name": "german-text-to-speech",
+        "title": "German text to speech (MP3)",
+        "description": "German neural voice (Thorsten): text to MP3 with SRT subtitles, for lessons, videos and announcements.",
+        "input": {
+          "text": "Hallo! Diese Stimme liest Artikel, Dokumente und Bücher vor.",
+          "voice": "de_DE-thorsten-high"
+        },
+        "fields": [
+          "text",
+          "voice"
+        ]
+      },
+      {
+        "name": "text-to-speech-with-srt-subtitles",
+        "title": "Text to speech with SRT subtitles",
+        "description": "Get voice-over audio and matching SRT subtitles in one run: ready for YouTube, TikTok and e-learning videos.",
+        "input": {
+          "text": "Welcome to our channel. Today we explain how it works.",
+          "voice": "en_US-john-medium",
+          "subtitles": true
+        },
+        "fields": [
+          "text",
+          "voice",
+          "subtitles"
+        ]
+      },
+      {
+        "name": "polish-text-to-speech",
+        "title": "Polish text to speech (MP3)",
+        "description": "Polish neural voice: convert text into MP3 with subtitles.",
+        "input": {
+          "text": "Cześć! Ten głos czyta artykuły, dokumenty i książki.",
+          "voice": "pl_PL-gosia-medium"
+        },
+        "fields": [
+          "text",
+          "voice"
+        ]
+      },
+      {
+        "name": "web-page-to-speech",
+        "title": "Web page article to speech",
+        "description": "Listen to web articles: the page text is extracted and read aloud as MP3 with subtitles.",
+        "samples": [
+          "page-en.html"
+        ],
+        "input": {
+          "voice": "en_US-john-medium"
+        },
+        "fields": [
+          "sources",
+          "voice",
+          "speed"
+        ]
+      }
     ],
-    "input": {},
-    "fields": [
-     "sources"
-    ]
-   },
-   {
-    "name": "excel-xlsx-to-json",
-    "title": "Convert Excel XLSX sheets to JSON and Markdown",
-    "description": "Read every sheet of an Excel workbook as JSON rows and Markdown tables. Text cells stay exactly as typed, numbers follow the cell format.",
-    "samples": [
-     "sheet-en.xlsx"
+    "9qKqnDJhNhXyABJ3T": [
+      {
+        "name": "full-page-website-screenshot",
+        "title": "Full-page website screenshot (PNG)",
+        "description": "Capture the whole page top to bottom as PNG, with cookie banners hidden and lazy images loaded.",
+        "input": {
+          "urls": [
+            {
+              "url": "https://example.com"
+            }
+          ],
+          "fullPage": true
+        },
+        "fields": [
+          "urls",
+          "fullPage",
+          "format"
+        ]
+      },
+      {
+        "name": "mobile-website-screenshot",
+        "title": "Mobile website screenshot",
+        "description": "See a page as phones do: iPhone and Android viewports, full page, PNG/JPEG/WebP.",
+        "input": {
+          "urls": [
+            {
+              "url": "https://example.com"
+            }
+          ],
+          "device": "mobile"
+        },
+        "fields": [
+          "urls",
+          "device",
+          "fullPage"
+        ]
+      },
+      {
+        "name": "url-to-pdf",
+        "title": "Convert URL to PDF",
+        "description": "Save any web page as a PDF document: A4/Letter, margins, landscape, print or screen styles.",
+        "input": {
+          "urls": [
+            {
+              "url": "https://example.com"
+            }
+          ],
+          "format": "pdf"
+        },
+        "fields": [
+          "urls",
+          "format",
+          "pdfFormat",
+          "pdfLandscape"
+        ]
+      },
+      {
+        "name": "html-code-to-pdf-chrome",
+        "title": "Convert HTML code to PDF (Chrome rendering)",
+        "description": "Render your own HTML (invoices, reports, tickets) into a PDF without a browser on your side.",
+        "input": {
+          "urls": [],
+          "html": "<h1>Invoice #1001</h1><p>Total: 120 EUR</p>",
+          "format": "pdf"
+        },
+        "fields": [
+          "html",
+          "format",
+          "pdfFormat",
+          "css"
+        ]
+      },
+      {
+        "name": "html-to-image",
+        "title": "Convert HTML to image (PNG)",
+        "description": "Turn an HTML snippet into a PNG image: social cards, banners, charts, email previews.",
+        "input": {
+          "urls": [],
+          "html": "<div style=\"font:48px sans-serif;padding:40px\">Hello, world</div>",
+          "fullPage": true
+        },
+        "fields": [
+          "html",
+          "format",
+          "viewportWidth"
+        ]
+      },
+      {
+        "name": "bulk-website-screenshots",
+        "title": "Bulk website screenshots",
+        "description": "Screenshot a list of URLs in one run: one image per page in the key-value store, failed pages free.",
+        "input": {
+          "urls": [
+            {
+              "url": "https://example.com"
+            },
+            {
+              "url": "https://example.org"
+            }
+          ]
+        },
+        "fields": [
+          "urls",
+          "format",
+          "device"
+        ]
+      },
+      {
+        "name": "element-screenshot-css-selector",
+        "title": "Screenshot of a page element (CSS selector)",
+        "description": "Capture just one element of a page: a chart, a price box, a widget — by CSS selector.",
+        "input": {
+          "urls": [
+            {
+              "url": "https://example.com"
+            }
+          ],
+          "selector": "body > p"
+        },
+        "fields": [
+          "urls",
+          "selector",
+          "format"
+        ]
+      },
+      {
+        "name": "dark-mode-website-screenshot",
+        "title": "Dark mode website screenshot",
+        "description": "Capture pages with prefers-color-scheme: dark for previews and design checks.",
+        "input": {
+          "urls": [
+            {
+              "url": "https://example.com"
+            }
+          ],
+          "darkMode": true
+        },
+        "fields": [
+          "urls",
+          "darkMode",
+          "device"
+        ]
+      },
+      {
+        "name": "website-thumbnail-jpeg",
+        "title": "Website thumbnail (JPEG)",
+        "description": "Small, compressed JPEG previews of web pages for directories, link previews and dashboards.",
+        "input": {
+          "urls": [
+            {
+              "url": "https://example.com"
+            }
+          ],
+          "format": "jpeg",
+          "fullPage": false,
+          "quality": 70
+        },
+        "fields": [
+          "urls",
+          "format",
+          "quality",
+          "viewportWidth"
+        ]
+      },
+      {
+        "name": "tablet-website-screenshot",
+        "title": "Tablet website screenshot",
+        "description": "See pages on a tablet viewport (iPad-sized), full page or first screen.",
+        "input": {
+          "urls": [
+            {
+              "url": "https://example.com"
+            }
+          ],
+          "device": "tablet"
+        },
+        "fields": [
+          "urls",
+          "device",
+          "fullPage"
+        ]
+      }
     ],
-    "input": {
-     "includeTables": true
-    },
-    "fields": [
-     "sources",
-     "includeTables"
-    ]
-   },
-   {
-    "name": "powerpoint-pptx-to-text",
-    "title": "Extract text from PowerPoint PPTX slides",
-    "description": "Get slide titles, bullet points and tables from PowerPoint presentations as Markdown, one section per slide.",
-    "samples": [
-     "slides-en.pptx"
+    "Shg1h0yVMsZRc6w0x": [
+      {
+        "name": "bulk-whois-lookup",
+        "title": "Bulk WHOIS lookup",
+        "description": "Registrar, creation and expiry dates and status for many domains at once (RDAP with WHOIS fallback).",
+        "input": {
+          "domains": [
+            "example.com",
+            "wikipedia.org"
+          ],
+          "dns": false,
+          "ssl": false
+        },
+        "fields": [
+          "domains",
+          "whois"
+        ]
+      },
+      {
+        "name": "domain-expiry-checker",
+        "title": "Domain expiry date checker",
+        "description": "See when your domains expire and how many days are left — export to CSV, schedule weekly.",
+        "input": {
+          "domains": [
+            "example.com",
+            "github.com"
+          ],
+          "dns": false,
+          "ssl": false
+        },
+        "fields": [
+          "domains"
+        ]
+      },
+      {
+        "name": "ssl-certificate-expiry-checker",
+        "title": "SSL certificate expiry checker",
+        "description": "Check SSL/TLS certificates of many sites: issuer, valid-to date, days left, hostname match.",
+        "input": {
+          "domains": [
+            "example.com",
+            "github.com"
+          ],
+          "whois": false,
+          "dns": false
+        },
+        "fields": [
+          "domains",
+          "ssl"
+        ]
+      },
+      {
+        "name": "bulk-dns-lookup",
+        "title": "Bulk DNS lookup (A, MX, NS, TXT)",
+        "description": "DNS records for many domains in one run: A, AAAA, MX, NS, TXT, CNAME, SOA.",
+        "input": {
+          "domains": [
+            "example.com",
+            "github.com"
+          ],
+          "whois": false,
+          "ssl": false
+        },
+        "fields": [
+          "domains",
+          "dns"
+        ]
+      },
+      {
+        "name": "mx-records-email-provider-check",
+        "title": "MX records check: email provider of domains",
+        "description": "Find which email provider each domain uses from its MX records — for lead lists and deliverability.",
+        "input": {
+          "domains": [
+            "github.com",
+            "wikipedia.org"
+          ],
+          "whois": false,
+          "ssl": false
+        },
+        "fields": [
+          "domains",
+          "dns"
+        ]
+      },
+      {
+        "name": "domain-registrar-lookup",
+        "title": "Domain registrar lookup",
+        "description": "Which registrar holds each domain, with registration dates and nameservers.",
+        "input": {
+          "domains": [
+            "example.com",
+            "apify.com"
+          ],
+          "ssl": false
+        },
+        "fields": [
+          "domains",
+          "whois",
+          "dns"
+        ]
+      },
+      {
+        "name": "spf-dmarc-txt-records-check",
+        "title": "SPF and DMARC TXT records check",
+        "description": "Read TXT records of many domains to see SPF and verification records for email security audits.",
+        "input": {
+          "domains": [
+            "github.com",
+            "apify.com"
+          ],
+          "whois": false,
+          "ssl": false
+        },
+        "fields": [
+          "domains",
+          "dns"
+        ]
+      },
+      {
+        "name": "domain-portfolio-monitor",
+        "title": "Domain portfolio monitor",
+        "description": "WHOIS, DNS and SSL of your whole portfolio in one table: expiry dates, nameservers, certificate days left.",
+        "input": {
+          "domains": [
+            "example.com",
+            "example.org",
+            "example.net"
+          ]
+        },
+        "fields": [
+          "domains",
+          "whois",
+          "dns",
+          "ssl"
+        ]
+      },
+      {
+        "name": "ukrainian-domains-ua-check",
+        "title": "Check .ua domains (WHOIS, DNS, SSL)",
+        "description": "Bulk checks for Ukrainian .ua and .com.ua domains: registration, DNS and certificate status.",
+        "input": {
+          "domains": [
+            "gov.ua",
+            "prozorro.gov.ua"
+          ]
+        },
+        "fields": [
+          "domains",
+          "whois",
+          "dns",
+          "ssl"
+        ]
+      },
+      {
+        "name": "nameserver-lookup-bulk",
+        "title": "Bulk nameserver (NS) lookup",
+        "description": "Nameservers of many domains — find the DNS hosting provider (Cloudflare, Route 53, etc.).",
+        "input": {
+          "domains": [
+            "github.com",
+            "wikipedia.org"
+          ],
+          "whois": false,
+          "ssl": false
+        },
+        "fields": [
+          "domains",
+          "dns"
+        ]
+      }
     ],
-    "input": {},
-    "fields": [
-     "sources"
+    "KVtLbTPknEOj0543A": [
+      {
+        "name": "video-thumbnails-extractor",
+        "title": "Extract thumbnails from video",
+        "description": "Get evenly spaced thumbnail frames from MP4, MOV and WebM plus a free contact sheet.",
+        "samples": [
+          "video-en.mp4"
+        ],
+        "input": {
+          "mode": "count",
+          "frameCount": 6
+        },
+        "fields": [
+          "sources",
+          "mode",
+          "frameCount"
+        ]
+      },
+      {
+        "name": "video-scene-detection-frames",
+        "title": "Detect scene changes and extract frames",
+        "description": "One frame per scene change with its timecode — for storyboards, indexing and AI video analysis.",
+        "samples": [
+          "video-en.mp4"
+        ],
+        "input": {
+          "mode": "scenes"
+        },
+        "fields": [
+          "sources",
+          "mode",
+          "sceneThreshold"
+        ]
+      },
+      {
+        "name": "video-keyframes-extractor",
+        "title": "Extract keyframes (I-frames) from video",
+        "description": "Extract the encoder keyframes of a video quickly, with exact timestamps.",
+        "samples": [
+          "video-en.mp4"
+        ],
+        "input": {
+          "mode": "keyframes"
+        },
+        "fields": [
+          "sources",
+          "mode",
+          "maxFramesPerVideo"
+        ]
+      },
+      {
+        "name": "video-frame-every-n-seconds",
+        "title": "Extract a frame every N seconds",
+        "description": "A frame every 1, 5 or 10 seconds with timecodes — for monitoring, datasets and visual QA.",
+        "samples": [
+          "video-en.mp4"
+        ],
+        "input": {
+          "mode": "interval",
+          "intervalSeconds": 5
+        },
+        "fields": [
+          "sources",
+          "mode",
+          "intervalSeconds"
+        ]
+      },
+      {
+        "name": "video-frames-at-timestamps",
+        "title": "Extract frames at exact timestamps",
+        "description": "Grab frames at the exact times you list (seconds or hh:mm:ss) as JPG, PNG or WebP.",
+        "samples": [
+          "video-en.mp4"
+        ],
+        "input": {
+          "mode": "timestamps",
+          "timestamps": [
+            "00:00:01",
+            "00:00:03"
+          ]
+        },
+        "fields": [
+          "sources",
+          "mode",
+          "timestamps"
+        ]
+      },
+      {
+        "name": "video-contact-sheet",
+        "title": "Video contact sheet (preview grid)",
+        "description": "A single preview grid of a video: quickly see what is inside without watching it.",
+        "samples": [
+          "video-en.mp4"
+        ],
+        "input": {
+          "mode": "count",
+          "frameCount": 12,
+          "contactSheet": true
+        },
+        "fields": [
+          "sources",
+          "frameCount",
+          "contactSheet"
+        ]
+      },
+      {
+        "name": "video-to-png-frames",
+        "title": "Convert video to PNG frames",
+        "description": "Lossless PNG frames from video for editing, annotation and machine-learning datasets.",
+        "samples": [
+          "video-en.mp4"
+        ],
+        "input": {
+          "mode": "count",
+          "frameCount": 6,
+          "format": "png"
+        },
+        "fields": [
+          "sources",
+          "mode",
+          "format"
+        ]
+      },
+      {
+        "name": "video-frames-for-ai-vision",
+        "title": "Video frames for AI vision models",
+        "description": "Prepare compact WebP frames with timecodes to feed GPT, Claude or Gemini vision for video understanding.",
+        "samples": [
+          "video-en.mp4"
+        ],
+        "input": {
+          "mode": "scenes",
+          "format": "webp",
+          "maxWidth": 768
+        },
+        "fields": [
+          "sources",
+          "mode",
+          "format",
+          "maxWidth"
+        ]
+      },
+      {
+        "name": "youtube-style-thumbnail-candidates",
+        "title": "Pick thumbnail candidates from a video",
+        "description": "Candidate cover frames from your own video files for YouTube, courses and social posts.",
+        "samples": [
+          "video-en.mp4"
+        ],
+        "input": {
+          "mode": "count",
+          "frameCount": 10,
+          "format": "jpg"
+        },
+        "fields": [
+          "sources",
+          "frameCount",
+          "format"
+        ]
+      },
+      {
+        "name": "small-video-frames-webp",
+        "title": "Small WebP frames from video",
+        "description": "Resized lightweight WebP frames (max width) for web galleries and previews.",
+        "samples": [
+          "video-en.mp4"
+        ],
+        "input": {
+          "mode": "count",
+          "frameCount": 8,
+          "format": "webp",
+          "maxWidth": 480
+        },
+        "fields": [
+          "sources",
+          "format",
+          "maxWidth"
+        ]
+      }
     ]
-   },
-   {
-    "name": "legacy-doc-xls-ppt-to-markdown",
-    "title": "Convert old DOC, XLS, PPT and RTF files to Markdown",
-    "description": "Legacy Microsoft Office and OpenDocument files (DOC, XLS, PPT, RTF, ODT) converted to Markdown and JSON tables — no Office installation needed.",
-    "samples": [
-     "legacy-doc-uk.doc",
-     "legacy-sheet-uk.xls",
-     "legacy-slides-uk.ppt",
-     "legacy-doc-en.rtf"
-    ],
-    "input": {},
-    "fields": [
-     "sources"
-    ]
-   },
-   {
-    "name": "image-ocr-to-text",
-    "title": "Extract text from images (PNG, JPG, TIFF) with OCR",
-    "description": "OCR text from screenshots, photos and scanned images in 11 languages, including Ukrainian and Russian, and get it as Markdown.",
-    "samples": [
-     "image-en.png"
-    ],
-    "input": {
-     "ocrLanguages": [
-      "eng"
-     ]
-    },
-    "fields": [
-     "sources",
-     "ocrLanguages"
-    ]
-   }
-  ],
-  "gwRuM7Y7jiidFkCRC": [
-   {
-    "name": "word-docx-to-pdf",
-    "title": "Convert Word DOCX to PDF in bulk",
-    "description": "Convert Word documents to PDF in bulk with a download link for every file. Layout is kept with Calibri/Cambria-compatible fonts.",
-    "samples": [
-     "doc-en.docx"
-    ],
-    "input": {},
-    "fields": [
-     "sources"
-    ]
-   },
-   {
-    "name": "docx-to-pdf-a-archive",
-    "title": "Convert DOCX to PDF/A for archives and e-filing",
-    "description": "Produce PDF/A-2b files from Word documents — the archival format required by courts, tax portals and document archives.",
-    "samples": [
-     "doc-en.docx"
-    ],
-    "input": {
-     "pdfA": true
-    },
-    "fields": [
-     "sources",
-     "pdfA"
-    ]
-   },
-   {
-    "name": "excel-xlsx-to-pdf",
-    "title": "Convert Excel XLSX to PDF",
-    "description": "Turn Excel workbooks, price lists and reports into PDF files, all sheets included, with a download link per file.",
-    "samples": [
-     "sheet-en.xlsx"
-    ],
-    "input": {},
-    "fields": [
-     "sources"
-    ]
-   },
-   {
-    "name": "powerpoint-pptx-to-pdf",
-    "title": "Convert PowerPoint PPTX to PDF",
-    "description": "Convert PowerPoint presentations to PDF handouts in bulk — one page per slide, ready to share or print.",
-    "samples": [
-     "slides-en.pptx"
-    ],
-    "input": {},
-    "fields": [
-     "sources"
-    ]
-   },
-   {
-    "name": "html-to-pdf",
-    "title": "Convert HTML files to PDF",
-    "description": "Render HTML documents and saved web pages to PDF with LibreOffice — simple, fast and without a browser.",
-    "samples": [
-     "page-en.html"
-    ],
-    "input": {},
-    "fields": [
-     "sources"
-    ]
-   },
-   {
-    "name": "merge-office-files-into-one-pdf",
-    "title": "Merge Word, Excel and PowerPoint files into one PDF",
-    "description": "Convert a set of DOCX, XLSX and PPTX files and merge them into a single PDF in the given order, plus a separate PDF of each file.",
-    "samples": [
-     "doc-en.docx",
-     "sheet-en.xlsx",
-     "slides-en.pptx"
-    ],
-    "input": {
-     "mergeIntoOne": true
-    },
-    "fields": [
-     "sources",
-     "mergeIntoOne"
-    ]
-   },
-   {
-    "name": "legacy-doc-to-pdf",
-    "title": "Convert old Word DOC files to PDF",
-    "description": "Convert legacy Word 97-2003 .doc files to PDF without Microsoft Office. Damaged files are reported and not charged.",
-    "samples": [
-     "legacy-doc-uk.doc"
-    ],
-    "input": {},
-    "fields": [
-     "sources"
-    ]
-   },
-   {
-    "name": "odt-opendocument-to-pdf",
-    "title": "Convert OpenDocument ODT, ODS, ODP to PDF",
-    "description": "Convert LibreOffice and OpenOffice documents, spreadsheets and presentations (ODT, ODS, ODP) to PDF or PDF/A.",
-    "samples": [
-     "legacy-doc-uk.odt"
-    ],
-    "input": {},
-    "fields": [
-     "sources",
-     "pdfA"
-    ]
-   },
-   {
-    "name": "images-to-pdf",
-    "title": "Convert images (PNG, JPG, TIFF) to PDF",
-    "description": "Wrap scans, photos and screenshots into PDF files — or one merged PDF — with a download link for each.",
-    "samples": [
-     "image-en.png",
-     "image-uk.png"
-    ],
-    "input": {},
-    "fields": [
-     "sources",
-     "mergeIntoOne"
-    ]
-   },
-   {
-    "name": "rtf-to-pdf",
-    "title": "Convert RTF documents to PDF",
-    "description": "Convert Rich Text Format (RTF) documents to PDF or archival PDF/A in bulk.",
-    "samples": [
-     "legacy-doc-en.rtf"
-    ],
-    "input": {},
-    "fields": [
-     "sources",
-     "pdfA"
-    ]
-   }
-  ],
-  "l9zg7OIxw7cNXE8Fx": [
-   {
-    "name": "pdf-to-png",
-    "title": "Convert PDF pages to PNG images",
-    "description": "Render every PDF page to a PNG image at the resolution you choose, with a download link per page and an optional ZIP.",
-    "samples": [
-     "text-3p-en.pdf"
-    ],
-    "input": {
-     "outputFormat": "png",
-     "dpi": 150
-    },
-    "fields": [
-     "sources",
-     "outputFormat",
-     "dpi",
-     "pages"
-    ]
-   },
-   {
-    "name": "pdf-to-jpg-300-dpi",
-    "title": "Convert PDF to high-quality JPG (300 DPI)",
-    "description": "Print-quality JPG images from PDF pages at 300 DPI — for catalogs, brochures and scanned documents.",
-    "samples": [
-     "text-uk.pdf"
-    ],
-    "input": {
-     "outputFormat": "jpg",
-     "dpi": 300,
-     "quality": 92
-    },
-    "fields": [
-     "sources",
-     "dpi",
-     "quality"
-    ]
-   },
-   {
-    "name": "pdf-thumbnails",
-    "title": "Create PDF page thumbnails",
-    "description": "Small WebP thumbnails of PDF pages (72 DPI, max 400 px wide) for previews, galleries and document lists.",
-    "samples": [
-     "text-3p-en.pdf"
-    ],
-    "input": {
-     "outputFormat": "webp",
-     "dpi": 72,
-     "maxWidth": 400
-    },
-    "fields": [
-     "sources",
-     "maxWidth",
-     "pages"
-    ]
-   },
-   {
-    "name": "pdf-first-page-preview",
-    "title": "Get the first page of a PDF as an image",
-    "description": "Render only page 1 of each PDF to PNG — cover images and previews for a whole list of documents in one run.",
-    "samples": [
-     "text-3p-en.pdf",
-     "scan-en.pdf"
-    ],
-    "input": {
-     "outputFormat": "png",
-     "pages": "1"
-    },
-    "fields": [
-     "sources",
-     "pages"
-    ]
-   },
-   {
-    "name": "heic-to-jpg",
-    "title": "Convert iPhone HEIC photos to JPG",
-    "description": "Turn iPhone HEIC/HEIF photos into widely compatible JPG files in bulk, with EXIF rotation applied and optional resizing.",
-    "samples": [
-     "photo-sample.heic"
-    ],
-    "input": {
-     "outputFormat": "jpg",
-     "quality": 90
-    },
-    "fields": [
-     "sources",
-     "quality",
-     "maxWidth"
-    ]
-   },
-   {
-    "name": "images-to-one-pdf",
-    "title": "Merge images into one PDF",
-    "description": "Combine photos, scans and screenshots (JPG, PNG, HEIC, TIFF) into a single PDF in the given order, plus one PDF per image.",
-    "samples": [
-     "image-en.png",
-     "photo-sample.heic",
-     "multi-frame.tiff"
-    ],
-    "input": {
-     "outputFormat": "pdf",
-     "mergeImagesIntoOnePdf": true
-    },
-    "fields": [
-     "sources",
-     "mergeImagesIntoOnePdf"
-    ]
-   },
-   {
-    "name": "png-to-webp",
-    "title": "Convert PNG and JPG images to WebP",
-    "description": "Shrink images for the web: convert PNG and JPG to WebP with adjustable quality and optional max width.",
-    "samples": [
-     "image-en.png"
-    ],
-    "input": {
-     "outputFormat": "webp",
-     "quality": 80
-    },
-    "fields": [
-     "sources",
-     "quality",
-     "maxWidth"
-    ]
-   },
-   {
-    "name": "multi-page-tiff-to-png",
-    "title": "Split multi-page TIFF into PNG images",
-    "description": "Extract every frame of multi-page TIFF files (fax, scanner output) as separate PNG images.",
-    "samples": [
-     "multi-frame.tiff"
-    ],
-    "input": {
-     "outputFormat": "png"
-    },
-    "fields": [
-     "sources",
-     "outputFormat"
-    ]
-   },
-   {
-    "name": "pdf-to-webp",
-    "title": "Convert PDF pages to WebP",
-    "description": "Lightweight WebP images of PDF pages for websites and apps — choose DPI, pages and quality.",
-    "samples": [
-     "text-3p-en.pdf"
-    ],
-    "input": {
-     "outputFormat": "webp",
-     "dpi": 120,
-     "quality": 80
-    },
-    "fields": [
-     "sources",
-     "dpi",
-     "quality",
-     "pages"
-    ]
-   },
-   {
-    "name": "resize-images-bulk",
-    "title": "Resize images in bulk",
-    "description": "Downscale large photos and scans to a maximum width and save them as JPG — keeps aspect ratio and EXIF orientation.",
-    "samples": [
-     "image-en.png",
-     "photo-sample.heic"
-    ],
-    "input": {
-     "outputFormat": "jpg",
-     "maxWidth": 800,
-     "zipAll": true
-    },
-    "fields": [
-     "sources",
-     "maxWidth",
-     "zipAll"
-    ]
-   }
-  ],
-  "tTTOPBHdN4zAQBFNq": [
-   {
-    "name": "transcribe-ukrainian-audio",
-    "title": "Transcribe Ukrainian audio to text",
-    "description": "Speech-to-text for Ukrainian recordings with Whisper large-v3: interviews, voice messages, meetings. Text, timestamps and SRT subtitles.",
-    "samples": [
-     "speech-uk.mp3"
-    ],
-    "input": {
-     "language": "uk",
-     "quality": "accurate"
-    },
-    "fields": [
-     "sources",
-     "language",
-     "vocabulary"
-    ]
-   },
-   {
-    "name": "mp3-to-text",
-    "title": "Convert MP3 to text",
-    "description": "Turn MP3 recordings into a clean transcript with timestamped segments. Language is detected automatically.",
-    "samples": [
-     "speech-en.mp3"
-    ],
-    "input": {},
-    "fields": [
-     "sources",
-     "language"
-    ]
-   },
-   {
-    "name": "mp4-video-to-text",
-    "title": "Transcribe MP4 video to text",
-    "description": "Extract the speech from MP4, MOV or WebM videos and get the transcript with timestamps — no manual audio extraction needed.",
-    "samples": [
-     "video-en.mp4"
-    ],
-    "input": {},
-    "fields": [
-     "sources",
-     "language"
-    ]
-   },
-   {
-    "name": "generate-srt-subtitles",
-    "title": "Generate SRT subtitles from video",
-    "description": "Create SRT and WebVTT subtitle files for your videos automatically with Whisper large-v3, in 99 languages.",
-    "samples": [
-     "video-en.mp4"
-    ],
-    "input": {
-     "subtitles": true
-    },
-    "fields": [
-     "sources",
-     "language",
-     "subtitles"
-    ]
-   },
-   {
-    "name": "meeting-recording-transcription",
-    "title": "Transcribe meeting recordings",
-    "description": "Transcribe Zoom, Teams or Google Meet recordings of any length — long files are split and stitched with continuous timestamps.",
-    "samples": [
-     "speech-en.mp3"
-    ],
-    "input": {
-     "quality": "accurate"
-    },
-    "fields": [
-     "sources",
-     "language",
-     "vocabulary"
-    ]
-   },
-   {
-    "name": "podcast-transcription",
-    "title": "Podcast transcription to text and subtitles",
-    "description": "Get full podcast transcripts and subtitle files for show notes, SEO and accessibility. Add guest names as a vocabulary hint.",
-    "samples": [
-     "speech-en.mp3"
-    ],
-    "input": {
-     "vocabulary": "Lviv"
-    },
-    "fields": [
-     "sources",
-     "vocabulary"
-    ]
-   },
-   {
-    "name": "interview-transcription",
-    "title": "Transcribe interviews to text",
-    "description": "Accurate interview transcripts with timestamps for journalists and researchers — English, Ukrainian, Polish, German and 95+ more languages.",
-    "samples": [
-     "speech-uk.mp3"
-    ],
-    "input": {
-     "language": "uk"
-    },
-    "fields": [
-     "sources",
-     "language",
-     "vocabulary"
-    ]
-   },
-   {
-    "name": "lecture-to-text",
-    "title": "Convert lecture recordings to text",
-    "description": "Turn lectures, webinars and courses into searchable text and subtitles for study notes and LLM summaries.",
-    "samples": [
-     "speech-en.mp3"
-    ],
-    "input": {},
-    "fields": [
-     "sources",
-     "language"
-    ]
-   },
-   {
-    "name": "webvtt-subtitles-for-web-video",
-    "title": "Create WebVTT subtitles for web video",
-    "description": "WebVTT captions for HTML5 video players, plus SRT for editors — generated from any audio or video file.",
-    "samples": [
-     "video-en.mp4"
-    ],
-    "input": {
-     "subtitles": true
-    },
-    "fields": [
-     "sources",
-     "subtitles"
-    ]
-   },
-   {
-    "name": "fast-speech-to-text",
-    "title": "Fast speech to text with Whisper turbo",
-    "description": "Quick transcripts with Whisper large-v3-turbo at the same price — ideal for English voice notes and short clips.",
-    "samples": [
-     "speech-en.mp3"
-    ],
-    "input": {
-     "quality": "fast"
-    },
-    "fields": [
-     "sources",
-     "quality"
-    ]
-   }
-  ]
- }
+  }
 }

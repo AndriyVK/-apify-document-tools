@@ -1,0 +1,13 @@
+{
+    "actorOutputSchemaVersion": 1,
+    "title": "Domain reports",
+    "description": "One dataset item per domain.",
+    "properties": {
+        "results": {
+            "type": "string",
+            "title": "Domain reports",
+            "description": "Dataset items: registration, dns, ssl.",
+            "template": "{{links.apiDefaultDatasetUrl}}/items"
+        }
+    }
+}

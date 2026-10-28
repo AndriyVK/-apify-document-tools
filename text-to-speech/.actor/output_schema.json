@@ -1,0 +1,19 @@
+{
+    "actorOutputSchemaVersion": 1,
+    "title": "Audio files",
+    "description": "One dataset item per text or document with links to the audio and subtitles.",
+    "properties": {
+        "results": {
+            "type": "string",
+            "title": "Results",
+            "description": "Dataset items: durationSeconds, audioUrl, srtUrl, vttUrl or error.",
+            "template": "{{links.apiDefaultDatasetUrl}}/items"
+        },
+        "files": {
+            "type": "string",
+            "title": "Files",
+            "description": "Audio and subtitle files in the run's key-value store.",
+            "template": "{{links.apiDefaultKeyValueStoreUrl}}/keys"
+        }
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "actorOutputSchemaVersion": 1,
+    "title": "Extracted frames",
+    "description": "One dataset item per video with frame links, timecodes and metadata.",
+    "properties": {
+        "results": {
+            "type": "string",
+            "title": "Frames per video",
+            "description": "Dataset items: url, duration, frames (time, timecode, url), contactSheetUrl or error.",
+            "template": "{{links.apiDefaultDatasetUrl}}/items"
+        },
+        "files": {
+            "type": "string",
+            "title": "Image files",
+            "description": "All frames and contact sheets in the run's key-value store.",
+            "template": "{{links.apiDefaultKeyValueStoreUrl}}/keys"
+        }
+    }
+}

@@ -1,0 +1,101 @@
+{
+    "actorSpecification": 1,
+    "fields": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+            "input": {
+                "type": "string"
+            },
+            "domain": {
+                "type": "string",
+                "description": "Normalised domain"
+            },
+            "registrableDomain": {
+                "type": "string",
+                "description": "Registered domain the registration data is for (when the input is a subdomain)"
+            },
+            "registration": {
+                "type": "object",
+                "description": "registered, source (rdap/whois), registrar, createdDate, updatedDate, expiresDate, daysUntilExpiry, status, nameservers, dnssec"
+            },
+            "dns": {
+                "type": "object",
+                "description": "A, AAAA, MX, NS, TXT, CNAME, CAA, SOA, SPF, DMARC"
+            },
+            "ssl": {
+                "type": "object",
+                "description": "reachable, valid, verifyError, issuer, subject, san, validFrom, validTo, daysLeft, protocol"
+            },
+            "warnings": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "error": {
+                "type": "string",
+                "description": "Invalid domain (not charged)"
+            }
+        }
+    },
+    "views": {
+        "overview": {
+            "title": "Overview",
+            "transformation": {
+                "fields": [
+                    "domain",
+                    "registration.registered",
+                    "registration.registrar",
+                    "registration.expiresDate",
+                    "registration.daysUntilExpiry",
+                    "ssl.issuer",
+                    "ssl.daysLeft",
+                    "ssl.valid",
+                    "dns.MX",
+                    "error"
+                ]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "domain": {
+                        "label": "Domain"
+                    },
+                    "registration.registered": {
+                        "label": "Registered",
+                        "format": "boolean"
+                    },
+                    "registration.registrar": {
+                        "label": "Registrar"
+                    },
+                    "registration.expiresDate": {
+                        "label": "Expires"
+                    },
+                    "registration.daysUntilExpiry": {
+                        "label": "Days left",
+                        "format": "number"
+                    },
+                    "ssl.issuer": {
+                        "label": "SSL issuer"
+                    },
+                    "ssl.daysLeft": {
+                        "label": "SSL days left",
+                        "format": "number"
+                    },
+                    "ssl.valid": {
+                        "label": "SSL valid",
+                        "format": "boolean"
+                    },
+                    "dns.MX": {
+                        "label": "MX",
+                        "format": "array"
+                    },
+                    "error": {
+                        "label": "Error"
+                    }
+                }
+            }
+        }
+    }
+}

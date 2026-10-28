@@ -27,6 +27,10 @@ def main():
     cfg = json.load(open(os.path.join(HERE, 'tasks.json'), encoding='utf-8'))
     publish = '--no-publish' not in sys.argv
     existing = {t['name']: t for t in call('GET', '/actor-tasks?limit=1000')['items']}
+    taken = [(t['name'], a) for a, ts in cfg['actors'].items() for t in ts
+             if t['name'] in existing and existing[t['name']]['actId'] != a]
+    if taken:  # task names are per account: never update another Actor's task
+        sys.exit(f'task names already used by other Actors: {taken}')
     only = [a for a in sys.argv[1:] if not a.startswith('--')]
     for act_id, tasks in cfg['actors'].items():
         if only and act_id not in only:
@@ -34,7 +38,8 @@ def main():
         for t in tasks:
             body = {
                 'actId': act_id, 'name': t['name'], 'title': t['title'], 'description': t['description'],
-                'input': {'sources': [{'url': cfg['sampleBase'] + s} for s in t['samples']], **t['input']},
+                'input': ({'sources': [{'url': cfg['sampleBase'] + s} for s in t['samples']]} if t.get('samples')
+                          else {}) | t['input'],
                 'options': {'memoryMbytes': 2048, 'timeoutSecs': 600},
                 'publicConfig': {'seoTitle': t['title'][:60], 'seoDescription': t['description'][:160],
                                  'inputSchemaFields': t['fields'], 'datasetView': 'overview'},

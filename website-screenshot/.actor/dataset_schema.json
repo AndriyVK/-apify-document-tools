@@ -1,0 +1,102 @@
+{
+    "actorSpecification": 1,
+    "fields": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+            "url": {
+                "type": "string",
+                "description": "Requested URL, or \"html\" for raw HTML"
+            },
+            "finalUrl": {
+                "type": "string",
+                "description": "URL after redirects"
+            },
+            "status": {
+                "type": [
+                    "integer",
+                    "null"
+                ],
+                "description": "HTTP status of the page"
+            },
+            "title": {
+                "type": "string"
+            },
+            "format": {
+                "type": "string"
+            },
+            "device": {
+                "type": "string"
+            },
+            "key": {
+                "type": "string",
+                "description": "File name in the run's key-value store"
+            },
+            "fileUrl": {
+                "type": "string",
+                "description": "Download link"
+            },
+            "width": {
+                "type": [
+                    "integer",
+                    "null"
+                ]
+            },
+            "height": {
+                "type": [
+                    "integer",
+                    "null"
+                ]
+            },
+            "bannersHidden": {
+                "type": "integer",
+                "description": "Cookie/consent banners hidden"
+            },
+            "blockedRequests": {
+                "type": "integer",
+                "description": "Requests to private network addresses blocked for security"
+            },
+            "error": {
+                "type": "string",
+                "description": "Why the page could not be captured (not charged)"
+            }
+        }
+    },
+    "views": {
+        "overview": {
+            "title": "Overview",
+            "transformation": {
+                "fields": [
+                    "fileUrl",
+                    "url",
+                    "status",
+                    "title",
+                    "error"
+                ]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "fileUrl": {
+                        "label": "Screenshot",
+                        "format": "image"
+                    },
+                    "url": {
+                        "label": "URL",
+                        "format": "link"
+                    },
+                    "status": {
+                        "label": "HTTP",
+                        "format": "number"
+                    },
+                    "title": {
+                        "label": "Title"
+                    },
+                    "error": {
+                        "label": "Error"
+                    }
+                }
+            }
+        }
+    }
+}

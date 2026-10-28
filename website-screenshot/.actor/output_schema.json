@@ -1,0 +1,19 @@
+{
+    "actorOutputSchemaVersion": 1,
+    "title": "Screenshots and PDFs",
+    "description": "One dataset item per page with a download link.",
+    "properties": {
+        "results": {
+            "type": "string",
+            "title": "Results",
+            "description": "Dataset items: url, status, title, fileUrl or error.",
+            "template": "{{links.apiDefaultDatasetUrl}}/items"
+        },
+        "files": {
+            "type": "string",
+            "title": "Files",
+            "description": "All screenshots and PDFs in the run's key-value store.",
+            "template": "{{links.apiDefaultKeyValueStoreUrl}}/keys"
+        }
+    }
+}

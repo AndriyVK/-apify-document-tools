@@ -1,0 +1,6 @@
+.git
+__pycache__
+*.pyc
+storage
+tests/corpus
+voices

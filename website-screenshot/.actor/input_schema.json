@@ -1,0 +1,191 @@
+{
+    "title": "Website Screenshot & URL/HTML to PDF",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "urls": {
+            "title": "URLs",
+            "type": "array",
+            "description": "Web pages to capture. \"example.com\" without https:// works too.",
+            "editor": "requestListSources",
+            "prefill": [
+                {
+                    "url": "https://apify.com"
+                }
+            ],
+            "default": [
+                {
+                    "url": "https://apify.com"
+                }
+            ]
+        },
+        "html": {
+            "title": "Raw HTML (optional)",
+            "type": "string",
+            "description": "HTML to render instead of (or in addition to) URLs \u2014 e.g. an invoice or report template to turn into PDF. External images and styles referenced by absolute https URLs are loaded.",
+            "editor": "textarea"
+        },
+        "format": {
+            "title": "Output format",
+            "type": "string",
+            "editor": "select",
+            "description": "png, jpeg, webp \u2014 screenshot; pdf \u2014 printable PDF of the page.",
+            "enum": [
+                "png",
+                "jpeg",
+                "webp",
+                "pdf"
+            ],
+            "enumTitles": [
+                "PNG",
+                "JPEG",
+                "WebP",
+                "PDF"
+            ],
+            "default": "png"
+        },
+        "device": {
+            "title": "Device",
+            "type": "string",
+            "editor": "select",
+            "description": "desktop 1920\u00d71080, laptop 1366\u00d7768, tablet iPad Pro 11, mobile iPhone 15 Pro, android Galaxy S24 (phones and tablets at their real pixel density).",
+            "enum": [
+                "desktop",
+                "laptop",
+                "tablet",
+                "mobile",
+                "android"
+            ],
+            "enumTitles": [
+                "Desktop 1920\u00d71080",
+                "Laptop 1366\u00d7768",
+                "Tablet (iPad Pro 11)",
+                "Mobile (iPhone 15 Pro)",
+                "Android (Galaxy S24)"
+            ],
+            "default": "desktop"
+        },
+        "fullPage": {
+            "title": "Full page",
+            "type": "boolean",
+            "description": "Capture the whole scrollable page (up to 20,000 px high), not just the first screen.",
+            "default": true
+        },
+        "selector": {
+            "title": "Element (CSS selector)",
+            "type": "string",
+            "editor": "textfield",
+            "description": "Capture only this element, e.g. #pricing or .chart. Empty = whole page."
+        },
+        "hideCookieBanners": {
+            "title": "Hide cookie banners",
+            "type": "boolean",
+            "description": "Hide floating cookie and consent banners (OneTrust, Cookiebot, Didomi and similar).",
+            "default": true
+        },
+        "scrollToBottom": {
+            "title": "Load lazy images",
+            "type": "boolean",
+            "description": "Scroll through the page before capturing so lazy-loaded images appear.",
+            "default": true
+        },
+        "waitUntil": {
+            "title": "Wait until",
+            "type": "string",
+            "editor": "select",
+            "description": "load = page and images loaded (default); networkidle = no network activity for 0.5 s (single-page apps); domcontentloaded = fastest.",
+            "enum": [
+                "load",
+                "networkidle",
+                "domcontentloaded"
+            ],
+            "default": "load"
+        },
+        "delayMs": {
+            "title": "Extra delay (ms)",
+            "type": "integer",
+            "description": "Wait this long before capturing (animations, charts).",
+            "minimum": 0,
+            "maximum": 30000,
+            "default": 0
+        },
+        "viewportWidth": {
+            "title": "Viewport width (desktop/laptop)",
+            "type": "integer",
+            "description": "Custom width in pixels; 0 = device default.",
+            "minimum": 0,
+            "maximum": 3840,
+            "default": 0
+        },
+        "viewportHeight": {
+            "title": "Viewport height (desktop/laptop)",
+            "type": "integer",
+            "description": "Custom height in pixels; 0 = device default.",
+            "minimum": 0,
+            "maximum": 3000,
+            "default": 0
+        },
+        "darkMode": {
+            "title": "Dark mode",
+            "type": "boolean",
+            "description": "Ask the site for its dark theme (prefers-color-scheme: dark).",
+            "default": false
+        },
+        "quality": {
+            "title": "JPEG/WebP quality",
+            "type": "integer",
+            "minimum": 10,
+            "maximum": 100,
+            "default": 85,
+            "description": "10 (smallest) to 100 (best)."
+        },
+        "css": {
+            "title": "Custom CSS (optional)",
+            "type": "string",
+            "editor": "textarea",
+            "description": "Injected before capturing, e.g. to hide chat widgets: .intercom-launcher{display:none!important}"
+        },
+        "pdfFormat": {
+            "title": "PDF paper size",
+            "type": "string",
+            "editor": "select",
+            "enum": [
+                "A4",
+                "Letter",
+                "Legal",
+                "A3",
+                "A5"
+            ],
+            "default": "A4",
+            "description": "For PDF output."
+        },
+        "pdfLandscape": {
+            "title": "PDF landscape",
+            "type": "boolean",
+            "default": false,
+            "description": "For PDF output."
+        },
+        "pdfScreenMedia": {
+            "title": "PDF looks like the screen",
+            "type": "boolean",
+            "default": false,
+            "description": "Off = the site's print styles (clean, no menus); on = exactly as on screen."
+        },
+        "pdfMargin": {
+            "title": "PDF margin",
+            "type": "string",
+            "editor": "textfield",
+            "default": "10mm",
+            "description": "e.g. 0, 10mm, 0.5in"
+        },
+        "timeoutSecs": {
+            "title": "Page timeout (s)",
+            "type": "integer",
+            "minimum": 10,
+            "maximum": 180,
+            "default": 60,
+            "description": "Give up on a page that does not load in this time (not charged)."
+        }
+    },
+    "required": []
+}

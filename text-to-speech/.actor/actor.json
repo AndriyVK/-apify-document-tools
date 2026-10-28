@@ -1,0 +1,14 @@
+{
+    "actorSpecification": 1,
+    "name": "text-to-speech",
+    "title": "Text to Speech: PDF, DOCX → MP3 + Subtitles, Ukrainian +22 More",
+    "description": "Natural neural voices licensed for commercial use: text, PDF and Word files to MP3/WAV/OGG with SRT/VTT subtitles. 37 voices in 23 languages incl. 3 Ukrainian voices (rare on the market), English, German, Spanish. No API key, no per-character fees.",
+    "version": "0.1",
+    "buildTag": "latest",
+    "input": "./input_schema.json",
+    "storages": {
+        "dataset": "./dataset_schema.json"
+    },
+    "output": "./output_schema.json",
+    "dockerfile": "../Dockerfile"
+}

@@ -1,0 +1,44 @@
+{
+    "title": "Domain WHOIS, DNS & SSL Checker",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "domains": {
+            "title": "Domains",
+            "type": "array",
+            "editor": "stringList",
+            "description": "Domains or URLs (https://www.example.com/page works too). Internationalised domains are supported.",
+            "prefill": [
+                "apify.com",
+                "github.com",
+                "wikipedia.org"
+            ],
+            "default": [
+                "apify.com",
+                "github.com",
+                "wikipedia.org"
+            ]
+        },
+        "whois": {
+            "title": "Registration (WHOIS/RDAP)",
+            "type": "boolean",
+            "description": "Registrar, creation/update/expiry dates, days until expiry, status, nameservers, DNSSEC; unregistered domains are marked registered: false.",
+            "default": true
+        },
+        "dns": {
+            "title": "DNS records",
+            "type": "boolean",
+            "description": "A, AAAA, MX, NS, TXT, CNAME, CAA, SOA plus parsed SPF and DMARC.",
+            "default": true
+        },
+        "ssl": {
+            "title": "SSL certificate",
+            "type": "boolean",
+            "description": "Issuer, subject, alternative names, valid from/to, days left, whether the certificate is trusted, TLS version.",
+            "default": true
+        }
+    },
+    "required": [
+        "domains"
+    ]
+}

@@ -1,0 +1,6 @@
+apify==4.1.0
+httpx==0.28.1
+piper-tts==1.8.0
+pypdfium2==5.14.0
+ukrainian-word-stress==2.1.0
+stanza==1.15.0
