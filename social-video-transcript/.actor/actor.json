@@ -1,0 +1,14 @@
+{
+    "actorSpecification": 1,
+    "name": "social-video-transcript",
+    "title": "Video Transcript & Translation: YouTube, TikTok, Instagram",
+    "description": "Transcripts and SRT/VTT subtitles of YouTube, TikTok, Instagram Reels, Facebook and X videos, translated into Ukrainian and 20 other languages in the same run. Captions first, Whisper large-v3 when there are none. Failed videos are free. No API key.",
+    "version": "0.1",
+    "buildTag": "latest",
+    "input": "./input_schema.json",
+    "storages": {
+        "dataset": "./dataset_schema.json"
+    },
+    "output": "./output_schema.json",
+    "dockerfile": "../Dockerfile"
+}

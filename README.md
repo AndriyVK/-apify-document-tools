@@ -8,6 +8,7 @@ from Apify Store, call them from your code, or plug them into AI agents through 
 | [Document to Markdown for AI](document-to-markdown/) | PDF, scanned PDF and images (OCR in 11 languages incl. Ukrainian and Russian), DOCX, XLSX, PPTX, legacy Office and HTML → Markdown, JSON tables and RAG chunks | [apify.com/ai_admin/document-to-markdown](https://apify.com/ai_admin/document-to-markdown) |
 | [Office to PDF & PDF/A](office-to-pdf/) | Word, Excel, PowerPoint, OpenDocument, RTF, HTML and images → PDF or archival PDF/A-2b, optional merge into one PDF | [apify.com/ai_admin/office-to-pdf](https://apify.com/ai_admin/office-to-pdf) |
 | [Audio & Video Transcriber](audio-transcriber/) | Audio and video → text, timestamped segments and SRT/VTT subtitles with Whisper large-v3 (via Groq), 99 languages | [apify.com/ai_admin/audio-transcriber](https://apify.com/ai_admin/audio-transcriber) |
+| [Video Transcript & Translation](social-video-transcript/) | YouTube, TikTok, Instagram, Facebook, X video links → transcript and SRT/VTT subtitles, Whisper when there are no captions, translation into Ukrainian and 20 other languages | [apify.com/ai_admin/social-video-transcript](https://apify.com/ai_admin/social-video-transcript) |
 | [PDF to Image & Image Converter](pdf-image-converter/) | PDF pages → PNG/JPG/WebP/TIFF, images → PDF, image formats incl. iPhone HEIC, resize, ZIP | [apify.com/ai_admin/pdf-image-converter](https://apify.com/ai_admin/pdf-image-converter) |
 | [Image to Text OCR](image-to-text-ocr/) | Images and scanned PDFs → text, lines and words with confidence and boxes, 38 languages incl. Ukrainian, auto-rotate | [apify.com/ai_admin/image-to-text-ocr](https://apify.com/ai_admin/image-to-text-ocr) |
 | [Text to Speech](text-to-speech/) | Text, PDF and Word → MP3/WAV/OGG with SRT/VTT subtitles, 37 neural voices in 23 languages incl. 3 Ukrainian, no API key | [apify.com/ai_admin/text-to-speech](https://apify.com/ai_admin/text-to-speech) |
@@ -22,7 +23,7 @@ Ready-made examples (Apify tasks): [document-to-markdown examples](https://apify
 ## Use from AI agents (MCP)
 
 All Actors are available as MCP tools — hosted (no install):
-`https://mcp.apify.com?tools=ai_admin/document-to-markdown,ai_admin/office-to-pdf,ai_admin/pdf-image-converter,ai_admin/audio-transcriber,ai_admin/image-to-text-ocr,ai_admin/text-to-speech,ai_admin/website-screenshot,ai_admin/domain-whois-dns-ssl,ai_admin/video-frame-extractor`
+`https://mcp.apify.com?tools=ai_admin/document-to-markdown,ai_admin/office-to-pdf,ai_admin/pdf-image-converter,ai_admin/audio-transcriber,ai_admin/image-to-text-ocr,ai_admin/text-to-speech,ai_admin/website-screenshot,ai_admin/domain-whois-dns-ssl,ai_admin/video-frame-extractor,ai_admin/social-video-transcript`
 — or as a local stdio server in [mcp-server/](mcp-server/).
 
 ## Built with

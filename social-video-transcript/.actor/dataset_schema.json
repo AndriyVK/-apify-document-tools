@@ -1,0 +1,149 @@
+{
+    "actorSpecification": 1,
+    "fields": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+            "url": {
+                "type": "string",
+                "description": "Video URL from the input"
+            },
+            "platform": {
+                "type": "string",
+                "description": "youtube, tiktok, instagram, facebook, x, vimeo or other"
+            },
+            "videoId": {
+                "type": [
+                    "string",
+                    "null"
+                ]
+            },
+            "title": {
+                "type": [
+                    "string",
+                    "null"
+                ]
+            },
+            "author": {
+                "type": [
+                    "string",
+                    "null"
+                ]
+            },
+            "uploadDate": {
+                "type": [
+                    "string",
+                    "null"
+                ],
+                "description": "YYYYMMDD"
+            },
+            "durationSeconds": {
+                "type": [
+                    "number",
+                    "null"
+                ]
+            },
+            "viewCount": {
+                "type": [
+                    "integer",
+                    "null"
+                ]
+            },
+            "language": {
+                "type": [
+                    "string",
+                    "null"
+                ],
+                "description": "Language of the transcript"
+            },
+            "transcriptSource": {
+                "type": "string",
+                "description": "uploaded-captions, automatic-captions or speech-recognition"
+            },
+            "text": {
+                "type": "string",
+                "description": "Full transcript"
+            },
+            "segments": {
+                "type": "array",
+                "description": "Timestamped segments: start, end (seconds), text"
+            },
+            "srtUrl": {
+                "type": "string"
+            },
+            "vttUrl": {
+                "type": "string"
+            },
+            "translation": {
+                "type": "object",
+                "description": "language, text, segments, srtUrl, vttUrl"
+            },
+            "warnings": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "seconds": {
+                "type": "number",
+                "description": "Processing time"
+            },
+            "error": {
+                "type": "string",
+                "description": "Why the video could not be transcribed (not charged)"
+            }
+        },
+        "required": [
+            "url"
+        ]
+    },
+    "views": {
+        "overview": {
+            "title": "Overview",
+            "transformation": {
+                "fields": [
+                    "url",
+                    "platform",
+                    "title",
+                    "language",
+                    "transcriptSource",
+                    "text",
+                    "srtUrl",
+                    "error"
+                ]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "url": {
+                        "label": "Video",
+                        "format": "link"
+                    },
+                    "platform": {
+                        "label": "Platform"
+                    },
+                    "title": {
+                        "label": "Title"
+                    },
+                    "language": {
+                        "label": "Language"
+                    },
+                    "transcriptSource": {
+                        "label": "Source"
+                    },
+                    "text": {
+                        "label": "Transcript",
+                        "format": "text"
+                    },
+                    "srtUrl": {
+                        "label": "SRT",
+                        "format": "link"
+                    },
+                    "error": {
+                        "label": "Error"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "actorOutputSchemaVersion": 1,
+    "title": "Transcripts",
+    "description": "One dataset item per video with the transcript, timestamped segments, translation and subtitle links.",
+    "properties": {
+        "transcripts": {
+            "type": "string",
+            "title": "Transcripts",
+            "description": "Dataset items: url, title, language, text, segments, translation, srtUrl, vttUrl or error.",
+            "template": "{{links.apiDefaultDatasetUrl}}/items"
+        },
+        "subtitles": {
+            "type": "string",
+            "title": "Subtitle files",
+            "description": "SRT and VTT files in the run's key-value store.",
+            "template": "{{links.apiDefaultKeyValueStoreUrl}}/keys"
+        }
+    }
+}

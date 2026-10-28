@@ -1,0 +1,125 @@
+{
+    "title": "Video Transcript & Translation",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "videoUrls": {
+            "title": "Video URLs",
+            "type": "array",
+            "editor": "stringList",
+            "description": "Links to single videos: YouTube (videos, Shorts), TikTok, Instagram Reels, Facebook videos and Reels, X (Twitter), Vimeo and 1,000+ other sites. Profile, playlist and search pages are not supported.",
+            "prefill": [
+                "https://www.tiktok.com/@nasa/video/7698805564884733198"
+            ],
+            "default": [
+                "https://www.tiktok.com/@nasa/video/7698805564884733198"
+            ]
+        },
+        "translateTo": {
+            "title": "Translate to",
+            "type": "string",
+            "editor": "select",
+            "description": "Optional: also translate the transcript and subtitles into this language. Leave empty for the original language only.",
+            "enum": [
+                "",
+                "en",
+                "uk",
+                "ru",
+                "de",
+                "fr",
+                "es",
+                "pt",
+                "it",
+                "pl",
+                "nl",
+                "tr",
+                "cs",
+                "ro",
+                "sv",
+                "ar",
+                "hi",
+                "id",
+                "vi",
+                "zh",
+                "ja",
+                "ko"
+            ],
+            "enumTitles": [
+                "No translation",
+                "English",
+                "Ukrainian",
+                "Russian",
+                "German",
+                "French",
+                "Spanish",
+                "Portuguese",
+                "Italian",
+                "Polish",
+                "Dutch",
+                "Turkish",
+                "Czech",
+                "Romanian",
+                "Swedish",
+                "Arabic",
+                "Hindi",
+                "Indonesian",
+                "Vietnamese",
+                "Chinese (Simplified)",
+                "Japanese",
+                "Korean"
+            ],
+            "default": ""
+        },
+        "language": {
+            "title": "Spoken language",
+            "type": "string",
+            "editor": "textfield",
+            "description": "ISO 639-1 code of the spoken language (en, uk, es, de, ...). Leave empty to detect it automatically.",
+            "default": ""
+        },
+        "useCaptions": {
+            "title": "Use the video's captions when available",
+            "type": "boolean",
+            "description": "On: uploaded or automatic captions are used when the video has them (fast, any length, one flat price). Off: the speech is always recognised with Whisper (better punctuation, charged per minute).",
+            "default": true
+        },
+        "maxDurationMinutes": {
+            "title": "Maximum video length for speech recognition (minutes)",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 600,
+            "description": "Videos without captions that are longer than this are skipped (not charged). Captions are used for any length.",
+            "default": 60
+        },
+        "quality": {
+            "title": "Speech recognition model",
+            "type": "string",
+            "editor": "select",
+            "description": "accurate = Whisper large-v3 (best for non-English languages); fast = Whisper large-v3-turbo. Same price.",
+            "enum": [
+                "accurate",
+                "fast"
+            ],
+            "enumTitles": [
+                "Accurate (Whisper large-v3)",
+                "Fast (Whisper large-v3-turbo)"
+            ],
+            "default": "accurate"
+        },
+        "subtitles": {
+            "title": "SRT and VTT subtitle files",
+            "type": "boolean",
+            "description": "Also save SRT and VTT files (original and translation) with download links (free).",
+            "default": true
+        },
+        "includeSegments": {
+            "title": "Timestamped segments",
+            "type": "boolean",
+            "description": "Include the timestamped segments (start, end, text) in the output, not only the full text.",
+            "default": true
+        }
+    },
+    "required": [
+        "videoUrls"
+    ]
+}
