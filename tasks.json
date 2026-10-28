@@ -1487,6 +1487,162 @@
           "maxWidth"
         ]
       }
+    ],
+    "schj3W39co6dWaBaP": [
+      {
+        "name": "youtube-video-transcript",
+        "title": "YouTube video transcript",
+        "description": "Get the full transcript of a YouTube video with timestamps, from captions or Whisper when there are none.",
+        "input": {
+          "videoUrls": [
+            "https://www.youtube.com/watch?v=jNQXAC9IVRw"
+          ],
+          "maxDurationMinutes": 10
+        },
+        "fields": [
+          "videoUrls"
+        ]
+      },
+      {
+        "name": "youtube-subtitles-srt-vtt",
+        "title": "Download YouTube subtitles as SRT and VTT",
+        "description": "Save the subtitles of YouTube videos as SRT and VTT files with download links, plus the text.",
+        "input": {
+          "videoUrls": [
+            "https://www.youtube.com/watch?v=MLgYJh6OFbY"
+          ],
+          "maxDurationMinutes": 10,
+          "subtitles": true
+        },
+        "fields": [
+          "videoUrls",
+          "subtitles"
+        ]
+      },
+      {
+        "name": "translate-youtube-video-to-ukrainian",
+        "title": "Translate a YouTube video into Ukrainian",
+        "description": "YouTube transcript translated into Ukrainian, with Ukrainian SRT/VTT subtitles ready for upload.",
+        "input": {
+          "videoUrls": [
+            "https://www.youtube.com/watch?v=jNQXAC9IVRw"
+          ],
+          "maxDurationMinutes": 10,
+          "translateTo": "uk"
+        },
+        "fields": [
+          "videoUrls",
+          "translateTo"
+        ]
+      },
+      {
+        "name": "translate-youtube-subtitles-spanish",
+        "title": "Translate YouTube subtitles into Spanish",
+        "description": "Transcript and SRT/VTT subtitles of a YouTube video translated into Spanish in one run.",
+        "input": {
+          "videoUrls": [
+            "https://www.youtube.com/watch?v=MLgYJh6OFbY"
+          ],
+          "maxDurationMinutes": 10,
+          "translateTo": "es"
+        },
+        "fields": [
+          "videoUrls",
+          "translateTo"
+        ]
+      },
+      {
+        "name": "tiktok-video-transcript",
+        "title": "TikTok video transcript",
+        "description": "TikTok video to text with Whisper large-v3: transcript, timestamps, SRT/VTT, author and views.",
+        "input": {
+          "videoUrls": [
+            "https://www.tiktok.com/@nasa/video/7698805564884733198"
+          ],
+          "maxDurationMinutes": 10
+        },
+        "fields": [
+          "videoUrls"
+        ]
+      },
+      {
+        "name": "translate-tiktok-to-ukrainian",
+        "title": "Translate a TikTok video into Ukrainian",
+        "description": "TikTok speech recognised and translated into Ukrainian, with Ukrainian subtitles.",
+        "input": {
+          "videoUrls": [
+            "https://www.tiktok.com/@nasa/video/7698805564884733198"
+          ],
+          "maxDurationMinutes": 10,
+          "translateTo": "uk"
+        },
+        "fields": [
+          "videoUrls",
+          "translateTo"
+        ]
+      },
+      {
+        "name": "facebook-video-transcript",
+        "title": "Facebook video and Reels transcript",
+        "description": "Facebook videos and Reels to text with timestamps and SRT/VTT subtitles. Failed videos are free.",
+        "input": {
+          "videoUrls": [
+            "https://www.facebook.com/NASA/videos/360-degree-view-from-the-cupola/346691430131/"
+          ],
+          "maxDurationMinutes": 10
+        },
+        "fields": [
+          "videoUrls"
+        ]
+      },
+      {
+        "name": "translate-video-subtitles-russian",
+        "title": "Translate video subtitles into Russian",
+        "description": "Transcript and subtitles of a Facebook, TikTok or YouTube video translated into Russian.",
+        "input": {
+          "videoUrls": [
+            "https://www.facebook.com/NASA/videos/360-degree-view-from-the-cupola/346691430131/"
+          ],
+          "maxDurationMinutes": 10,
+          "translateTo": "ru"
+        },
+        "fields": [
+          "videoUrls",
+          "translateTo"
+        ]
+      },
+      {
+        "name": "video-transcript-for-ai-llm",
+        "title": "Video transcript text for AI and LLMs",
+        "description": "Plain transcript text of YouTube, TikTok and Facebook videos for summaries, RAG and AI agents.",
+        "input": {
+          "videoUrls": [
+            "https://www.youtube.com/watch?v=MLgYJh6OFbY"
+          ],
+          "maxDurationMinutes": 10,
+          "includeSegments": false,
+          "subtitles": false
+        },
+        "fields": [
+          "videoUrls",
+          "includeSegments"
+        ]
+      },
+      {
+        "name": "bulk-video-transcripts-multi-platform",
+        "title": "Bulk video transcripts: YouTube, TikTok, Facebook",
+        "description": "Many video links from different platforms in one run: transcripts and subtitles for each.",
+        "input": {
+          "videoUrls": [
+            "https://www.youtube.com/watch?v=jNQXAC9IVRw",
+            "https://www.tiktok.com/@nasa/video/7698805564884733198"
+          ],
+          "maxDurationMinutes": 10
+        },
+        "fields": [
+          "videoUrls"
+        ]
+      }
     ]
   }
 }
