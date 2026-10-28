@@ -200,11 +200,16 @@ def split_text(text: str, max_chars: int) -> tuple[list[list[str]], int, bool]:
 QUOTES = re.compile('[«»“”„‟"]')
 
 
+# Piper's variation: (noise_scale, noise_w_scale). "lively" was rated best by ear on Ukrainian voices (27.10.2026).
+STYLES = {'standard': (0.667, 0.8), 'lively': (0.9, 1.15)}
+
+
 def synthesize(voice: PiperVoice, paras: list[list[str]], speed: float, speaker: int | None = None,
-               ukrainian: bool = False) -> tuple[bytes, int, list[tuple[float, float, str]]]:
+               ukrainian: bool = False, style: str = 'standard') -> tuple[bytes, int, list[tuple[float, float, str]]]:
     """Returns (16-bit mono PCM, sample rate, cues [(start, end, sentence)]).
     ukrainian=True puts the word stress from a dictionary (espeak often stresses Ukrainian words wrongly)."""
-    cfg = SynthesisConfig(length_scale=1 / speed, speaker_id=speaker)
+    noise, noise_w = STYLES[style]
+    cfg = SynthesisConfig(length_scale=1 / speed, speaker_id=speaker, noise_scale=noise, noise_w_scale=noise_w)
     rate = voice.config.sample_rate
     pcm, cues, t = bytearray(), [], 0.0
     for pi, sentences in enumerate(paras):

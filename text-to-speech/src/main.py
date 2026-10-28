@@ -12,7 +12,7 @@ import httpx
 from apify import Actor
 
 from .download import DownloadError, download
-from .tts import VOICES, TtsError, encode, extract_text, load_voice, split_text, synthesize, to_srt, to_vtt
+from .tts import STYLES, VOICES, TtsError, encode, extract_text, load_voice, split_text, synthesize, to_srt, to_vtt
 
 EVENT_MINUTE = 'audio-minute'
 EVENT_HQ_MINUTE = 'hq-audio-minute'  # high-quality voices need ~7x more CPU per minute
@@ -53,7 +53,14 @@ async def main() -> None:
         if voice_id not in VOICES or fmt not in MIME:
             await Actor.fail(status_message=f'Unknown voice "{voice_id}" or format "{fmt}".')
             return
-        speed = min(max(float(inp.get('speed') or 1.0), 0.5), 2.0)
+        speed = min(max(float(inp.get('speed') or 1.12), 0.5), 2.0)
+        ukrainian = VOICES[voice_id][0] == 'Ukrainian'
+        style = str(inp.get('style') or 'auto')
+        if style == 'auto':
+            style = 'lively' if ukrainian else 'standard'
+        if style not in STYLES:
+            await Actor.fail(status_message=f'Unknown style "{style}".')
+            return
         speaker = inp.get('speakerId')
         subtitles = bool(inp.get('subtitles', True))
         max_chars = min(max(int(inp.get('maxCharactersPerItem') or 200000), 100), 1000000)
@@ -91,7 +98,7 @@ async def main() -> None:
                         if not paras:
                             raise TtsError('no text to read')
                         pcm, rate, cues = await asyncio.to_thread(synthesize, voice, paras, speed, speaker,
-                                                                    VOICES[voice_id][0] == 'Ukrainian')
+                                                                    ukrainian, style)
                         if not pcm:
                             raise TtsError('the voice produced no audio for this text')
                         stem = _stem(src, idx)

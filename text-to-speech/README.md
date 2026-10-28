@@ -3,7 +3,7 @@
 Turn text, articles, PDFs and Word documents into natural-sounding speech — MP3, WAV or OGG — with SRT and VTT
 subtitles. Neural voices run inside the Actor: no API key, no account elsewhere, no per-character fees.
 
-**Listen first:** [Ukrainian — Tetiana](https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/tts-sample-uk_UA-tetiana-high.mp3) · [Ukrainian — Mykyta](https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/tts-sample-uk_UA-mykyta-high.mp3) ·
+**Listen first:** [Ukrainian — Mykyta (recommended)](https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/tts-sample-uk_UA-mykyta-high.mp3) · [Ukrainian — Tetiana](https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/tts-sample-uk_UA-tetiana-high.mp3) ·
 [English HQ — LJSpeech](https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/tts-sample-en_US-ljspeech-high.mp3) · [English fast — John](https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/tts-sample-en_US-john-medium.mp3) ·
 [German — Thorsten](https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/tts-sample-de_DE-thorsten-high.mp3)
 
@@ -12,7 +12,7 @@ subtitles. Neural voices run inside the Actor: no API key, no account elsewhere,
 | | This Actor | Typical alternatives |
 |---|---|---|
 | **Commercial use** | Every voice is CC0, public domain, Apache 2.0 or CC BY 4.0 — safe for YouTube, courses, ads and client work | Many free voices are "non-commercial only" (CC BY-NC); unofficial Edge or Google voices may break those services' terms |
-| **Ukrainian** | 3 natural high-quality Ukrainian voices (українська озвучка тексту) | Rarely offered at all |
+| **Ukrainian** | 3 natural high-quality Ukrainian voices (українська озвучка тексту), word stress from a Ukrainian dictionary, lively intonation | Rarely offered at all; open voices often stress Ukrainian words wrongly |
 | **Documents in** | PDF, DOCX, HTML, Markdown, TXT — menus, scripts and Markdown symbols skipped | Plain text only; you copy and clean the text yourself |
 | **Subtitles** | SRT + VTT timed per sentence, free | Extra tool or extra fee |
 | **Cost** | Per minute of audio; no API key or subscription elsewhere | ElevenLabs-style wrappers need your own paid key and bill per character |
@@ -23,6 +23,7 @@ subtitles. Neural voices run inside the Actor: no API key, no account elsewhere,
   Portuguese, Dutch, Czech, Russian, Romanian, Finnish, Hungarian, Slovak, Swedish, Danish, Greek, Latvian, Slovenian,
   Chinese, Persian, Vietnamese.
 - **Speed control** 0.5×–2×, natural pauses between sentences and paragraphs.
+- **Delivery:** "Lively" (more varied intonation) or "Standard" (even and calm); "Auto" uses Lively for Ukrainian.
 - **Audiobooks, podcasts, e-learning, accessibility:** long texts (up to 1,000,000 characters per item) are read
   sentence by sentence.
 
@@ -33,7 +34,8 @@ subtitles. Neural voices run inside the Actor: no API key, no account elsewhere,
   "text": "Hello! This is a natural-sounding neural voice.",
   "sources": [{ "url": "https://example.com/article.pdf" }],
   "voice": "en_US-john-medium",
-  "speed": 1.0,
+  "speed": 1.12,
+  "style": "auto",
   "format": "mp3",
   "subtitles": true
 }
@@ -44,7 +46,8 @@ subtitles. Neural voices run inside the Actor: no API key, no account elsewhere,
 | `text` | Text to read; blank lines separate paragraphs |
 | `sources` | Links to TXT, Markdown, HTML, PDF or DOCX files — one audio file each. Files in your own Apify key-value store work too: set the store's access to "Anyone with ID can read" and use `https://api.apify.com/v2/key-value-stores/<store ID>/records/<key>` (the Actor runs with limited permissions and does not use your token). |
 | `voice` | Voice ID from the table below |
-| `speed` | 0.5–2 |
+| `speed` | 0.5–2; default 1.12 (smoother, fewer hesitations than the voice's own pace 1.0) |
+| `style` | `auto` (default), `lively` or `standard` |
 | `format` | `mp3` (64 kbit/s), `wav`, `ogg` (Opus) |
 | `subtitles` | Also return `.srt` and `.vtt` |
 | `maxCharactersPerItem` | Longer texts are cut; ~750–900 characters ≈ 1 minute of speech |

@@ -24,8 +24,8 @@
             "editor": "select",
             "description": "Pick a voice in the language of your text. \"high\" voices sound most natural and cost more per minute (see Pricing); \"medium\"/\"low\" voices are fast and cheap.",
             "enum": [
-                "uk_UA-tetiana-high",
                 "uk_UA-mykyta-high",
+                "uk_UA-tetiana-high",
                 "uk_UA-oleksa-high",
                 "en_US-ljspeech-high",
                 "en_US-john-medium",
@@ -63,8 +63,8 @@
                 "vi_VN-vais1000-medium"
             ],
             "enumTitles": [
+                "Ukrainian — Mykyta (high quality, recommended)",
                 "Ukrainian — Tetiana (high quality)",
-                "Ukrainian — Mykyta (high quality)",
                 "Ukrainian — Oleksa (high quality)",
                 "English (US) — Ljspeech (high quality)",
                 "English (US) — John (medium quality)",
@@ -106,10 +106,27 @@
         "speed": {
             "title": "Speed",
             "type": "number",
-            "description": "0.5 = slow, 1 = normal, 1.5 = fast.",
+            "description": "0.5 = slow, 1 = the voice's own pace, 1.12 = default (smoother, fewer hesitations), 1.5 = fast.",
             "minimum": 0.5,
             "maximum": 2,
-            "default": 1
+            "default": 1.12
+        },
+        "style": {
+            "title": "Delivery",
+            "type": "string",
+            "editor": "select",
+            "description": "\"Lively\" varies intonation and rhythm more, \"Standard\" is even and calm. \"Auto\" picks Lively for Ukrainian voices (rated best by ear) and Standard for other languages.",
+            "enum": [
+                "auto",
+                "lively",
+                "standard"
+            ],
+            "enumTitles": [
+                "Auto",
+                "Lively",
+                "Standard"
+            ],
+            "default": "auto"
         },
         "format": {
             "title": "Audio format",
