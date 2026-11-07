@@ -43,7 +43,7 @@ Ukrainian. Recognition in Ukrainian is common; what is rare is translation into 
 | `videoUrls` | Links to single videos. Profile, playlist and search pages are not supported. |
 | `translateTo` | Optional language code (`en`, `es`, `de`, `uk`…) to also translate the transcript and subtitles |
 | `language` | Spoken language code, or empty to detect it automatically |
-| `vocabulary` | Names and terms said in the videos, to spell them correctly (speech recognition only); Ukrainian city names are built in |
+| `vocabulary` | Names and terms said in the videos, to spell them correctly (speech recognition only); Ukrainian city names are built in when `language` is `en`, `uk` or `ru` |
 | `useCaptions` | Use the video's captions when available (default). Off: always recognise the speech with Whisper |
 | `maxDurationMinutes` | Videos without captions longer than this are skipped (free). Captions work for any length |
 | `quality` | `accurate` (Whisper large-v3, default) or `fast` (large-v3-turbo) - same price |

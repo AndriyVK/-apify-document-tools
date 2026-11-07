@@ -39,7 +39,7 @@ Whisper large-v3 model - 99 languages, automatic language detection, files of an
 | `language` | ISO code (`en`, `uk`, `de`…) or empty for automatic detection |
 | `quality` | `accurate` (Whisper large-v3, default) or `fast` (large-v3-turbo) - same price |
 | `crossCheck` | Recognise the audio again with the other model and list where the two disagree (see below). Each minute is charged twice |
-| `vocabulary` | Names and terms to spell correctly; Ukrainian city names (Kyiv, Lviv, Kharkiv…) are built in |
+| `vocabulary` | Names and terms to spell correctly; Ukrainian city names (Kyiv, Lviv, Kharkiv…) are built in when `language` is `en`, `uk` or `ru` |
 | `subtitles` | Save SRT and VTT files (free) |
 
 ## Output

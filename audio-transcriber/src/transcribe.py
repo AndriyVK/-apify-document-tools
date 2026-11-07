@@ -128,7 +128,8 @@ def _made_up(seg: dict, text: str) -> bool:
 
 
 # Ukrainian place names Whisper often mishears ("Lviv" -> "Elvive"). Passed as part of the prompt, spelled the way the
-# output language writes them; with no language set, English and Ukrainian spellings both.
+# output language writes them; only when the language is set: with automatic detection Whisper sometimes wrote the
+# list out instead of the speech (audio-transcriber run fqodYm9Ivps9fXH5B, 7.11.2026).
 GLOSSARY = {
     'en': 'Kyiv, Lviv, Kharkiv, Odesa, Dnipro, Zaporizhzhia, Vinnytsia, Mykolaiv, Kherson, Chernihiv, Poltava, '
           'Ivano-Frankivsk, Ternopil, Lutsk, Rivne, Uzhhorod, Chernivtsi, Zhytomyr, Sumy, Cherkasy, Kryvyi Rih, Mariupol.',
@@ -140,11 +141,8 @@ GLOSSARY = {
 
 
 def _prompt(vocabulary: str | None, language: str | None) -> str:
-    """The user's own vocabulary first, then the place names for the spoken language."""
-    if language is None:
-        names = GLOSSARY['en'] + ' ' + GLOSSARY['uk']
-    else:
-        names = GLOSSARY.get(language, '')
+    """The user's own vocabulary first, then the place names for the spoken language (none when it is detected)."""
+    names = GLOSSARY.get(language, '') if language else ''
     return ' '.join(p for p in ((vocabulary or '').strip()[:400], names) if p)
 
 

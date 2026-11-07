@@ -82,7 +82,7 @@
             "type": "string",
             "editor": "textarea",
             "default": "",
-            "description": "Optional names, terms and spellings said in the videos (e.g. \"Kyivstar, PrivatBank, Zelensky\"). Used only when the speech is recognised (no captions). Ukrainian city names are built in."
+            "description": "Optional names, terms and spellings said in the videos (e.g. \"Kyivstar, PrivatBank, Zelensky\"). Used only when the speech is recognised (no captions). Ukrainian city names are built in when the language is set to English, Ukrainian or Russian."
         },
         "useCaptions": {
             "title": "Use the video's captions when available",

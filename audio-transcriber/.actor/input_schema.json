@@ -51,7 +51,7 @@
         "vocabulary": {
             "title": "Vocabulary hint",
             "type": "string",
-            "description": "Optional names, terms and spellings that appear in the recording (e.g. \"Lviv, Kyivstar, PrivatBank\"). Helps the model spell them correctly.",
+            "description": "Optional names, terms and spellings that appear in the recording (e.g. \"Lviv, Kyivstar, PrivatBank\"). Helps the model spell them correctly. Ukrainian city names are built in when the language is set to English, Ukrainian or Russian.",
             "editor": "textarea",
             "default": ""
         },

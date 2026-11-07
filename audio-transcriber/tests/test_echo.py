@@ -6,7 +6,7 @@ import unittest
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.transcribe import _echoed, _prompt, _prompt_words  # noqa: E402
 
-WORDS = _prompt_words(_prompt(None, None))
+WORDS = _prompt_words(_prompt(None, 'en') + ' ' + _prompt(None, 'uk'))
 ECHO = ('Кијов, Львів, Карків, Суми, Сменијев, Одеса, Деньмир, Наркијов, Запорижжя, Винна, Ортампон, Харків, '
         'Семенјев, Семенјев.')
 
@@ -29,6 +29,11 @@ class Echo(unittest.TestCase):
                            ('Захист мови є частиною національної безпеки.', 'ukrainian')]:
             self.assertFalse(_echoed(res([text], lang), WORDS), text)
         self.assertFalse(_echoed(res([ECHO]), set()))
+
+    def test_no_place_names_without_language(self):
+        self.assertEqual(_prompt(None, None), '')
+        self.assertEqual(_prompt('Kyivstar', None), 'Kyivstar')
+        self.assertIn('Львів', _prompt(None, 'uk'))
 
 
 if __name__ == '__main__':
