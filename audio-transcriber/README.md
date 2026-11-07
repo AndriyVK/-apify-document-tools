@@ -38,6 +38,7 @@ Whisper large-v3 model - 99 languages, automatic language detection, files of an
 | `sources` | URLs of audio or video files. Files in your own Apify key-value store work too: set the store's access to "Anyone with ID can read" and use `https://api.apify.com/v2/key-value-stores/<store ID>/records/<key>` (the Actor runs with limited permissions and does not use your token). |
 | `language` | ISO code (`en`, `uk`, `de`…) or empty for automatic detection |
 | `quality` | `accurate` (Whisper large-v3, default) or `fast` (large-v3-turbo) - same price |
+| `crossCheck` | Recognise the audio again with the other model and list where the two disagree (see below). Each minute is charged twice |
 | `vocabulary` | Names and terms to spell correctly; Ukrainian city names (Kyiv, Lviv, Kharkiv…) are built in |
 | `subtitles` | Save SRT and VTT files (free) |
 
@@ -60,11 +61,36 @@ Whisper large-v3 model - 99 languages, automatic language detection, files of an
 
 A file that cannot be downloaded or has no audio track gets an `error` field instead and is **not charged**.
 
+### Cross-check: where to listen again
+
+Wind, music, a bad phone line or several people talking at once break numbers and short words first, and the two
+Whisper models break them differently. With `"crossCheck": true` the same audio is recognised by the second model as
+well, and the item gets the places where the two transcripts disagree. A real example, a weather report recorded
+outdoors in a storm:
+
+```json
+"crossCheck": {
+  "model": "whisper-large-v3-turbo",
+  "agreement": 0.884,
+  "differences": [
+    { "start": 0.0, "end": 7.0, "text": "gusts of wind of 17 even 18", "other": "just a room of 70 even 80", "numbers": true },
+    { "start": 21.0, "end": 28.0, "text": "with drought in", "other": "throughout", "numbers": false }
+  ],
+  "text": "…the full transcript of the second model…"
+}
+```
+
+The forecast for that day was gusts of 60-70 mph, up to 80, so the second model got the figures right, and
+«throughout the morning» fits the sentence; in turn it misheard «gusts of wind of». `numbers: true` marks the
+differences with figures in them, the ones that matter most in minutes, interviews and calls. Times come from the
+main transcript. Where both models agree they can still both be wrong, so this narrows the listening down, it does
+not replace it. `billedMinutes` shows the doubled count.
+
 ## Pricing
 
 | Event | Price | What counts |
 |---|---|---|
-| `audio-minute` | **$5 per 1,000 minutes** | every started minute of transcribed audio (at least 1 per file) |
+| `audio-minute` | **$5 per 1,000 minutes** | every started minute of transcribed audio (at least 1 per file); twice with `crossCheck` |
 
 Plus Apify's standard start fee of $0.05 per 1,000 runs. Subtitles are free. The run transcribes only as many minutes as
 fit under your maximum charge per run and marks the item with a warning.

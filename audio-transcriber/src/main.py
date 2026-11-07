@@ -10,6 +10,7 @@ import time
 import httpx
 from apify import Actor
 
+from .crosscheck import compare
 from .download import DownloadError, download
 from .transcribe import TranscriptionError, to_srt, to_vtt, transcribe
 
@@ -45,6 +46,7 @@ async def main() -> None:
         language = (inp.get('language') or '').strip().lower() or None
         prompt = (inp.get('vocabulary') or '').strip() or None
         want_subs = inp.get('subtitles', True)
+        cross_check = bool(inp.get('crossCheck'))
 
         charging = Actor.get_charging_manager()
         store = await Actor.open_key_value_store()
@@ -70,12 +72,31 @@ async def main() -> None:
                         Actor.log.warning(f'{url}: {item["error"]}')
                         await Actor.push_data(item)
                         continue
+                    checked, warnings, minutes = None, [], res['minutes']
+                    if cross_check and res['segments']:
+                        # the second model on the same audio, charged like the first recognition
+                        if left is None or left >= 2 * minutes:
+                            try:
+                                res2 = await asyncio.to_thread(
+                                    transcribe, src, tmp, quality='fast' if quality == 'accurate' else 'accurate',
+                                    language=language, prompt=prompt, max_minutes=minutes)
+                                checked = {'model': res2['model'], **compare(res['segments'], res2['segments']),
+                                           'text': res2['text']}
+                                minutes *= 2
+                            except Exception as e:  # noqa: BLE001 - the first transcript is still good
+                                warnings.append(f'cross-check failed: {e}')
+                        else:
+                            warnings.append('cross-check skipped: maximum charge per run')
                 item.update(fileName=name or None, language=res['language'], durationSeconds=res['duration'],
-                            billedMinutes=res['minutes'], model=res['model'], text=res['text'],
+                            billedMinutes=minutes, model=res['model'], text=res['text'],
                             segments=res['segments'], seconds=round(time.monotonic() - started, 1))
+                if checked:
+                    item['crossCheck'] = checked
                 if res['truncated']:
-                    item['warnings'] = [f"only the first {res['minutes']} minutes were transcribed: "
-                                        'maximum charge per run reached']
+                    warnings.insert(0, f"only the first {res['minutes']} minutes were transcribed: "
+                                       'maximum charge per run reached')
+                if warnings:
+                    item['warnings'] = warnings
                 if want_subs and res['segments']:
                     stem = _stem(name, idx)
                     for ext, body, ctype in (('srt', to_srt(res['segments']), 'application/x-subrip'),
@@ -85,7 +106,7 @@ async def main() -> None:
                         item[f'{ext}Url'] = await store.get_public_url(key)
                 await Actor.push_data(item)
                 # Charge per started minute of transcribed audio, after the result is saved
-                await Actor.charge(EVENT_MINUTE, count=res['minutes'])
+                await Actor.charge(EVENT_MINUTE, count=minutes)
                 ok += 1
                 Actor.log.info(f"{url}: {res['duration']:.0f}s, {res['language']}, {len(res['segments'])} segments")
         await Actor.set_status_message(f'Transcribed {ok} file(s), failed {failed}.')

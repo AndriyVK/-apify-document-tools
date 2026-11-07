@@ -8,8 +8,16 @@
             "type": "array",
             "description": "Public URLs of audio or video files: MP3, WAV, M4A, AAC, OGG, OPUS, FLAC, MP4, MOV, MKV, WebM, AVI and more. Long files are split automatically. Files in your own Apify key-value store work too: set the store's access to \"Anyone with ID can read\" and use https://api.apify.com/v2/key-value-stores/<store ID>/records/<key>.",
             "editor": "requestListSources",
-            "prefill": [{ "url": "https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/speech-en.mp3" }],
-            "default": [{ "url": "https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/speech-en.mp3" }]
+            "prefill": [
+                {
+                    "url": "https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/speech-en.mp3"
+                }
+            ],
+            "default": [
+                {
+                    "url": "https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/speech-en.mp3"
+                }
+            ]
         },
         "language": {
             "title": "Language",
@@ -23,9 +31,22 @@
             "type": "string",
             "description": "accurate = Whisper large-v3 (best for Ukrainian and other non-English languages); fast = Whisper large-v3-turbo. Same price.",
             "editor": "select",
-            "enum": ["accurate", "fast"],
-            "enumTitles": ["Accurate (Whisper large-v3)", "Fast (Whisper large-v3-turbo)"],
+            "enum": [
+                "accurate",
+                "fast"
+            ],
+            "enumTitles": [
+                "Accurate (Whisper large-v3)",
+                "Fast (Whisper large-v3-turbo)"
+            ],
             "default": "accurate"
+        },
+        "crossCheck": {
+            "title": "Cross-check with the second model",
+            "type": "boolean",
+            "editor": "checkbox",
+            "description": "Recognise the audio again with the other Whisper model and list the places where the two disagree (crossCheck.differences, with times). Noise breaks numbers and short words, and the two models break them differently, so these are the places worth listening to. Doubles the price: each started minute is charged twice.",
+            "default": false
         },
         "vocabulary": {
             "title": "Vocabulary hint",
@@ -41,5 +62,7 @@
             "default": true
         }
     },
-    "required": ["sources"]
+    "required": [
+        "sources"
+    ]
 }

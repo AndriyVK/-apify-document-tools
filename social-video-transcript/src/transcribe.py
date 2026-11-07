@@ -1,6 +1,7 @@
 """Audio/video -> text with Groq's Whisper API: ffmpeg prepares speech-quality chunks, Groq transcribes them."""
 from __future__ import annotations
 
+import difflib
 import json
 import math
 import os
@@ -147,6 +148,43 @@ def _prompt(vocabulary: str | None, language: str | None) -> str:
     return ' '.join(p for p in ((vocabulary or '').strip()[:400], names) if p)
 
 
+def _prompt_words(prompt: str) -> set[str]:
+    return {w for w in re.findall(r'\w+', prompt.lower()) if len(w) >= 3}
+
+
+_LATIN_SCRIPT = {'english', 'german', 'french', 'spanish', 'portuguese', 'italian', 'polish', 'dutch', 'turkish', 'czech',
+                 'romanian', 'swedish', 'indonesian', 'vietnamese', 'danish', 'norwegian', 'finnish', 'hungarian',
+                 'slovak', 'croatian', 'lithuanian', 'latvian', 'estonian', 'malay', 'tagalog', 'swahili'}
+
+
+def _echoed(res: dict, words: set[str]) -> bool:
+    """Whisper sometimes writes out its prompt instead of the speech ("Київ, Львів, Харків..." over an English
+    recording, with the names misspelled). Signs: a segment or most of the chunk made of prompt words, or text in
+    Cyrillic where Whisper itself detected a Latin-script language."""
+    if not words:
+        return False
+    text = ' '.join(s.get('text') or '' for s in res.get('segments') or [])
+    letters = re.findall(r'[^\W\d_]', text)
+    cyrillic = sum(1 for c in letters if '\u0400' <= c <= '\u04ff')
+    if (res.get('language') or '').lower() in _LATIN_SCRIPT and letters and cyrillic > 0.5 * len(letters):
+        return True
+
+    def hits(part):
+        found = re.findall(r'\w+', part.lower())
+        return len(found), sum(1 for w in found if w in words or difflib.get_close_matches(w, words, 1, 0.7))
+    total = hit = 0
+    for s in res.get('segments') or []:
+        n, h = hits(s.get('text') or '')
+        if n >= 4 and h >= 0.5 * n:
+            return True
+        items = [p.strip() for p in re.split(r'[,.;]', s.get('text') or '') if p.strip()]
+        if (len(items) >= 6 and all(len(p.split()) <= 2 and p[0].isupper() for p in items)
+                and h >= 0.3 * n):            # "Кијов, Львів, Карків, Суми, ...": a list of names, not speech
+            return True
+        total, hit = total + n, hit + h
+    return total >= 3 and hit >= 0.5 * total
+
+
 def transcribe(path: str, workdir: str, *, quality: str = 'accurate', language: str | None = None,
                prompt: str | None = None, max_minutes: int | None = None, media_seconds: float | None = None) -> dict:
     """Returns {'text', 'segments', 'language', 'duration', 'minutes', 'truncated'}. media_seconds: the video's own
@@ -160,10 +198,14 @@ def transcribe(path: str, workdir: str, *, quality: str = 'accurate', language: 
     model = MODELS.get(quality, MODELS['accurate'])
     segments, texts, detected = [], [], None
     prompt = _prompt(prompt, language)
+    words = _prompt_words(prompt)
     with httpx.Client(timeout=httpx.Timeout(300, connect=30)) as client:
         for chunk, offset in make_chunks(path, workdir, duration):
+            tail = texts[-1][-200:] if texts else ''
             res = transcribe_chunk(client, chunk, model=model, language=language,
-                                   prompt=prompt if not texts else prompt + ' ' + texts[-1][-200:])
+                                   prompt=(prompt + ' ' + tail).strip())
+            if _echoed(res, words):          # the prompt came back instead of the speech: again without it
+                res = transcribe_chunk(client, chunk, model=model, language=language, prompt=tail or None)
             detected = detected or res.get('language')
             texts.append((res.get('text') or '').strip())
             for s in res.get('segments') or []:

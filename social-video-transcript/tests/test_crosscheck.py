@@ -37,6 +37,39 @@ class CrossCheck(unittest.TestCase):
                     [{'start': 0, 'end': 3, 'text': 'Це природно. Це природно.'}])
         self.assertEqual([d['text'] for d in r['differences']], ['природньо Це природньо'])
 
+    def test_repeated_passage(self):
+        # the same sentence read three times (speech-en.mp3): only the second reading differs
+        line = 'The warehouse in Lviv received 1,240 pallets of building materials during the third quarter.'
+        primary = [{'start': 15.0 * k, 'end': 15.0 * k + 14, 'text': line} for k in range(3)]
+        other = [dict(s) for s in primary]
+        other[1] = {'start': 15.4, 'end': 29.0, 'text': line.replace('in Lviv', 'in Elvive')}
+        other[0] = {'start': 0.3, 'end': 14.2, 'text': line}
+        r = compare(primary, other)
+        self.assertEqual([(d['text'], d['other'], d['start']) for d in r['differences']], [('Lviv', 'Elvive', 15.0)])
+        self.assertGreater(r['agreement'], 0.95)
+
+    def test_long_recording_is_fast(self):
+        import random
+        import time
+        rnd = random.Random(1)
+        words = [rnd.choice(['one', 'two', 'three', 'Lviv', 'Kyiv', 'and', 'the', 'we', 'pallets']) for _ in range(9000)]
+        primary = [{'start': k * 4.0, 'end': k * 4.0 + 4, 'text': ' '.join(words[k * 10:k * 10 + 10])} for k in range(900)]
+        other = [dict(s) for s in primary]
+        other[450] = {**other[450], 'text': 'something else entirely'}
+        t0 = time.monotonic()
+        r = compare(primary, other)
+        self.assertLess(time.monotonic() - t0, 20)
+        self.assertEqual(len(r['differences']), 1)
+        self.assertIn(r['differences'][0]['start'], (1796.0, 1800.0))  # a tie on random words
+
+    def test_number_spelling(self):
+        r = compare([{'start': 0, 'end': 6, 'text': 'Lviv received 1240 pallets, up by 12%.'}],
+                    [{'start': 0, 'end': 6, 'text': 'Lviv received 1,240 pallets, up by twelve percent.'}])
+        self.assertEqual(r, {'agreement': 1.0, 'differences': []})
+        r = compare([{'start': 0, 'end': 4, 'text': 'скоротилися на 12 відсотків'}],
+                    [{'start': 0, 'end': 4, 'text': 'скоротилися на 12%'}])
+        self.assertEqual(r['differences'], [])
+
 
 if __name__ == '__main__':
     unittest.main()
