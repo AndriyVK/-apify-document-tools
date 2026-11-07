@@ -63,7 +63,7 @@ def transcribe_chunk(client: httpx.Client, path: str, *, model: str, language: s
     if language:
         data['language'] = language
     if prompt:
-        data['prompt'] = prompt[:800]
+        data['prompt'] = prompt[:1200]   # user vocabulary (400) + place names (~350) + the previous chunk's end (200)
     headers = {}
     if os.environ.get('GROQ_API_KEY'):  # on Apify; locally a proxy may add the header instead
         headers['Authorization'] = 'Bearer ' + os.environ['GROQ_API_KEY']
@@ -126,6 +126,27 @@ def _made_up(seg: dict, text: str) -> bool:
             or length > 3 + len(plain) / 4)            # a few words over many seconds: nobody is saying them
 
 
+# Ukrainian place names Whisper often mishears ("Lviv" -> "Elvive"). Passed as part of the prompt, spelled the way the
+# output language writes them; with no language set, English and Ukrainian spellings both.
+GLOSSARY = {
+    'en': 'Kyiv, Lviv, Kharkiv, Odesa, Dnipro, Zaporizhzhia, Vinnytsia, Mykolaiv, Kherson, Chernihiv, Poltava, '
+          'Ivano-Frankivsk, Ternopil, Lutsk, Rivne, Uzhhorod, Chernivtsi, Zhytomyr, Sumy, Cherkasy, Kryvyi Rih, Mariupol.',
+    'uk': 'Київ, Львів, Харків, Одеса, Дніпро, Запоріжжя, Вінниця, Миколаїв, Херсон, Чернігів, Полтава, '
+          'Івано-Франківськ, Тернопіль, Луцьк, Рівне, Ужгород, Чернівці, Житомир, Суми, Черкаси, Кривий Ріг, Маріуполь.',
+    'ru': 'Киев, Львов, Харьков, Одесса, Днепр, Запорожье, Винница, Николаев, Херсон, Чернигов, Полтава, '
+          'Ивано-Франковск, Тернополь, Луцк, Ровно, Ужгород, Черновцы, Житомир, Сумы, Черкассы, Кривой Рог, Мариуполь.',
+}
+
+
+def _prompt(vocabulary: str | None, language: str | None) -> str:
+    """The user's own vocabulary first, then the place names for the spoken language."""
+    if language is None:
+        names = GLOSSARY['en'] + ' ' + GLOSSARY['uk']
+    else:
+        names = GLOSSARY.get(language, '')
+    return ' '.join(p for p in ((vocabulary or '').strip()[:400], names) if p)
+
+
 def transcribe(path: str, workdir: str, *, quality: str = 'accurate', language: str | None = None,
                prompt: str | None = None, max_minutes: int | None = None, media_seconds: float | None = None) -> dict:
     """Returns {'text', 'segments', 'language', 'duration', 'minutes', 'truncated'}. media_seconds: the video's own
@@ -138,10 +159,11 @@ def transcribe(path: str, workdir: str, *, quality: str = 'accurate', language: 
         duration, truncated = max_minutes * 60.0, True
     model = MODELS.get(quality, MODELS['accurate'])
     segments, texts, detected = [], [], None
+    prompt = _prompt(prompt, language)
     with httpx.Client(timeout=httpx.Timeout(300, connect=30)) as client:
         for chunk, offset in make_chunks(path, workdir, duration):
             res = transcribe_chunk(client, chunk, model=model, language=language,
-                                   prompt=prompt if not texts else (prompt or '') + ' ' + texts[-1][-400:])
+                                   prompt=prompt if not texts else prompt + ' ' + texts[-1][-200:])
             detected = detected or res.get('language')
             texts.append((res.get('text') or '').strip())
             for s in res.get('segments') or []:

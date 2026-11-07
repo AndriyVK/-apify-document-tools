@@ -77,6 +77,13 @@
             "description": "ISO 639-1 code of the spoken language (en, uk, es, de, ...). Leave empty to detect it automatically.",
             "default": ""
         },
+        "vocabulary": {
+            "title": "Vocabulary hint",
+            "type": "string",
+            "editor": "textarea",
+            "default": "",
+            "description": "Optional names, terms and spellings said in the videos (e.g. \"Kyivstar, PrivatBank, Zelensky\"). Used only when the speech is recognised (no captions). Ukrainian city names are built in."
+        },
         "useCaptions": {
             "title": "Use the video's captions when available",
             "type": "boolean",

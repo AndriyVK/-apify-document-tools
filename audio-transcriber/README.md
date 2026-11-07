@@ -38,7 +38,7 @@ Whisper large-v3 model - 99 languages, automatic language detection, files of an
 | `sources` | URLs of audio or video files. Files in your own Apify key-value store work too: set the store's access to "Anyone with ID can read" and use `https://api.apify.com/v2/key-value-stores/<store ID>/records/<key>` (the Actor runs with limited permissions and does not use your token). |
 | `language` | ISO code (`en`, `uk`, `de`…) or empty for automatic detection |
 | `quality` | `accurate` (Whisper large-v3, default) or `fast` (large-v3-turbo) - same price |
-| `vocabulary` | Names and terms to spell correctly |
+| `vocabulary` | Names and terms to spell correctly; Ukrainian city names (Kyiv, Lviv, Kharkiv…) are built in |
 | `subtitles` | Save SRT and VTT files (free) |
 
 ## Output
