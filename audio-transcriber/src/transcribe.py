@@ -183,9 +183,87 @@ def _echoed(res: dict, words: set[str]) -> bool:
     return total >= 3 and hit >= 0.5 * total
 
 
+_ISO = {'english': 'en', 'ukrainian': 'uk', 'russian': 'ru', 'german': 'de', 'french': 'fr', 'spanish': 'es',
+        'portuguese': 'pt', 'italian': 'it', 'polish': 'pl', 'dutch': 'nl', 'turkish': 'tr', 'czech': 'cs',
+        'romanian': 'ro', 'swedish': 'sv', 'arabic': 'ar', 'hindi': 'hi', 'indonesian': 'id', 'vietnamese': 'vi',
+        'chinese': 'zh', 'japanese': 'ja', 'korean': 'ko'}
+GAP_SECONDS = 5.0      # a stretch this long with no text, or almost none, is checked for missed speech
+MIN_SPEECH = 2.0       # ...and re-recognised when it holds at least this many seconds of sound
+MAX_GAPS = 30          # checks per file at most
+
+
+def _sound_seconds(path: str, start: float, length: float) -> float:
+    """Seconds of sound (not silence) in a stretch of the file, by ffmpeg's silencedetect."""
+    res = subprocess.run(['ffmpeg', '-v', 'info', '-nostats', '-ss', f'{start:.3f}', '-t', f'{length:.3f}', '-i', path,
+                          '-vn', '-af', 'silencedetect=noise=-35dB:d=0.6', '-f', 'null', '-'],
+                         capture_output=True, text=True, timeout=300)
+    silent, opened = 0.0, None
+    for line in res.stderr.splitlines():
+        m = re.search(r'silence_start: (-?[\d.]+)', line)
+        if m:
+            opened = max(0.0, float(m.group(1)))
+        m = re.search(r'silence_duration: ([\d.]+)', line)
+        if m:
+            silent, opened = silent + float(m.group(1)), None
+    if opened is not None:
+        silent += max(0.0, length - opened)
+    return max(0.0, length - silent)
+
+
+def _candidates(segments: list[dict], duration: float) -> list[tuple[float, float, int | None]]:
+    """(start, end, index of the near-empty segment or None for a gap between segments) where speech may be missing."""
+    out, prev_end = [], 0.0
+    for i, s in enumerate(segments):
+        if s['start'] - prev_end >= GAP_SECONDS:
+            out.append((prev_end, s['start'], None))
+        length = s['end'] - s['start']
+        if length >= GAP_SECONDS and len(s['text']) < 2 * length:    # speech runs 10-15 characters a second
+            out.append((s['start'], s['end'], i))
+        prev_end = max(prev_end, s['end'])
+    if duration - prev_end >= GAP_SECONDS:
+        out.append((prev_end, duration, None))
+    return out
+
+
+def _fill_gaps(client, path: str, workdir: str, segments: list[dict], duration: float, *, model: str,
+               language: str | None) -> tuple[list[dict], list[dict]]:
+    """Re-recognises stretches where Whisper wrote nothing or one word over seconds of sound (it sometimes skips a
+    sentence or two). Returns the segments with the found speech put in, and the list of such places."""
+    gaps, replace, add = [], set(), []
+    for n, (start, end, idx) in enumerate(_candidates(segments, duration)):
+        if n >= MAX_GAPS or _sound_seconds(path, start, end - start) < MIN_SPEECH:
+            continue
+        cut = os.path.join(workdir, f'gap-{n:03d}.mp3')
+        lo, hi = start, min(duration, end + 0.3)   # no margin before: it brought back the previous sentence's end
+        r = subprocess.run(['ffmpeg', '-v', 'error', '-y', '-ss', f'{lo:.3f}', '-t', f'{hi - lo:.3f}', '-i', path,
+                            '-vn', '-ac', '1', '-ar', '16000', '-b:a', '32k', cut], capture_output=True, timeout=300)
+        if r.returncode != 0 or not os.path.exists(cut):
+            continue
+        res = transcribe_chunk(client, cut, model=model, language=language, prompt=None)
+        found = []
+        for s in res.get('segments') or []:
+            text = (s.get('text') or '').strip()
+            if (text and not _silence(s) and not _made_up(s, text) and float(s.get('no_speech_prob') or 0) < 0.5
+                    and float(s.get('avg_logprob') or 0) > -1.0):
+                found.append({'start': round(lo + float(s['start']), 2), 'end': round(min(lo + float(s['end']), hi), 2),
+                              'text': text})
+        old = segments[idx]['text'] if idx is not None else ''
+        new = ' '.join(s['text'] for s in found)
+        if len(new) >= max(20, 3 * len(old)):
+            gaps.append({'start': round(start, 2), 'end': round(end, 2), 'status': 'filled', 'text': new})
+            add += found
+            if idx is not None:
+                replace.add(idx)
+        else:
+            gaps.append({'start': round(start, 2), 'end': round(end, 2), 'status': 'unclear', 'text': old})
+    if add:
+        segments = sorted([s for i, s in enumerate(segments) if i not in replace] + add, key=lambda s: s['start'])
+    return segments, gaps
+
+
 def transcribe(path: str, workdir: str, *, quality: str = 'accurate', language: str | None = None,
                prompt: str | None = None, max_minutes: int | None = None, media_seconds: float | None = None) -> dict:
-    """Returns {'text', 'segments', 'language', 'duration', 'minutes', 'truncated'}. media_seconds: the video's own
+    """Returns {'text', 'segments', 'language', 'duration', 'minutes', 'truncated', 'model', 'gaps'}. media_seconds: the video's own
     length from the site; audio past it (a longer music track) is not transcribed."""
     duration = probe_duration(path)
     if media_seconds and media_seconds > 0:
@@ -215,11 +293,13 @@ def transcribe(path: str, workdir: str, *, quality: str = 'accurate', language: 
                 if text and offset + float(s['start']) < duration:
                     segments.append({'start': round(offset + float(s['start']), 2),
                                      'end': round(min(offset + float(s['end']), duration), 2), 'text': text})
+        segments, gaps = _fill_gaps(client, path, workdir, segments, duration, model=model,
+                                    language=language or _ISO.get((detected or '').lower()))
     # the full text is rebuilt from the kept segments, so dropped made-up lines do not come back through it
     texts = [' '.join(s['text'] for s in segments)] if segments else []
     return {'text': '\n'.join(t for t in texts if t), 'segments': segments, 'language': detected,
             'duration': round(duration, 2), 'minutes': max(1, math.ceil(duration / 60)), 'truncated': truncated,
-            'model': model}
+            'model': model, 'gaps': gaps}
 
 
 def _ts(seconds: float, sep: str) -> str:

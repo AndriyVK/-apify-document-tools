@@ -90,6 +90,8 @@ async def main() -> None:
                 item.update(fileName=name or None, language=res['language'], durationSeconds=res['duration'],
                             billedMinutes=minutes, model=res['model'], text=res['text'],
                             segments=res['segments'], seconds=round(time.monotonic() - started, 1))
+                if res.get('gaps'):
+                    item['gaps'] = res['gaps']
                 if checked:
                     item['crossCheck'] = checked
                 if res['truncated']:

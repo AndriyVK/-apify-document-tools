@@ -61,6 +61,23 @@ Whisper large-v3 model - 99 languages, automatic language detection, files of an
 
 A file that cannot be downloaded or has no audio track gets an `error` field instead and is **not charged**.
 
+### Missed speech (`gaps`)
+
+Whisper sometimes skips a sentence or two: the transcript reads smoothly, but a few seconds of speech are not in it,
+or are a single word («The» for seven seconds). Every transcript is checked for this, free of charge. Each stretch of
+5 seconds or more with no text, or almost none, is measured with ffmpeg; where it holds sound and not silence, it is
+recognised again on its own. The item then lists these places:
+
+```json
+"gaps": [
+  { "start": 18.8, "end": 25.4, "status": "filled", "text": "next shipment of cement and steel rods is planned..." },
+  { "start": 61.0, "end": 70.2, "status": "unclear", "text": "" }
+]
+```
+
+`filled`: the speech was found and is now in `text`, `segments` and the subtitles. `unclear`: there is sound but no
+clear speech was found (music, noise, crosstalk), worth listening to. No `gaps` field: nothing was missed.
+
 ### Cross-check: where to listen again
 
 Wind, music, a bad phone line or several people talking at once break numbers and short words first, and the two

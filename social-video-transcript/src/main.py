@@ -132,7 +132,7 @@ async def main() -> None:
             item = {'url': url, 'platform': plat}
             started = time.monotonic()
             charges = {}
-            checked = None
+            checked, gaps = None, None
             try:
                 data, proxy = await _metadata(url, plat, proxies)
                 duration = float(data.get('duration') or 0)
@@ -171,6 +171,7 @@ async def main() -> None:
                                                       max_minutes=left,
                                                       media_seconds=duration or None)
                         segments, lang, source = res['segments'], _code(res['language']), 'speech-recognition'
+                        gaps = res.get('gaps') or None
                         if res['truncated']:
                             item['warnings'] = [f"only the first {res['minutes']} minutes were transcribed: "
                                                 'maximum charge per run reached']
@@ -209,6 +210,8 @@ async def main() -> None:
             item.update(language=lang, transcriptSource=source, text=_text(segments))
             if include_segments:
                 item['segments'] = segments
+            if gaps:
+                item['gaps'] = gaps
             if checked:
                 item['crossCheck'] = checked
             stem = _stem(data, idx)

@@ -8,6 +8,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import subprocess
 import urllib.parse
 
 import yt_dlp
@@ -139,21 +140,50 @@ def captions(url: str, data: dict, proxy: str | None, language: str | None) -> d
     return {'language': lang, 'kind': kind, 'segments': segments} if segments else None
 
 
+def _has_audio(path: str) -> bool:
+    out = subprocess.run(['ffprobe', '-v', 'error', '-select_streams', 'a', '-show_entries', 'stream=index', '-of', 'csv=p=0',
+                          path], capture_output=True, text=True, timeout=120)
+    return bool(out.stdout.strip())
+
+
 def audio(data: dict, workdir: str, proxy: str | None) -> str:
     """Downloads the smallest file with the speech track of an info() result (same proxy: YouTube links are bound
     to the address that asked for them); returns its path."""
     o = _opts(proxy, workdir)
     # TikTok's audio-only format ('audio') is the clip's background music track, often minutes longer than the video
     # and without the speech: Whisper then "transcribes" music. The video file with its own sound is used instead.
-    o['format'] = ('ba[filesize<100M][format_id!=audio]/ba[format_id!=audio]/wa[format_id!=audio]/'
-                   'w[acodec!=none][vcodec!=none]/w[acodec!=none]/worst')
-    try:
-        with yt_dlp.YoutubeDL(o) as y:
-            y.process_ie_result(dict(data), download=True)
-    except Exception as e:  # noqa: BLE001
-        raise FetchError(_clean(e)) from e
-    files = [os.path.join(workdir, f) for f in os.listdir(workdir) if f.startswith('media.')]
-    files = [f for f in files if os.path.getsize(f) > 0 and not f.endswith('.part')]
-    if not files:
-        raise FetchError('the video has no downloadable audio')
-    return files[0]
+    selector = ('ba[filesize<100M][format_id!=audio]/ba[format_id!=audio]/wa[format_id!=audio]/'
+                'w[acodec!=none][vcodec!=none]/w[acodec!=none]/worst')
+    skip = []
+    for attempt in range(4):
+        o['format'] = '/'.join(p + ''.join(f'[format_id!={s}]' for s in skip) for p in selector.split('/'))
+        for f in os.listdir(workdir):
+            if f.startswith('media.'):
+                os.remove(os.path.join(workdir, f))
+        try:
+            # info() already chose formats for its own default selector: for a video whose best picture has no sound
+            # (TikTok's bytevc1) that is a picture + sound pair in 'requested_formats', which yt-dlp would carry into
+            # our format and download instead ("No such file ... media.f<id>.mp4"). The choice is dropped here.
+            clean = {k: v for k, v in data.items() if k not in ('requested_formats', 'requested_downloads')}
+            with yt_dlp.YoutubeDL(o) as y:
+                got = y.process_ie_result(clean, download=True) or {}
+        except Exception as e:  # noqa: BLE001
+            # a format whose file yt-dlp cannot find after the download ("No such file ... media.f<id>.mp4"):
+            # the next format is tried instead.
+            bad = re.search(r"media\.f(.+?)\.\w+'", str(e)) if 'No such file' in str(e) else None
+            if bad and bad.group(1) not in skip and attempt < 3:
+                skip.append(bad.group(1))
+                continue
+            raise FetchError(_clean(e)) from e
+        files = [os.path.join(workdir, f) for f in os.listdir(workdir) if f.startswith('media.')]
+        files = [f for f in files if os.path.getsize(f) > 0 and not f.endswith('.part')]
+        if not files:
+            raise FetchError('the video has no downloadable audio')
+        if _has_audio(files[0]):
+            return files[0]
+        # TikTok labels some video-only files (bytevc1) as having sound: the next format then
+        fid = got.get('format_id')
+        if not fid or fid in skip or attempt == 3:
+            break
+        skip.append(fid)
+    raise FetchError('the video has no downloadable audio')
