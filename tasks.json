@@ -6,7 +6,7 @@
       {
         "name": "pdf-tables-to-json",
         "title": "Extract tables from PDF to JSON",
-        "description": "Pull every table out of PDF reports, invoices and price lists as JSON rows (header first) plus Markdown — ready for Excel, Google Sheets or a database.",
+        "description": "Pull every table out of PDF reports, invoices and price lists as JSON rows (header first) plus Markdown - ready for Excel, Google Sheets or a database.",
         "samples": [
           "text-en.pdf"
         ],
@@ -21,7 +21,7 @@
       {
         "name": "ocr-ukrainian-scanned-pdf",
         "title": "OCR Ukrainian scanned PDFs to text",
-        "description": "Recognise text in scanned Ukrainian documents (Cyrillic) and get clean Markdown — contracts, certificates, letters. English in the same scan is read too.",
+        "description": "Recognise text in scanned Ukrainian documents (Cyrillic) and get clean Markdown - contracts, certificates, letters. English in the same scan is read too.",
         "samples": [
           "scan-uk.pdf"
         ],
@@ -39,7 +39,7 @@
       {
         "name": "ocr-russian-scanned-pdf",
         "title": "OCR Russian scanned PDFs to text",
-        "description": "Turn scanned Russian-language documents into searchable Markdown text with Tesseract OCR — Cyrillic and Latin on the same page.",
+        "description": "Turn scanned Russian-language documents into searchable Markdown text with Tesseract OCR - Cyrillic and Latin on the same page.",
         "samples": [
           "scan-ru.pdf"
         ],
@@ -74,7 +74,7 @@
       {
         "name": "pdf-to-rag-chunks",
         "title": "Split PDF into RAG chunks for vector databases",
-        "description": "Convert PDFs to Markdown and split them into chunks with their nearest heading — ready for embeddings, vector databases and LLM retrieval (RAG).",
+        "description": "Convert PDFs to Markdown and split them into chunks with their nearest heading - ready for embeddings, vector databases and LLM retrieval (RAG).",
         "samples": [
           "text-3p-en.pdf"
         ],
@@ -128,7 +128,7 @@
       {
         "name": "legacy-doc-xls-ppt-to-markdown",
         "title": "Convert old DOC, XLS, PPT and RTF files to Markdown",
-        "description": "Legacy Microsoft Office and OpenDocument files (DOC, XLS, PPT, RTF, ODT) converted to Markdown and JSON tables — no Office installation needed.",
+        "description": "Legacy Microsoft Office and OpenDocument files (DOC, XLS, PPT, RTF, ODT) converted to Markdown and JSON tables - no Office installation needed.",
         "samples": [
           "legacy-doc-uk.doc",
           "legacy-sheet-uk.xls",
@@ -174,7 +174,7 @@
       {
         "name": "docx-to-pdf-a-archive",
         "title": "Convert DOCX to PDF/A for archives and e-filing",
-        "description": "Produce PDF/A-2b files from Word documents — the archival format required by courts, tax portals and document archives.",
+        "description": "Produce PDF/A-2b files from Word documents - the archival format required by courts, tax portals and document archives.",
         "samples": [
           "doc-en.docx"
         ],
@@ -201,7 +201,7 @@
       {
         "name": "powerpoint-pptx-to-pdf",
         "title": "Convert PowerPoint PPTX to PDF",
-        "description": "Convert PowerPoint presentations to PDF handouts in bulk — one page per slide, ready to share or print.",
+        "description": "Convert PowerPoint presentations to PDF handouts in bulk - one page per slide, ready to share or print.",
         "samples": [
           "slides-en.pptx"
         ],
@@ -213,7 +213,7 @@
       {
         "name": "html-to-pdf",
         "title": "Convert HTML files to PDF",
-        "description": "Render HTML documents and saved web pages to PDF with LibreOffice — simple, fast and without a browser.",
+        "description": "Render HTML documents and saved web pages to PDF with LibreOffice - simple, fast and without a browser.",
         "samples": [
           "page-en.html"
         ],
@@ -267,7 +267,7 @@
       {
         "name": "images-to-pdf",
         "title": "Convert images (PNG, JPG, TIFF) to PDF",
-        "description": "Wrap scans, photos and screenshots into PDF files — or one merged PDF — with a download link for each.",
+        "description": "Wrap scans, photos and screenshots into PDF files - or one merged PDF - with a download link for each.",
         "samples": [
           "image-en.png",
           "image-uk.png"
@@ -314,7 +314,7 @@
       {
         "name": "pdf-to-jpg-300-dpi",
         "title": "Convert PDF to high-quality JPG (300 DPI)",
-        "description": "Print-quality JPG images from PDF pages at 300 DPI — for catalogs, brochures and scanned documents.",
+        "description": "Print-quality JPG images from PDF pages at 300 DPI - for catalogs, brochures and scanned documents.",
         "samples": [
           "text-uk.pdf"
         ],
@@ -350,7 +350,7 @@
       {
         "name": "pdf-first-page-preview",
         "title": "Get the first page of a PDF as an image",
-        "description": "Render only page 1 of each PDF to PNG — cover images and previews for a whole list of documents in one run.",
+        "description": "Render only page 1 of each PDF to PNG - cover images and previews for a whole list of documents in one run.",
         "samples": [
           "text-3p-en.pdf",
           "scan-en.pdf"
@@ -434,7 +434,7 @@
       {
         "name": "pdf-to-webp",
         "title": "Convert PDF pages to WebP",
-        "description": "Lightweight WebP images of PDF pages for websites and apps — choose DPI, pages and quality.",
+        "description": "Lightweight WebP images of PDF pages for websites and apps - choose DPI, pages and quality.",
         "samples": [
           "text-3p-en.pdf"
         ],
@@ -453,7 +453,7 @@
       {
         "name": "resize-images-bulk",
         "title": "Resize images in bulk",
-        "description": "Downscale large photos and scans to a maximum width and save them as JPG — keeps aspect ratio and EXIF orientation.",
+        "description": "Downscale large photos and scans to a maximum width and save them as JPG - keeps aspect ratio and EXIF orientation.",
         "samples": [
           "image-en.png",
           "photo-sample.heic"
@@ -504,7 +504,7 @@
       {
         "name": "mp4-video-to-text",
         "title": "Transcribe MP4 video to text",
-        "description": "Extract the speech from MP4, MOV or WebM videos and get the transcript with timestamps — no manual audio extraction needed.",
+        "description": "Extract the speech from MP4, MOV or WebM videos and get the transcript with timestamps - no manual audio extraction needed.",
         "samples": [
           "video-en.mp4"
         ],
@@ -533,7 +533,7 @@
       {
         "name": "meeting-recording-transcription",
         "title": "Transcribe meeting recordings",
-        "description": "Transcribe Zoom, Teams or Google Meet recordings of any length — long files are split and stitched with continuous timestamps.",
+        "description": "Transcribe Zoom, Teams or Google Meet recordings of any length - long files are split and stitched with continuous timestamps.",
         "samples": [
           "speech-en.mp3"
         ],
@@ -564,7 +564,7 @@
       {
         "name": "interview-transcription",
         "title": "Transcribe interviews to text",
-        "description": "Accurate interview transcripts with timestamps for journalists and researchers — English, Ukrainian, Polish, German and 95+ more languages.",
+        "description": "Accurate interview transcripts with timestamps for journalists and researchers - English, Ukrainian, Polish, German and 95+ more languages.",
         "samples": [
           "speech-uk.mp3"
         ],
@@ -593,7 +593,7 @@
       {
         "name": "webvtt-subtitles-for-web-video",
         "title": "Create WebVTT subtitles for web video",
-        "description": "WebVTT captions for HTML5 video players, plus SRT for editors — generated from any audio or video file.",
+        "description": "WebVTT captions for HTML5 video players, plus SRT for editors - generated from any audio or video file.",
         "samples": [
           "video-en.mp4"
         ],
@@ -608,7 +608,7 @@
       {
         "name": "fast-speech-to-text",
         "title": "Fast speech to text with Whisper turbo",
-        "description": "Quick transcripts with Whisper large-v3-turbo at the same price — ideal for English voice notes and short clips.",
+        "description": "Quick transcripts with Whisper large-v3-turbo at the same price - ideal for English voice notes and short clips.",
         "samples": [
           "speech-en.mp3"
         ],
@@ -625,7 +625,7 @@
       {
         "name": "ocr-image-to-text",
         "title": "Image to text (OCR)",
-        "description": "Extract text from screenshots, photos of documents and scans — plain text plus every line with confidence.",
+        "description": "Extract text from screenshots, photos of documents and scans - plain text plus every line with confidence.",
         "samples": [
           "image-en.png"
         ],
@@ -642,7 +642,7 @@
       {
         "name": "ocr-ukrainian-images",
         "title": "OCR Ukrainian images and scans",
-        "description": "Recognise Ukrainian (Cyrillic) text in images and scanned PDFs — documents, certificates, letters.",
+        "description": "Recognise Ukrainian (Cyrillic) text in images and scanned PDFs - documents, certificates, letters.",
         "samples": [
           "image-uk.png",
           "scan-noisy-uk.pdf"
@@ -679,7 +679,7 @@
       {
         "name": "scanned-pdf-to-text-ocr",
         "title": "Scanned PDF to text (OCR)",
-        "description": "OCR every page of a scanned PDF and get text per page — choose pages like 1-3,5.",
+        "description": "OCR every page of a scanned PDF and get text per page - choose pages like 1-3,5.",
         "samples": [
           "scan-en.pdf"
         ],
@@ -697,7 +697,7 @@
       {
         "name": "ocr-words-bounding-boxes",
         "title": "OCR with word bounding boxes",
-        "description": "Every word with its confidence and pixel box — for highlighting, redaction and data extraction.",
+        "description": "Every word with its confidence and pixel box - for highlighting, redaction and data extraction.",
         "samples": [
           "image-en.png"
         ],
@@ -735,7 +735,7 @@
       {
         "name": "ocr-rotated-scans",
         "title": "OCR rotated or upside-down scans",
-        "description": "Auto-detect page orientation and fix it before OCR — for scans fed in sideways.",
+        "description": "Auto-detect page orientation and fix it before OCR - for scans fed in sideways.",
         "samples": [
           "scan-en.pdf"
         ],
@@ -789,7 +789,7 @@
       {
         "name": "bulk-ocr-images",
         "title": "Bulk OCR for many images",
-        "description": "OCR hundreds of image URLs in one run — one result per image, pay per image.",
+        "description": "OCR hundreds of image URLs in one run - one result per image, pay per image.",
         "samples": [
           "image-en.png",
           "image-uk.png",
@@ -826,7 +826,7 @@
       {
         "name": "ukrainian-male-voice-tts",
         "title": "Ukrainian male voice text to speech",
-        "description": "Read Ukrainian text aloud with a male neural voice and get MP3 plus subtitles — for videos, audiobooks and accessibility.",
+        "description": "Read Ukrainian text aloud with a male neural voice and get MP3 plus subtitles - for videos, audiobooks and accessibility.",
         "input": {
           "text": "Привіт! Це природний нейронний голос, який читає статті, документи та книжки українською мовою.",
           "voice": "uk_UA-mykyta-high"
@@ -1063,7 +1063,7 @@
       {
         "name": "element-screenshot-css-selector",
         "title": "Screenshot of a page element (CSS selector)",
-        "description": "Capture just one element of a page: a chart, a price box, a widget — by CSS selector.",
+        "description": "Capture just one element of a page: a chart, a price box, a widget - by CSS selector.",
         "input": {
           "urls": [
             {
@@ -1157,7 +1157,7 @@
       {
         "name": "domain-expiry-checker",
         "title": "Domain expiry date checker",
-        "description": "See when your domains expire and how many days are left — export to CSV, schedule weekly.",
+        "description": "See when your domains expire and how many days are left - export to CSV, schedule weekly.",
         "input": {
           "domains": [
             "example.com",
@@ -1207,7 +1207,7 @@
       {
         "name": "mx-records-email-provider-check",
         "title": "MX records check: email provider of domains",
-        "description": "Find which email provider each domain uses from its MX records — for lead lists and deliverability.",
+        "description": "Find which email provider each domain uses from its MX records - for lead lists and deliverability.",
         "input": {
           "domains": [
             "github.com",
@@ -1293,7 +1293,7 @@
       {
         "name": "nameserver-lookup-bulk",
         "title": "Bulk nameserver (NS) lookup",
-        "description": "Nameservers of many domains — find the DNS hosting provider (Cloudflare, Route 53, etc.).",
+        "description": "Nameservers of many domains - find the DNS hosting provider (Cloudflare, Route 53, etc.).",
         "input": {
           "domains": [
             "github.com",
@@ -1329,7 +1329,7 @@
       {
         "name": "video-scene-detection-frames",
         "title": "Detect scene changes and extract frames",
-        "description": "One frame per scene change with its timecode — for storyboards, indexing and AI video analysis.",
+        "description": "One frame per scene change with its timecode - for storyboards, indexing and AI video analysis.",
         "samples": [
           "video-en.mp4"
         ],
@@ -1361,7 +1361,7 @@
       {
         "name": "video-frame-every-n-seconds",
         "title": "Extract a frame every N seconds",
-        "description": "A frame every 1, 5 or 10 seconds with timecodes — for monitoring, datasets and visual QA.",
+        "description": "A frame every 1, 5 or 10 seconds with timecodes - for monitoring, datasets and visual QA.",
         "samples": [
           "video-en.mp4"
         ],

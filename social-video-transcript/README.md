@@ -1,6 +1,6 @@
 # Video Transcript & Translation: YouTube, TikTok, Instagram, Facebook
 
-Paste video links, get the **transcript, timestamped segments, SRT / VTT subtitles and an optional translation** —
+Paste video links, get the **transcript, timestamped segments, SRT / VTT subtitles and an optional translation** -
 for YouTube videos and Shorts, TikTok, Instagram Reels, Facebook videos and Reels, X (Twitter), Vimeo and 1,000+ other
 sites.
 
@@ -45,7 +45,7 @@ Ukrainian. Recognition in Ukrainian is common; what is rare is translation into 
 | `language` | Spoken language code, or empty to detect it automatically |
 | `useCaptions` | Use the video's captions when available (default). Off: always recognise the speech with Whisper |
 | `maxDurationMinutes` | Videos without captions longer than this are skipped (free). Captions work for any length |
-| `quality` | `accurate` (Whisper large-v3, default) or `fast` (large-v3-turbo) — same price |
+| `quality` | `accurate` (Whisper large-v3, default) or `fast` (large-v3-turbo) - same price |
 | `subtitles` | Save SRT and VTT files (free) |
 | `includeSegments` | Include timestamped segments, not only the full text |
 
@@ -100,13 +100,13 @@ videos you are allowed to use.
 
 ## Related Actors
 
-- [Audio & Video Transcriber](https://apify.com/ai_admin/audio-transcriber) — your own audio and video files to text and subtitles
+- [Audio & Video Transcriber](https://apify.com/ai_admin/audio-transcriber) - your own audio and video files to text and subtitles
 - [Text to Speech](https://apify.com/ai_admin/text-to-speech) · [Video Frame Extractor](https://apify.com/ai_admin/video-frame-extractor)
 
 ## Use with AI agents and code
 
 - **MCP (Claude, Cursor, VS Code, any MCP client):** add `https://mcp.apify.com?tools=ai_admin/social-video-transcript`
-  as an MCP server — the agent gets one tool with this Actor's input schema and pays per use through your Apify account.
+  as an MCP server - the agent gets one tool with this Actor's input schema and pays per use through your Apify account.
 - **One HTTP call that returns the results:**
 
 ```bash

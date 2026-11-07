@@ -1,7 +1,7 @@
 # Domain WHOIS, DNS & SSL Checker: Bulk Expiry, Registrar, MX
 
 Check hundreds of domains in one run: who registered them and when they expire, where their e-mail goes, and whether
-their SSL certificate is valid — one clean JSON record per domain.
+their SSL certificate is valid - one clean JSON record per domain.
 
 - **Registration (RDAP, WHOIS fallback):** registered or available, registrar and abuse e-mail, creation, update and
   expiry dates, **days until expiry**, status codes, nameservers, DNSSEC. RDAP covers .com, .net, .org, .ua, .uk and
@@ -18,10 +18,10 @@ checks (MX/SPF/DMARC), lead research and SEO.
 
 | | This Actor | Typical alternatives in the Apify Store (Oct 2026) |
 |---|---|---|
-| **One price, three checks** | Registration + DNS + SSL for **$2 per 1,000 domains** | $2.50–3 per 1,000 for WHOIS alone, some plus start fees |
+| **One price, three checks** | Registration + DNS + SSL for **$2 per 1,000 domains** | $2.50-3 per 1,000 for WHOIS alone, some plus start fees |
 | **Coverage** | RDAP for 1,200+ TLDs with WHOIS fallback (.io, .de…) | Often WHOIS only |
 | **E-mail setup** | MX, SPF and DMARC parsed | Raw TXT records |
-| **Expiry monitoring** | Days until domain **and** certificate expiry in one record — schedule it daily | Two separate tools |
+| **Expiry monitoring** | Days until domain **and** certificate expiry in one record - schedule it daily | Two separate tools |
 
 ## Input
 
@@ -80,14 +80,14 @@ Plus Apify's standard start fee of $0.05 per 1,000 runs. The run stops before it
 
 ## Related Actors
 
-- [Website Screenshot & URL/HTML to PDF](https://apify.com/ai_admin/website-screenshot) — see how the sites look
-- [Document to Markdown for AI](https://apify.com/ai_admin/document-to-markdown) — PDFs and Office files → Markdown
+- [Website Screenshot & URL/HTML to PDF](https://apify.com/ai_admin/website-screenshot) - see how the sites look
+- [Document to Markdown for AI](https://apify.com/ai_admin/document-to-markdown) - PDFs and Office files → Markdown
 
 Open source: [github.com/AndriyVK/-apify-document-tools](https://github.com/AndriyVK/-apify-document-tools)
 
 ## Use with AI agents and code
 
-- **MCP (Claude, Cursor, VS Code, any MCP client):** add `https://mcp.apify.com?tools=ai_admin/domain-whois-dns-ssl` as an MCP server —
+- **MCP (Claude, Cursor, VS Code, any MCP client):** add `https://mcp.apify.com?tools=ai_admin/domain-whois-dns-ssl` as an MCP server -
   the agent gets one tool with this Actor's input schema and pays per use through your Apify account.
 - **One HTTP call that returns the results:**
 

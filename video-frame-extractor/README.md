@@ -1,12 +1,12 @@
 # Video Frame Extractor: Thumbnails, Scenes, Keyframes, Timecodes
 
 Turn videos into still images: thumbnails for a gallery, one frame per scene for AI vision or video search, or frames at
-the exact moments you need — each with its timecode and a download link.
+the exact moments you need - each with its timecode and a download link.
 
 - **Five modes:** N evenly spaced frames, one frame every N seconds, exact timestamps (`90.5`, `01:30`, `1:02:03`),
   every **scene change** (adjustable sensitivity), or the video's **keyframes**.
 - **JPG, PNG or WebP**, optional downscaling (`maxWidth`).
-- **Contact sheet** with all frames and timecodes in one image — free.
+- **Contact sheet** with all frames and timecodes in one image - free.
 - **Video metadata:** duration, resolution, frame rate, codec.
 - Files up to 2 GB: MP4, MOV, WebM, MKV, AVI, M4V, MPEG, 3GP and anything else ffmpeg reads.
 
@@ -14,7 +14,7 @@ the exact moments you need — each with its timecode and a download link.
 
 | | This Actor | Typical alternatives in the Apify Store (Oct 2026) |
 |---|---|---|
-| **Price** | **$1 per 1,000 frames**, no per-video fee | $2 per 1,000 frames, often plus $2–10 per 1,000 videos |
+| **Price** | **$1 per 1,000 frames**, no per-video fee | $2 per 1,000 frames, often plus $2-10 per 1,000 videos |
 | **Modes** | Evenly spaced, every N seconds, exact timestamps, scene changes, keyframes | Two or three modes |
 | **Extras** | Free contact sheet, timecodes, video metadata, JPG/PNG/WebP, downscaling | Contact sheet as a paid add-on or missing |
 
@@ -81,15 +81,15 @@ your maximum charge per run.
 
 ## Related Actors
 
-- [Image to Text OCR](https://apify.com/ai_admin/image-to-text-ocr) — read the text on the extracted frames
-- [Audio & Video Transcriber](https://apify.com/ai_admin/audio-transcriber) — speech to text, SRT and VTT subtitles
-- [PDF to Image & Image Converter](https://apify.com/ai_admin/pdf-image-converter) — PDF ↔ PNG/JPG/WebP, HEIC → JPG
+- [Image to Text OCR](https://apify.com/ai_admin/image-to-text-ocr) - read the text on the extracted frames
+- [Audio & Video Transcriber](https://apify.com/ai_admin/audio-transcriber) - speech to text, SRT and VTT subtitles
+- [PDF to Image & Image Converter](https://apify.com/ai_admin/pdf-image-converter) - PDF ↔ PNG/JPG/WebP, HEIC → JPG
 
 Open source: [github.com/AndriyVK/-apify-document-tools](https://github.com/AndriyVK/-apify-document-tools)
 
 ## Use with AI agents and code
 
-- **MCP (Claude, Cursor, VS Code, any MCP client):** add `https://mcp.apify.com?tools=ai_admin/video-frame-extractor` as an MCP server —
+- **MCP (Claude, Cursor, VS Code, any MCP client):** add `https://mcp.apify.com?tools=ai_admin/video-frame-extractor` as an MCP server -
   the agent gets one tool with this Actor's input schema and pays per use through your Apify account.
 - **One HTTP call that returns the results:**
 

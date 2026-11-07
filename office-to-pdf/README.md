@@ -1,6 +1,6 @@
 # Office to PDF & PDF/A: Word, Excel, PowerPoint, HTML, Images
 
-Convert office documents to PDF — or to archival **PDF/A-2b** — in bulk, with a download link for every file.
+Convert office documents to PDF - or to archival **PDF/A-2b** - in bulk, with a download link for every file.
 Word, Excel, PowerPoint, OpenDocument, RTF, TXT, CSV, HTML and images, modern and legacy formats alike.
 
 - **All common formats.** DOCX, DOC, ODT, RTF, TXT, HTML, XLSX, XLS, ODS, CSV, PPTX, PPT, ODP, PNG, JPG, TIFF, SVG.
@@ -13,9 +13,9 @@ Word, Excel, PowerPoint, OpenDocument, RTF, TXT, CSV, HTML and images, modern an
 
 | | This Actor | Typical alternatives |
 |---|---|---|
-| **Archival PDF/A-2b** | One switch — for courts, tax portals, e-invoicing and long-term archives | Usually plain PDF only |
+| **Archival PDF/A-2b** | One switch - for courts, tax portals, e-invoicing and long-term archives | Usually plain PDF only |
 | **Legacy files** | DOC, XLS, PPT, RTF and OpenDocument convert as well as DOCX/XLSX/PPTX | Modern formats only, or none at all |
-| **Price** | **$10 per 1,000 documents**, any number of pages | Online converters: subscriptions or per-page fees; most Store PDF tools only render HTML/URLs ($5–25 per 1,000) |
+| **Price** | **$10 per 1,000 documents**, any number of pages | Online converters: subscriptions or per-page fees; most Store PDF tools only render HTML/URLs ($5-25 per 1,000) |
 | **Batch + merge** | Hundreds of files per run, optional single merged PDF, links for every file | Often one file at a time |
 | **Privacy** | LibreOffice runs inside the Actor; files are not sent to a third-party conversion API | Many converters upload your files to an external service |
 
@@ -71,7 +71,7 @@ under your maximum charge per run.
 
 ## Use with AI agents and code
 
-- **MCP (Claude, Cursor, VS Code, any MCP client):** add `https://mcp.apify.com?tools=ai_admin/office-to-pdf` as an MCP server —
+- **MCP (Claude, Cursor, VS Code, any MCP client):** add `https://mcp.apify.com?tools=ai_admin/office-to-pdf` as an MCP server -
   the agent gets one tool with this Actor's input schema and pays per use through your Apify account.
 - **One HTTP call that returns the results:**
 

@@ -1,6 +1,6 @@
 # Document to Markdown for AI: PDF, OCR, Word, Excel, PowerPoint
 
-Turn any business document into clean Markdown, JSON tables and RAG-ready chunks — one Actor for PDF, scanned PDF,
+Turn any business document into clean Markdown, JSON tables and RAG-ready chunks - one Actor for PDF, scanned PDF,
 images, DOCX/DOC, XLSX/XLS, PPTX/PPT, ODT/ODS/ODP, RTF and HTML.
 
 - **Every common format in one place.** Modern and legacy Office files (DOC, XLS, PPT, RTF, OpenDocument) are converted too.
@@ -17,8 +17,8 @@ cell's number format (`1,234.50`).
 
 | | This Actor | Typical alternatives in the Apify Store (Oct 2026) |
 |---|---|---|
-| **Price** | **$1 per 1,000 text pages, $4 per 1,000 OCR pages** — you pay per page, OCR only for scanned pages | $3–5 per 1,000 PDFs plus $15–20 per 1,000 OCR pages |
-| **Formats** | PDF, scans, images, DOCX/DOC, XLSX/XLS, PPTX/PPT, ODT/ODS/ODP, RTF, HTML — one Actor | Mostly PDF only; Office files need another tool |
+| **Price** | **$1 per 1,000 text pages, $4 per 1,000 OCR pages** - you pay per page, OCR only for scanned pages | $3-5 per 1,000 PDFs plus $15-20 per 1,000 OCR pages |
+| **Formats** | PDF, scans, images, DOCX/DOC, XLSX/XLS, PPTX/PPT, ODT/ODS/ODP, RTF, HTML - one Actor | Mostly PDF only; Office files need another tool |
 | **Structure** | Headings, lists, tables as Markdown **and** JSON rows, RAG chunks with their heading | Often plain text, tables lost |
 | **Cyrillic** | Ukrainian and Russian OCR built in | English-first OCR |
 
@@ -73,11 +73,11 @@ Markdown longer than 4 million characters is stored in full in the run's key-val
 
 ## Pricing
 
-Pay per event — you pay only for converted pages:
+Pay per event - you pay only for converted pages:
 
 | Event | Price | What counts |
 |---|---|---|
-| `page` | **$1 per 1,000** | a PDF page read from its text layer; for Office, HTML and text files — every 3,000 characters of output (at least 1 per document) |
+| `page` | **$1 per 1,000** | a PDF page read from its text layer; for Office, HTML and text files - every 3,000 characters of output (at least 1 per document) |
 | `ocr-page` | **$4 per 1,000** | a scanned PDF page or an image frame read with OCR |
 
 Plus Apify's standard start fee of $0.05 per 1,000 runs. Failed documents and skipped pages are not charged, and pages
@@ -86,7 +86,7 @@ would exceed your maximum charge per run.
 
 ## Use with AI agents and code
 
-- **MCP (Claude, Cursor, VS Code, any MCP client):** add `https://mcp.apify.com?tools=ai_admin/document-to-markdown` as an MCP server —
+- **MCP (Claude, Cursor, VS Code, any MCP client):** add `https://mcp.apify.com?tools=ai_admin/document-to-markdown` as an MCP server -
   the agent gets one tool with this Actor's input schema and pays per use through your Apify account.
 - **One HTTP call that returns the results:**
 
@@ -112,5 +112,5 @@ Open source: [github.com/AndriyVK/-apify-document-tools](https://github.com/Andr
 
 ## Feedback
 
-Found a document that converts badly? Open an issue with a link to a sample (or a similar public file) — fixes for real
+Found a document that converts badly? Open an issue with a link to a sample (or a similar public file) - fixes for real
 documents get priority.

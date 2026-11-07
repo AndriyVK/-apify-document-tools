@@ -1,10 +1,10 @@
 # Website Screenshot & URL/HTML to PDF: Full Page, Mobile, Bulk
 
-Capture any web page as an image or a PDF — the whole page or just the first screen, on desktop or a phone — in bulk,
+Capture any web page as an image or a PDF - the whole page or just the first screen, on desktop or a phone - in bulk,
 with a download link for each file.
 
 - **Screenshots:** PNG, JPEG or WebP; full page (up to 20,000 px) or viewport; a single element by CSS selector.
-- **PDF:** save web pages or your own **raw HTML** (invoices, reports, templates) as PDF — A4, Letter, Legal, A3, A5,
+- **PDF:** save web pages or your own **raw HTML** (invoices, reports, templates) as PDF - A4, Letter, Legal, A3, A5,
   portrait or landscape, print or screen styles.
 - **Devices:** desktop 1920×1080, laptop 1366×768, iPad Pro 11, iPhone 15 Pro, Galaxy S24 (real pixel density), or a
   custom viewport; **dark mode**.
@@ -17,10 +17,10 @@ with a download link for each file.
 | | This Actor | Typical alternatives |
 |---|---|---|
 | **Devices** | Desktop, laptop, iPad, iPhone and Android at real pixel density, dark mode | Often desktop only |
-| **PDF** | Web pages **and your own raw HTML** (invoices, reports) to PDF — A4/Letter, margins, print or screen styles | Often screenshot only, or a separate PDF tool |
+| **PDF** | Web pages **and your own raw HTML** (invoices, reports) to PDF - A4/Letter, margins, print or screen styles | Often screenshot only, or a separate PDF tool |
 | **Clean captures** | Cookie banners hidden, lazy images loaded, custom CSS, element screenshots | Banners and empty placeholders in the shot |
-| **Safety** | Requests to private networks blocked | — |
-| **Price** | **$4 per 1,000** captures | $0.83–20 per 1,000 |
+| **Safety** | Requests to private networks blocked | - |
+| **Price** | **$4 per 1,000** captures | $0.83-20 per 1,000 |
 
 ## Input
 
@@ -92,15 +92,15 @@ Plus Apify's standard start fee of $0.05 per 1,000 runs. The run stops before it
 
 ## Related Actors
 
-- [Office to PDF & PDF/A](https://apify.com/ai_admin/office-to-pdf) — Word, Excel, PowerPoint, HTML files → PDF/PDF-A
-- [Document to Markdown for AI](https://apify.com/ai_admin/document-to-markdown) — PDFs, scans and Office files → Markdown
-- [Image to Text OCR](https://apify.com/ai_admin/image-to-text-ocr) — read the text in screenshots
+- [Office to PDF & PDF/A](https://apify.com/ai_admin/office-to-pdf) - Word, Excel, PowerPoint, HTML files → PDF/PDF-A
+- [Document to Markdown for AI](https://apify.com/ai_admin/document-to-markdown) - PDFs, scans and Office files → Markdown
+- [Image to Text OCR](https://apify.com/ai_admin/image-to-text-ocr) - read the text in screenshots
 
 Open source: [github.com/AndriyVK/-apify-document-tools](https://github.com/AndriyVK/-apify-document-tools)
 
 ## Use with AI agents and code
 
-- **MCP (Claude, Cursor, VS Code, any MCP client):** add `https://mcp.apify.com?tools=ai_admin/website-screenshot` as an MCP server —
+- **MCP (Claude, Cursor, VS Code, any MCP client):** add `https://mcp.apify.com?tools=ai_admin/website-screenshot` as an MCP server -
   the agent gets one tool with this Actor's input schema and pays per use through your Apify account.
 - **One HTTP call that returns the results:**
 

@@ -1,19 +1,19 @@
 # Text to Speech: PDF, DOCX → MP3 + Subtitles, Ukrainian +22 More
 
-Turn text, articles, PDFs and Word documents into natural-sounding speech — MP3, WAV or OGG — with SRT and VTT
+Turn text, articles, PDFs and Word documents into natural-sounding speech - MP3, WAV or OGG - with SRT and VTT
 subtitles. Neural voices run inside the Actor: no API key, no account elsewhere, no per-character fees.
 
-**Listen first:** [Ukrainian — Mykyta (recommended)](https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/tts-sample-uk_UA-mykyta-high.mp3) · [Ukrainian — Tetiana](https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/tts-sample-uk_UA-tetiana-high.mp3) ·
-[English HQ — LJSpeech](https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/tts-sample-en_US-ljspeech-high.mp3) · [English fast — John](https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/tts-sample-en_US-john-medium.mp3) ·
-[German — Thorsten](https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/tts-sample-de_DE-thorsten-high.mp3)
+**Listen first:** [Ukrainian - Mykyta (recommended)](https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/tts-sample-uk_UA-mykyta-high.mp3) · [Ukrainian - Tetiana](https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/tts-sample-uk_UA-tetiana-high.mp3) ·
+[English HQ - LJSpeech](https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/tts-sample-en_US-ljspeech-high.mp3) · [English fast - John](https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/tts-sample-en_US-john-medium.mp3) ·
+[German - Thorsten](https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/tts-sample-de_DE-thorsten-high.mp3)
 
 ## Why this Actor
 
 | | This Actor | Typical alternatives |
 |---|---|---|
-| **Commercial use** | Every voice is CC0, public domain, Apache 2.0 or CC BY 4.0 — safe for YouTube, courses, ads and client work | Many free voices are "non-commercial only" (CC BY-NC); unofficial Edge or Google voices may break those services' terms |
+| **Commercial use** | Every voice is CC0, public domain, Apache 2.0 or CC BY 4.0 - safe for YouTube, courses, ads and client work | Many free voices are "non-commercial only" (CC BY-NC); unofficial Edge or Google voices may break those services' terms |
 | **Ukrainian** | 3 natural high-quality Ukrainian voices (українська озвучка тексту), word stress from a Ukrainian dictionary, lively intonation | Rarely offered at all; open voices often stress Ukrainian words wrongly |
-| **Documents in** | PDF, DOCX, HTML, Markdown, TXT — menus, scripts and Markdown symbols skipped | Plain text only; you copy and clean the text yourself |
+| **Documents in** | PDF, DOCX, HTML, Markdown, TXT - menus, scripts and Markdown symbols skipped | Plain text only; you copy and clean the text yourself |
 | **Subtitles** | SRT + VTT timed per sentence, free | Extra tool or extra fee |
 | **Cost** | Per minute of audio; no API key or subscription elsewhere | ElevenLabs-style wrappers need your own paid key and bill per character |
 
@@ -22,7 +22,7 @@ subtitles. Neural voices run inside the Actor: no API key, no account elsewhere,
 - **37 neural voices in 23 languages:** Ukrainian, US and UK English, German, French, Spanish, Italian, Polish,
   Portuguese, Dutch, Czech, Russian, Romanian, Finnish, Hungarian, Slovak, Swedish, Danish, Greek, Latvian, Slovenian,
   Chinese, Persian, Vietnamese.
-- **Speed control** 0.5×–2×, natural pauses between sentences and paragraphs.
+- **Speed control** 0.5×-2×, natural pauses between sentences and paragraphs.
 - **Delivery:** "Lively" (more varied intonation) or "Standard" (even and calm); "Auto" uses Lively for Ukrainian.
 - **Audiobooks, podcasts, e-learning, accessibility:** long texts (up to 1,000,000 characters per item) are read
   sentence by sentence.
@@ -44,13 +44,13 @@ subtitles. Neural voices run inside the Actor: no API key, no account elsewhere,
 | Field | Meaning |
 |---|---|
 | `text` | Text to read; blank lines separate paragraphs |
-| `sources` | Links to TXT, Markdown, HTML, PDF or DOCX files — one audio file each. Files in your own Apify key-value store work too: set the store's access to "Anyone with ID can read" and use `https://api.apify.com/v2/key-value-stores/<store ID>/records/<key>` (the Actor runs with limited permissions and does not use your token). |
+| `sources` | Links to TXT, Markdown, HTML, PDF or DOCX files - one audio file each. Files in your own Apify key-value store work too: set the store's access to "Anyone with ID can read" and use `https://api.apify.com/v2/key-value-stores/<store ID>/records/<key>` (the Actor runs with limited permissions and does not use your token). |
 | `voice` | Voice ID from the table below |
-| `speed` | 0.5–2; default 1.12 (smoother, fewer hesitations than the voice's own pace 1.0) |
+| `speed` | 0.5-2; default 1.12 (smoother, fewer hesitations than the voice's own pace 1.0) |
 | `style` | `auto` (default), `lively` or `standard` |
 | `format` | `mp3` (64 kbit/s), `wav`, `ogg` (Opus) |
 | `subtitles` | Also return `.srt` and `.vtt` |
-| `maxCharactersPerItem` | Longer texts are cut; ~750–900 characters ≈ 1 minute of speech |
+| `maxCharactersPerItem` | Longer texts are cut; ~750-900 characters ≈ 1 minute of speech |
 
 ## Voices
 
@@ -116,15 +116,15 @@ maximum charge per run.
 
 ## Related Actors
 
-- [Audio & Video Transcriber](https://apify.com/ai_admin/audio-transcriber) — the other direction: speech to text and subtitles
-- [Document to Markdown for AI](https://apify.com/ai_admin/document-to-markdown) — PDFs, scans and Office files → Markdown
-- [Image to Text OCR](https://apify.com/ai_admin/image-to-text-ocr) — scanned pages to text, then to speech
+- [Audio & Video Transcriber](https://apify.com/ai_admin/audio-transcriber) - the other direction: speech to text and subtitles
+- [Document to Markdown for AI](https://apify.com/ai_admin/document-to-markdown) - PDFs, scans and Office files → Markdown
+- [Image to Text OCR](https://apify.com/ai_admin/image-to-text-ocr) - scanned pages to text, then to speech
 
 Open source: [github.com/AndriyVK/-apify-document-tools](https://github.com/AndriyVK/-apify-document-tools)
 
 ## Use with AI agents and code
 
-- **MCP (Claude, Cursor, VS Code, any MCP client):** add `https://mcp.apify.com?tools=ai_admin/text-to-speech` as an MCP server —
+- **MCP (Claude, Cursor, VS Code, any MCP client):** add `https://mcp.apify.com?tools=ai_admin/text-to-speech` as an MCP server -
   the agent gets one tool with this Actor's input schema and pays per use through your Apify account.
 - **One HTTP call that returns the results:**
 
@@ -136,7 +136,7 @@ curl -X POST "https://api.apify.com/v2/acts/ai_admin~text-to-speech/run-sync-get
 
 ## Limits
 
-- Scanned PDFs without a text layer are not read — run them through Image to Text OCR first.
+- Scanned PDFs without a text layer are not read - run them through Image to Text OCR first.
 - Numbers, abbreviations and foreign words are read by the voice's rules and may sound unusual.
 - Speech engine: [Piper](https://github.com/OHF-Voice/piper1-gpl) (GPL-3.0). Voice models: [rhasspy/piper-voices](https://huggingface.co/rhasspy/piper-voices);
   CC BY 4.0 voices (`en_GB-alba`, `fr_FR-siwis`, `it_IT-serena`, `sl_SI-artur`, `vi_VN-vais1000`) are credited to their

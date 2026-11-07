@@ -16,7 +16,7 @@ Tools for Claude, Cursor, ChatGPT and any other MCP client, backed by open-sourc
 
 Every tool takes public file URLs and a `max_charge_usd` safety limit per call (default $1).
 
-## Option 1 — hosted (no install)
+## Option 1 - hosted (no install)
 
 Use Apify's hosted MCP server with exactly these tools:
 
@@ -32,7 +32,7 @@ Use Apify's hosted MCP server with exactly these tools:
 
 On first connection your browser opens to sign in to Apify (or pass `Authorization: Bearer <APIFY_TOKEN>`).
 
-## Option 2 — local (stdio)
+## Option 2 - local (stdio)
 
 ```bash
 git clone https://github.com/AndriyVK/-apify-document-tools

@@ -1,6 +1,6 @@
 # PDF to Image & Image Converter: PNG, JPG, WebP, HEIC, PDF
 
-Render PDF pages to images, turn images into PDF and convert images between formats — including iPhone **HEIC** photos —
+Render PDF pages to images, turn images into PDF and convert images between formats - including iPhone **HEIC** photos -
 in bulk, with a download link for every file.
 
 - **PDF → PNG, JPG, WebP or TIFF.** Choose the DPI (72 for thumbnails, 300 for print) and the pages (`1-3,5,8-`).
@@ -13,10 +13,10 @@ in bulk, with a download link for every file.
 
 | | This Actor | Typical alternatives in the Apify Store (Oct 2026) |
 |---|---|---|
-| **Price** | **$2 per 1,000 images or pages** | $2–10 per 1,000, often plus a per-file fee |
+| **Price** | **$2 per 1,000 images or pages** | $2-10 per 1,000, often plus a per-file fee |
 | **Both directions** | PDF → images **and** images → PDF in one Actor, plus image format conversion | Often one direction per tool |
 | **iPhone HEIC** | HEIC/HEIF → JPG/PNG/WebP/PDF | Rarely supported |
-| **Control** | DPI 36–600, page ranges (`1-3,5,8-`), quality, max width, merge, ZIP | Often fixed settings |
+| **Control** | DPI 36-600, page ranges (`1-3,5,8-`), quality, max width, merge, ZIP | Often fixed settings |
 
 ## Input
 
@@ -36,9 +36,9 @@ in bulk, with a download link for every file.
 |---|---|
 | `sources` | URLs of PDFs or images. Files in your own Apify key-value store work too: set the store's access to "Anyone with ID can read" and use `https://api.apify.com/v2/key-value-stores/<store ID>/records/<key>` (the Actor runs with limited permissions and does not use your token). |
 | `outputFormat` | `png`, `jpg`, `webp`, `tiff`, or `pdf` (images only) |
-| `dpi` | Resolution for PDF pages, 36–600 |
+| `dpi` | Resolution for PDF pages, 36-600 |
 | `pages` | PDF pages to render, empty = all |
-| `quality` | JPG/WebP quality 10–100 |
+| `quality` | JPG/WebP quality 10-100 |
 | `maxWidth` | Downscale wider images, 0 = keep size |
 | `mergeImagesIntoOnePdf` | With `pdf` output: also return `merged.pdf` (free) |
 | `zipAll` | Also return `all-files.zip` (free) |
@@ -73,14 +73,14 @@ your maximum charge per run.
 
 ## Related Actors
 
-- [Office to PDF & PDF/A](https://apify.com/ai_admin/office-to-pdf) — Word, Excel, PowerPoint, HTML → PDF/PDF-A
-- [Document to Markdown for AI](https://apify.com/ai_admin/document-to-markdown) — PDFs, scans and Office files → Markdown, tables, RAG chunks
+- [Office to PDF & PDF/A](https://apify.com/ai_admin/office-to-pdf) - Word, Excel, PowerPoint, HTML → PDF/PDF-A
+- [Document to Markdown for AI](https://apify.com/ai_admin/document-to-markdown) - PDFs, scans and Office files → Markdown, tables, RAG chunks
 
 Open source: [github.com/AndriyVK/-apify-document-tools](https://github.com/AndriyVK/-apify-document-tools)
 
 ## Use with AI agents and code
 
-- **MCP (Claude, Cursor, VS Code, any MCP client):** add `https://mcp.apify.com?tools=ai_admin/pdf-image-converter` as an MCP server —
+- **MCP (Claude, Cursor, VS Code, any MCP client):** add `https://mcp.apify.com?tools=ai_admin/pdf-image-converter` as an MCP server -
   the agent gets one tool with this Actor's input schema and pays per use through your Apify account.
 - **One HTTP call that returns the results:**
 

@@ -18,13 +18,13 @@ from Apify Store, call them from your code, or plug them into AI agents through 
 
 Ready-made examples (Apify tasks): [document-to-markdown examples](https://apify.com/ai_admin/document-to-markdown/examples),
 [office-to-pdf examples](https://apify.com/ai_admin/office-to-pdf/examples),
-[OCR examples](https://apify.com/ai_admin/image-to-text-ocr/examples) — every Actor page has an Examples tab.
+[OCR examples](https://apify.com/ai_admin/image-to-text-ocr/examples) - every Actor page has an Examples tab.
 
 ## Use from AI agents (MCP)
 
-All Actors are available as MCP tools — hosted (no install):
+All Actors are available as MCP tools - hosted (no install):
 `https://mcp.apify.com?tools=ai_admin/document-to-markdown,ai_admin/office-to-pdf,ai_admin/pdf-image-converter,ai_admin/audio-transcriber,ai_admin/image-to-text-ocr,ai_admin/text-to-speech,ai_admin/website-screenshot,ai_admin/domain-whois-dns-ssl,ai_admin/video-frame-extractor,ai_admin/social-video-transcript`
-— or as a local stdio server in [mcp-server/](mcp-server/).
+Or as a local stdio server in [mcp-server/](mcp-server/).
 
 ## Built with
 
