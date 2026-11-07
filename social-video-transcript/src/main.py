@@ -163,7 +163,8 @@ async def main() -> None:
                     with tempfile.TemporaryDirectory() as tmp:
                         path = await asyncio.to_thread(audio, data, tmp, proxy)
                         res = await asyncio.to_thread(transcribe, path, tmp, quality=inp.get('quality', 'accurate'),
-                                                      language=language, max_minutes=left)
+                                                      language=language, max_minutes=left,
+                                                      media_seconds=duration or None)
                     segments, lang, source = res['segments'], _code(res['language']), 'speech-recognition'
                     if res['truncated']:
                         item['warnings'] = [f"only the first {res['minutes']} minutes were transcribed: "

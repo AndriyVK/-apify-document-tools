@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import math
 import os
+import re
 import subprocess
 import time
 
@@ -92,10 +93,46 @@ def _retry_after(headers) -> float | None:
         return None
 
 
+def _silence(seg: dict) -> bool:
+    """Whisper's own rule for music or silence it filled with made-up words ("Thank you", "We'll be right back")."""
+    return float(seg.get('no_speech_prob') or 0) > 0.6 and float(seg.get('avg_logprob') or 0) < -1
+
+
+# Phrases Whisper makes up over music, noise or silence (from its training on subtitled videos). A segment made only of
+# them is dropped when the audio gives other signs that nobody speaks there (see _made_up).
+_STOCK = [
+    "thank you", "thanks for watching", "thank you for watching", "we'll be right back", "we will be right back",
+    "please subscribe", "subscribe to my channel", "like and subscribe", "see you next time", "see you in the next video",
+    "bye", "you", "music", "applause", "subtitles by the amara.org community", "transcribed by", "subtitles by",
+    "дякую за перегляд", "дякую", "підписуйтесь на канал", "продовження буде", "субтитри", "редактор субтитрів",
+    "спасибо", "спасибо за просмотр", "продолжение следует", "подписывайтесь на канал", "субтитры", "редактор субтитров",
+    "untertitel", "untertitel im auftrag des zdf", "sous-titres", "sous-titrage", "merci", "gracias", "subtítulos",
+]
+_STOCK_RE = re.compile(r'^(?:(?:' + '|'.join(re.escape(p) for p in sorted(_STOCK, key=len, reverse=True))
+                       + r')[\s.,!?…]*)+$', re.IGNORECASE)
+
+
+def _made_up(seg: dict, text: str) -> bool:
+    """A stock phrase where the audio shows no clear speech, or one stretched over a long stretch of audio."""
+    plain = re.sub(r'[\[\]()♪*#~-]', ' ', text).strip()
+    if not plain:
+        return True                                   # "(music)", "♪♪"
+    length = float(seg.get('end') or 0) - float(seg.get('start') or 0)
+    if length > 20 and len(plain) < length:          # under 1 character a second for 20+ s: speech runs 10-15 a second
+        return True
+    if not _STOCK_RE.match(plain):
+        return False
+    return (float(seg.get('no_speech_prob') or 0) > 0.3 or float(seg.get('avg_logprob') or 0) < -0.7
+            or length > 3 + len(plain) / 4)            # a few words over many seconds: nobody is saying them
+
+
 def transcribe(path: str, workdir: str, *, quality: str = 'accurate', language: str | None = None,
-               prompt: str | None = None, max_minutes: int | None = None) -> dict:
-    """Returns {'text', 'segments', 'language', 'duration', 'minutes', 'truncated'}."""
+               prompt: str | None = None, max_minutes: int | None = None, media_seconds: float | None = None) -> dict:
+    """Returns {'text', 'segments', 'language', 'duration', 'minutes', 'truncated'}. media_seconds: the video's own
+    length from the site; audio past it (a longer music track) is not transcribed."""
     duration = probe_duration(path)
+    if media_seconds and media_seconds > 0:
+        duration = min(duration, media_seconds + 1)
     truncated = False
     if max_minutes is not None and duration > max_minutes * 60:
         duration, truncated = max_minutes * 60.0, True
@@ -109,9 +146,15 @@ def transcribe(path: str, workdir: str, *, quality: str = 'accurate', language: 
             texts.append((res.get('text') or '').strip())
             for s in res.get('segments') or []:
                 text = (s.get('text') or '').strip()
+                if _silence(s) or _made_up(s, text):
+                    continue
+                if segments and segments[-1]['text'] == text and offset + float(s['start']) - segments[-1]['end'] < 2:
+                    continue                          # Whisper's repetition loop: the same line again and again
                 if text and offset + float(s['start']) < duration:
                     segments.append({'start': round(offset + float(s['start']), 2),
                                      'end': round(min(offset + float(s['end']), duration), 2), 'text': text})
+    # the full text is rebuilt from the kept segments, so dropped made-up lines do not come back through it
+    texts = [' '.join(s['text'] for s in segments)] if segments else []
     return {'text': '\n'.join(t for t in texts if t), 'segments': segments, 'language': detected,
             'duration': round(duration, 2), 'minutes': max(1, math.ceil(duration / 60)), 'truncated': truncated,
             'model': model}

@@ -143,7 +143,10 @@ def audio(data: dict, workdir: str, proxy: str | None) -> str:
     """Downloads the smallest file with the speech track of an info() result (same proxy: YouTube links are bound
     to the address that asked for them); returns its path."""
     o = _opts(proxy, workdir)
-    o['format'] = 'ba[filesize<100M]/ba/wa/w[acodec!=none]/worst'
+    # TikTok's audio-only format ('audio') is the clip's background music track, often minutes longer than the video
+    # and without the speech: Whisper then "transcribes" music. The video file with its own sound is used instead.
+    o['format'] = ('ba[filesize<100M][format_id!=audio]/ba[format_id!=audio]/wa[format_id!=audio]/'
+                   'w[acodec!=none][vcodec!=none]/w[acodec!=none]/worst')
     try:
         with yt_dlp.YoutubeDL(o) as y:
             y.process_ie_result(dict(data), download=True)
