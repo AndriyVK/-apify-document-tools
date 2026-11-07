@@ -190,7 +190,8 @@ def main(out):
         exp.append(expect(f'text-3p-{lang}.pdf', lang, pages=3))
         # scans: clean 300 dpi, noisy 200 dpi, slightly rotated
         pdf_scan(f'{out}/text-{lang}.pdf', f'{out}/scan-{lang}.pdf', dpi=300, noise=False)
-        exp.append(expect(f'scan-{lang}.pdf', lang, ocr=True, table=False, heading=False, pages=1))
+        # ruled tables on clean scans come back as tables; a noisy 200 dpi scan loses the grid
+        exp.append(expect(f'scan-{lang}.pdf', lang, ocr=True, heading=False, pages=1))
         pdf_scan(f'{out}/text-{lang}.pdf', f'{out}/scan-noisy-{lang}.pdf', dpi=200, noise=True, angle=0.8)
         exp.append(expect(f'scan-noisy-{lang}.pdf', lang, ocr=True, table=False, heading=False, pages=1))
         image_text(f'{out}/image-{lang}.png', lang)

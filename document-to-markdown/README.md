@@ -101,7 +101,12 @@ Open source: [github.com/AndriyVK/-apify-document-tools](https://github.com/Andr
 
 ## Limits
 
-- Tables are detected in PDFs with a text layer and in Office/HTML files. Tables in scanned pages come out as OCR text.
+- Tables are detected in PDFs with a text layer and in Office/HTML files. In scans and images, tables with ruled
+  grid lines come back as Markdown and JSON tables; borderless tables and grids lost in a noisy, low-resolution
+  scan come out as OCR text.
+- With mixed languages such as `["ukr", "eng"]`, Cyrillic words that OCR read with Latin look-alike letters
+  (`Apmatypa`) are put back in Cyrillic (`Арматура`) when the Cyrillic word is in Tesseract's dictionary and the
+  Latin one is not an English word.
 - RTF files keep no heading styles, so their headings arrive as plain paragraphs.
 - Password-protected files are not supported. Maximum download size is 200 MB.
 

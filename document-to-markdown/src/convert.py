@@ -263,9 +263,126 @@ def _ocr_image(img: Image.Image, langs: str) -> str:
         text = pytesseract.image_to_string(img, lang=langs, config='--psm 3')
     except pytesseract.TesseractError as e:
         raise ConversionError(f'OCR failed: {e}') from e
-    # Tesseract keeps line breaks inside paragraphs; join them, keep blank-line paragraph breaks
-    paras = [re.sub(r'\s*\n\s*', ' ', p).strip() for p in re.split(r'\n\s*\n', text)]
-    return '\n\n'.join(p for p in paras if p)
+    return _fix_lookalikes(_ocr_layout(text), langs)
+
+
+def _table_row(line: str) -> str | None:
+    """A Tesseract line read from a ruled table ('| a | b | c', borders as pipes) -> '| a | b | c |'."""
+    s = line.strip()
+    if s.count('|') < 2:
+        return None
+    cells = [c.strip() for c in s.strip('|').split('|')]
+    if len(cells) < 2 or not any(cells):
+        return None
+    return '| ' + ' | '.join(cells) + ' |'
+
+
+def _ocr_layout(text: str) -> str:
+    """Join lines inside a paragraph, keep blank-line paragraph breaks; table rows stay one per line."""
+    out = []
+    for para in re.split(r'\n\s*\n', text):
+        lines, buf = [], []
+        for line in para.splitlines():
+            row = _table_row(line)
+            if row:
+                if buf:
+                    lines.append(('p', ' '.join(buf)))
+                    buf = []
+                lines.append(('t', row))
+            elif line.strip():
+                buf.append(line.strip())
+        if buf:
+            lines.append(('p', ' '.join(buf)))
+        for kind, value in lines:
+            if kind == 't' and out and out[-1][0] == 't':
+                out[-1] = ('t', out[-1][1] + '\n' + value)   # rows of one table, even across a blank line
+            else:
+                out.append((kind, value))
+    blocks = []
+    for kind, value in out:
+        if kind == 't':
+            rows = value.split('\n')
+            if len(rows) < 2:   # a lone row is usually a broken grid on a noisy scan: keep it as text
+                blocks.append(' '.join(c.strip() for c in rows[0].strip('|').split('|') if c.strip()))
+                continue
+            value = _fix_tables('\n'.join(_even_rows(rows)))   # separator row after the header
+        blocks.append(value)
+    return '\n\n'.join(b for b in blocks if b)
+
+
+def _even_rows(rows: list[str]) -> list[str]:
+    """Same number of cells in every row. Tesseract may read a stray grid mark as an extra '|'
+    ('| Cement | 420 | | | 96.50'): when a row holds as many filled cells as the fullest row, its empty cells go."""
+    cells = [[c.strip() for c in r.strip().strip('|').split('|')] for r in rows]
+    width = max(sum(1 for c in row if c) for row in cells)
+    out = []
+    for row in cells:
+        if sum(1 for c in row if c) == width:
+            row = [c for c in row if c]
+        row = (row + [''] * width)[:width] if len(row) != width else row
+        out.append('| ' + ' | '.join(row) + ' |')
+    return out
+
+
+# Latin letters that look like Cyrillic ones. With e.g. 'ukr+eng' Tesseract sometimes reads a Cyrillic word as
+# Latin ('Арматура' -> 'Apmatypa'); such a word is put back in Cyrillic when the Cyrillic spelling is a word of
+# the Cyrillic language's Tesseract dictionary and the Latin one is not an English word.
+_LOOKALIKE = str.maketrans('AaBCcEeHIiKkMmOoPpTtXxYyn', 'АаВСсЕеНІіКкМмОоРрТтХхУуп')
+_CYRILLIC_LANGS = {'ukr', 'rus', 'bel', 'bul', 'srp', 'mkd'}
+_LATIN_LANGS = {'eng', 'deu', 'fra', 'spa', 'ita', 'por', 'pol', 'nld', 'ces'}
+_wordlists: dict[str, set[str]] = {}
+
+
+def _wordlist(lang: str) -> set[str]:
+    """Words of Tesseract's dictionary for a language (lower case), read once from its traineddata."""
+    if lang in _wordlists:
+        return _wordlists[lang]
+    words: set[str] = set()
+    try:
+        tessdata = os.environ.get('TESSDATA_PREFIX') or _tessdata_dir()
+        src = os.path.join(tessdata, f'{lang}.traineddata')
+        with tempfile.TemporaryDirectory() as tmp:
+            base = os.path.join(tmp, lang)
+            subprocess.run(['combine_tessdata', '-e', src, base + '.lstm-word-dawg', base + '.lstm-unicharset'],
+                           capture_output=True, timeout=60, check=True)
+            subprocess.run(['dawg2wordlist', base + '.lstm-unicharset', base + '.lstm-word-dawg', base + '.txt'],
+                           capture_output=True, timeout=120, check=True)
+            with open(base + '.txt', encoding='utf-8') as f:
+                words = {w.strip().lower() for w in f if w.strip()}
+    except Exception:  # noqa: BLE001 - no dictionary means no correction, never a failed conversion
+        words = set()
+    _wordlists[lang] = words
+    return words
+
+
+def _tessdata_dir() -> str:
+    out = subprocess.run(['tesseract', '--list-langs'], capture_output=True, text=True, timeout=30)
+    m = re.search(r'"([^"]+)"', out.stdout + out.stderr)
+    return m.group(1) if m else '/usr/share/tesseract-ocr/5/tessdata'
+
+
+def _fix_lookalikes(text: str, langs: str) -> str:
+    parts = set(langs.split('+'))
+    cyr = sorted(parts & _CYRILLIC_LANGS)
+    if not cyr or not parts & _LATIN_LANGS:
+        return text
+    # whole Latin words ('Apmatypa') and mixed-script words ('Koт'); the Cyrillic spelling must be all Cyrillic
+    suspects = {w for w in re.findall(r'[^\W\d_]{3,}', text)
+                if re.search(r'[A-Za-z]', w) and re.fullmatch(r'[\u0400-\u04ff]+', w.translate(_LOOKALIKE))}
+    if not suspects:
+        return text
+    english = _wordlist('eng') if 'eng' in parts else set()
+    dictionaries = [_wordlist(lang) for lang in cyr]
+    fixes = {}
+    for w in suspects:
+        cyr_word = w.translate(_LOOKALIKE)
+        if (w.lower() not in english or not w.isascii()) and any(cyr_word.lower() in d for d in dictionaries):
+            fixes[w] = cyr_word
+    if not fixes:
+        return text
+    pattern = re.compile(r'(?<![^\W\d_])(' + '|'.join(map(re.escape, sorted(fixes, key=len, reverse=True)))
+                         + r')(?![^\W\d_])')   # whole words only
+    return pattern.sub(lambda m: fixes[m.group(1)], text)
 
 
 def _convert_image(path, langs, max_pages) -> Result:
