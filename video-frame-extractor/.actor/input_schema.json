@@ -6,7 +6,7 @@
         "sources": {
             "title": "Video URLs",
             "type": "array",
-            "description": "Direct links to video files (MP4, MOV, WebM, MKV, AVI, M4V, MPEG, 3GP\u2026), up to 2 GB each. Pages like YouTube are not supported \u2014 use a direct file link. Files in your own Apify key-value store work too: set the store's access to \"Anyone with ID can read\" and use https://api.apify.com/v2/key-value-stores/<store ID>/records/<key>.",
+            "description": "Direct links to video files (MP4, MOV, WebM, MKV, AVI, M4V, MPEG, 3GP\u2026), up to 2 GB each. Pages like YouTube are not supported - use a direct file link. Files in your own Apify key-value store work too: set the store's access to \"Anyone with ID can read\" and use https://api.apify.com/v2/key-value-stores/<store ID>/records/<key>.",
             "editor": "requestListSources",
             "prefill": [
                 {

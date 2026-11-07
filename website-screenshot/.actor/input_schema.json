@@ -22,14 +22,14 @@
         "html": {
             "title": "Raw HTML (optional)",
             "type": "string",
-            "description": "HTML to render instead of (or in addition to) URLs \u2014 e.g. an invoice or report template to turn into PDF. External images and styles referenced by absolute https URLs are loaded.",
+            "description": "HTML to render instead of (or in addition to) URLs - e.g. an invoice or report template to turn into PDF. External images and styles referenced by absolute https URLs are loaded.",
             "editor": "textarea"
         },
         "format": {
             "title": "Output format",
             "type": "string",
             "editor": "select",
-            "description": "png, jpeg, webp \u2014 screenshot; pdf \u2014 printable PDF of the page.",
+            "description": "png, jpeg, webp - screenshot; pdf - printable PDF of the page.",
             "enum": [
                 "png",
                 "jpeg",
