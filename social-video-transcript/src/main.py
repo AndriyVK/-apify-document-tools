@@ -11,6 +11,7 @@ import uuid
 
 from apify import Actor
 
+from .crosscheck import compare
 from .fetch import FetchError, audio, captions, info, platform
 from .transcribe import TranscriptionError, to_srt, to_vtt, transcribe
 from .translate import LANGUAGES, TranslationError, translate
@@ -116,6 +117,8 @@ async def main() -> None:
         max_minutes = int(inp.get('maxDurationMinutes') or 60)
         want_subs = inp.get('subtitles', True)
         include_segments = inp.get('includeSegments', True)
+        quality = inp.get('quality', 'accurate')
+        cross_check = bool(inp.get('crossCheck'))
 
         charging = Actor.get_charging_manager()
         store = await Actor.open_key_value_store()
@@ -129,6 +132,7 @@ async def main() -> None:
             item = {'url': url, 'platform': plat}
             started = time.monotonic()
             charges = {}
+            checked = None
             try:
                 data, proxy = await _metadata(url, plat, proxies)
                 duration = float(data.get('duration') or 0)
@@ -162,21 +166,37 @@ async def main() -> None:
                         raise FetchError('maximum charge per run reached')
                     with tempfile.TemporaryDirectory() as tmp:
                         path = await asyncio.to_thread(audio, data, tmp, proxy)
-                        res = await asyncio.to_thread(transcribe, path, tmp, quality=inp.get('quality', 'accurate'),
+                        res = await asyncio.to_thread(transcribe, path, tmp, quality=quality,
                                                       language=language, prompt=inp.get('vocabulary'),
                                                       max_minutes=left,
                                                       media_seconds=duration or None)
-                    segments, lang, source = res['segments'], _code(res['language']), 'speech-recognition'
-                    if res['truncated']:
-                        item['warnings'] = [f"only the first {res['minutes']} minutes were transcribed: "
-                                            'maximum charge per run reached']
-                    duration = duration or res['duration']
-                    if plat == 'youtube':
-                        charges[EVENT_YT_MINUTE] = res['minutes']
-                    else:
-                        charges[EVENT_VIDEO] = 1
-                        if res['minutes'] > INCLUDED_MINUTES:
-                            charges[EVENT_MINUTE] = res['minutes'] - INCLUDED_MINUTES
+                        segments, lang, source = res['segments'], _code(res['language']), 'speech-recognition'
+                        if res['truncated']:
+                            item['warnings'] = [f"only the first {res['minutes']} minutes were transcribed: "
+                                                'maximum charge per run reached']
+                        duration = duration or res['duration']
+                        if plat == 'youtube':
+                            charges[EVENT_YT_MINUTE] = res['minutes']
+                        else:
+                            charges[EVENT_VIDEO] = 1
+                            if res['minutes'] > INCLUDED_MINUTES:
+                                charges[EVENT_MINUTE] = res['minutes'] - INCLUDED_MINUTES
+                        if cross_check and segments:
+                            # the second model on the same audio, charged like the first recognition
+                            if all(_left(charging, e) >= 2 * n for e, n in charges.items()):
+                                try:
+                                    res2 = await asyncio.to_thread(
+                                        transcribe, path, tmp, quality='fast' if quality == 'accurate' else 'accurate',
+                                        language=lang if lang and len(lang) <= 3 else language,
+                                        prompt=inp.get('vocabulary'), max_minutes=res['minutes'],
+                                        media_seconds=duration or None)
+                                    checked = {'model': res2['model'], **compare(segments, res2['segments']),
+                                               'text': _text(res2['segments'])}
+                                    charges = {e: 2 * n for e, n in charges.items()}
+                                except Exception as e:  # noqa: BLE001 - the first transcript is still good
+                                    item.setdefault('warnings', []).append(f'cross-check failed: {e}')
+                            else:
+                                item.setdefault('warnings', []).append('cross-check skipped: maximum charge per run')
                 if not segments:
                     raise TranscriptionError('no speech found in the video')
             except (FetchError, TranscriptionError) as e:
@@ -189,6 +209,8 @@ async def main() -> None:
             item.update(language=lang, transcriptSource=source, text=_text(segments))
             if include_segments:
                 item['segments'] = segments
+            if checked:
+                item['crossCheck'] = checked
             stem = _stem(data, idx)
             files = [('', segments)]
             if target:

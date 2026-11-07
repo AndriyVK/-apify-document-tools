@@ -47,6 +47,7 @@ Ukrainian. Recognition in Ukrainian is common; what is rare is translation into 
 | `useCaptions` | Use the video's captions when available (default). Off: always recognise the speech with Whisper |
 | `maxDurationMinutes` | Videos without captions longer than this are skipped (free). Captions work for any length |
 | `quality` | `accurate` (Whisper large-v3, default) or `fast` (large-v3-turbo) - same price |
+| `crossCheck` | Speech recognition only: recognise the audio again with the other model and list where the two disagree (see below). Doubles the recognition price |
 | `subtitles` | Save SRT and VTT files (free) |
 | `includeSegments` | Include timestamped segments, not only the full text |
 
@@ -72,6 +73,30 @@ Ukrainian. Recognition in Ukrainian is common; what is rare is translation into 
 
 `transcriptSource` is `uploaded-captions`, `automatic-captions` or `speech-recognition`.
 
+### Cross-check: where to listen again
+
+Wind, music and crowd noise break numbers and short words first, and the two Whisper models break them differently.
+With `"crossCheck": true` the same audio is recognised by the second model as well, and the item gets the places where
+the two transcripts disagree. A real run on a BBC weather report recorded in a storm:
+
+```json
+"crossCheck": {
+  "model": "whisper-large-v3-turbo",
+  "agreement": 0.884,
+  "differences": [
+    { "start": 0.0, "end": 7.0, "text": "gusts of wind of 17 even 18", "other": "just a room of 70 even 80", "numbers": true },
+    { "start": 21.0, "end": 28.0, "text": "with drought in", "other": "throughout", "numbers": false }
+  ],
+  "text": "…the full transcript of the second model…"
+}
+```
+
+The turbo figures match the Met Office forecast for that day (gusts of 60-70 mph, up to 80), and «throughout the
+morning» fits the sentence; turbo in turn misheard «gusts of wind of». Each model was wrong in a different place.
+`numbers: true` marks the differences with figures in them, the ones that matter most. Times come from the main
+transcript. Where both models agree they can still both be wrong, so this narrows the listening down, it does not
+replace it. Videos with captions are not cross-checked.
+
 ## Pricing
 
 You pay per result. On any paid Apify plan you get the lower price.
@@ -87,7 +112,8 @@ Examples on a paid plan:
 - a YouTube video with captions: $0.01, whatever its length;
 - a 1-minute TikTok: $0.01;
 - the same TikTok translated into Ukrainian: $0.017;
-- a 10-minute YouTube video without captions: $0.10.
+- a 10-minute YouTube video without captions: $0.10;
+- a 1-minute TikTok with `crossCheck`: $0.02 (the recognition events are charged twice).
 
 Each run also carries Apify's standard start fee of $0.05 per 1,000 runs. Subtitles are free. If a run reaches your
 maximum charge, the remaining videos are skipped.

@@ -113,6 +113,13 @@
             ],
             "default": "accurate"
         },
+        "crossCheck": {
+            "title": "Cross-check with the second model",
+            "type": "boolean",
+            "editor": "checkbox",
+            "description": "Speech recognition only: recognise the audio again with the other Whisper model and list the places where the two disagree (crossCheck.differences, with times). Noise breaks numbers and short words, and the two models break them differently, so these are the places worth listening to. Doubles the speech recognition price; captions are not affected.",
+            "default": false
+        },
         "subtitles": {
             "title": "SRT and VTT subtitle files",
             "type": "boolean",
