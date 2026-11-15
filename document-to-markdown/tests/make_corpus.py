@@ -178,6 +178,38 @@ def soffice(src, target, outdir):
     shutil.rmtree(profile, ignore_errors=True)
 
 
+# An invoice whose table has no rules: columns only by alignment, numbers right-aligned with a thousands space
+INVOICE = {
+    'title': 'Рахунок-фактура № 47',
+    'paras': ['Постачальник: ТОВ «Будмайстер», м. Львів. Покупець: ФОП Коваленко О. В.',
+              "Оплата протягом п'яти банківських днів з дати рахунку."],
+    'table': [['№', 'Товар', 'Од.', 'Кількість', 'Ціна', 'Сума'],
+              ['1', 'Цемент М500', 'мішок', '420', '96,50', '40 530,00'],
+              ['2', 'Арматура 12 мм', 'шт.', '180', '412,00', '74 160,00'],
+              ['3', 'Пісок річковий', 'т', '12', '650,00', '7 800,00'],
+              ['4', 'Цегла рядова', 'шт.', '2 500', '9,80', '24 500,00']],
+    'total': 'Разом: 146 990,00 грн',
+}
+
+
+def pdf_invoice(path):
+    t = INVOICE
+    h = ParagraphStyle('h', fontName='DejaVu-Bold', fontSize=20, leading=24)
+    p = ParagraphStyle('p', fontName='DejaVu', fontSize=10.5, leading=14)
+    tbl = Table(t['table'], hAlign='LEFT')
+    tbl.setStyle(TableStyle([('FONTNAME', (0, 0), (-1, -1), 'DejaVu'), ('FONTNAME', (0, 0), (-1, 0), 'DejaVu-Bold'),
+                             ('ALIGN', (3, 1), (-1, -1), 'RIGHT')]))
+    story = [Paragraph(t['title'], h), Spacer(1, 10)] + [Paragraph(x, p) for x in t['paras']]
+    story += [Spacer(1, 10), tbl, Spacer(1, 10), Paragraph(t['total'], p)]
+    SimpleDocTemplate(path, pagesize=A4).build(story)
+
+
+def expect_invoice(name):
+    t = INVOICE
+    return {'file': name, 'lang': 'uk', 'ocr': True, 'phrases': t['paras'] + [t['total']], 'heading': None,
+            'table_cells': [c for r in t['table'] for c in r], 'pages': 1}
+
+
 def main(out):
     os.makedirs(out, exist_ok=True)
     tmp = tempfile.mkdtemp()
@@ -204,6 +236,12 @@ def main(out):
         exp.append(expect(f'slides-{lang}.pptx', lang, heading=True))
         html(f'{out}/page-{lang}.html', lang)
         exp.append(expect(f'page-{lang}.html', lang))
+    # scanned invoice with a table without rules: clean 300 dpi and noisy, slightly rotated 200 dpi
+    pdf_invoice(f'{tmp}/invoice-uk.pdf')
+    pdf_scan(f'{tmp}/invoice-uk.pdf', f'{out}/scan-borderless-uk.pdf', dpi=300, noise=False)
+    exp.append(expect_invoice('scan-borderless-uk.pdf'))
+    pdf_scan(f'{tmp}/invoice-uk.pdf', f'{out}/scan-noisy-borderless-uk.pdf', dpi=200, noise=True, angle=0.8)
+    exp.append(expect_invoice('scan-noisy-borderless-uk.pdf'))
     # legacy formats from the Ukrainian sources
     # .doc from .odt: LibreOffice drops python-docx tables (no column widths) when writing .doc directly
     soffice(f'{out}/doc-uk.docx', 'odt', tmp)

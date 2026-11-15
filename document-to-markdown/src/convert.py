@@ -18,7 +18,7 @@ import numpy as np
 import pdfplumber
 import pypdfium2 as pdfium
 import pytesseract
-from PIL import Image, ImageOps
+from PIL import Image, ImageFilter, ImageOps
 
 PDF_EXT = {'.pdf'}
 IMAGE_EXT = {'.png', '.jpg', '.jpeg', '.tif', '.tiff', '.bmp', '.webp', '.gif'}
@@ -39,6 +39,8 @@ SUPPORTED_EXT = PDF_EXT | IMAGE_EXT | SHEET_EXT | MARKITDOWN_EXT | set(LIBREOFFI
 # A page with fewer extracted characters than this is treated as a scan
 MIN_TEXT_CHARS = 25
 OCR_DPI = 300
+# Tesseract's OpenMP threads only fight over the fraction of a core an Actor gets: ~25% slower than one thread
+os.environ.setdefault('OMP_THREAD_LIMIT', '1')
 # For non-paginated formats one billable page = this many characters of output (min 1)
 CHARS_PER_PAGE = 3000
 
@@ -269,14 +271,112 @@ def _ocr_image(img: Image.Image, langs: str) -> str:
         grids = []
     if grids:
         return _ocr_with_grids(straight, grids, langs)
-    return _fix_lookalikes(_ocr_layout(_tesseract(img, langs, 3)), langs)
-
-
-def _tesseract(img: Image.Image, langs: str, psm: int) -> str:
+    data = _tesseract_data(img, langs)
     try:
-        return pytesseract.image_to_string(img, lang=langs, config=f'--psm {psm}')
+        if _find_borderless(data):   # columns of words without rules: read again on the straightened page
+            straight = _deskew(img)
+            sdata = data if straight is img else _tesseract_data(straight, langs)
+            grids = _find_borderless(sdata)
+    except Exception:  # noqa: BLE001
+        grids = []
+    if grids:
+        return _ocr_with_grids(straight, grids, langs, _to_straight(data, img, straight))
+    return _fix_lookalikes(_ocr_layout(_data_text(data)), langs)
+
+
+def _tesseract(img: Image.Image, langs: str, psm: int, extra: str = '') -> str:
+    try:
+        return pytesseract.image_to_string(img, lang=langs, config=f'--psm {psm} {extra}'.strip())
     except pytesseract.TesseractError as e:
         raise ConversionError(f'OCR failed: {e}') from e
+
+
+def _tesseract_data(img: Image.Image, langs: str) -> dict:
+    try:
+        return pytesseract.image_to_data(img, lang=langs, config='--psm 3', output_type=pytesseract.Output.DICT)
+    except pytesseract.TesseractError as e:
+        raise ConversionError(f'OCR failed: {e}') from e
+
+
+def _data_text(d: dict) -> str:
+    """Words of image_to_data back to text as image_to_string lays it out: a blank line between paragraphs."""
+    out, prev = [], None
+    for i, t in enumerate(d['text']):
+        if d['level'][i] != 5 or not t.strip():
+            continue
+        conf = float(d['conf'][i])
+        if ((len(t.strip()) <= 2 and conf < 10) or (not re.search(r'[^\W_]', t) and conf < 60)
+                or re.fullmatch(r'_+', t.strip())):
+            continue   # a scan speck read as a short word, a stray mark or an underscore
+        key = (d['block_num'][i], d['par_num'][i], d['line_num'][i])
+        if key != prev and t.startswith('(') and ')' not in t and conf < 75 and not any(
+                ')' in d['text'][j] for j in range(i + 1, len(d['text']))
+                if (d['block_num'][j], d['par_num'][j], d['line_num'][j]) == key):
+            t = t[1:]   # a speck before the first word read as an opening bracket that never closes
+        if prev is not None:
+            out.append('\n\n' if key[:2] != prev[:2] else '\n' if key != prev else ' ')
+        out.append(t)
+        prev = key
+    return ''.join(out) + '\n'
+
+
+# Tables without rules on scans: rows of words with wide gaps that line up in columns. Rows come from word
+# positions (Tesseract may put one row's cells in different blocks), columns from the gaps shared by all rows.
+BL_MIN_ROWS = 3
+BL_MIN_COLS = 3
+
+
+def _find_borderless(d: dict) -> list[tuple[list[int], list[int]]]:
+    words = [(d['left'][i], d['top'][i], d['left'][i] + d['width'][i], d['top'][i] + d['height'][i])
+             for i, t in enumerate(d['text'])
+             if d['level'][i] == 5 and re.search(r'\w', t or '') and d['height'][i] > 5]
+    if len(words) < BL_MIN_ROWS * BL_MIN_COLS:
+        return []
+    hmed = statistics.median(w[3] - w[1] for w in words)
+    rows = []   # [y_center_sum, count, words]
+    for w in sorted(words, key=lambda w: (w[1] + w[3]) / 2):
+        yc = (w[1] + w[3]) / 2
+        if rows and abs(yc - rows[-1][0] / rows[-1][1]) < 0.6 * hmed:
+            rows[-1][0] += yc
+            rows[-1][1] += 1
+            rows[-1][2].append(w)
+        else:
+            rows.append([yc, 1, [w]])
+    gap = 0.9 * hmed
+    lines = []
+    for _, _, ws in rows:
+        ws.sort()
+        segs = [[ws[0][0], ws[0][2]]]
+        for w in ws[1:]:
+            if w[0] - segs[-1][1] > gap:
+                segs.append([w[0], w[2]])
+            else:
+                segs[-1][1] = max(segs[-1][1], w[2])
+        lines.append((min(w[1] for w in ws), max(w[3] for w in ws), segs))
+    tables, run = [], []
+    for ln in lines + [None]:
+        if ln is not None and len(ln[2]) >= BL_MIN_COLS and (not run or ln[0] - run[-1][1] < 2.5 * hmed):
+            run.append(ln)
+            continue
+        if len(run) >= BL_MIN_ROWS:
+            tables.append(run)
+        run = [ln] if ln is not None and len(ln[2]) >= BL_MIN_COLS else []
+    grids = []
+    for run in tables:
+        spans = sorted([a, b] for _, _, segs in run for a, b in segs)
+        cols = [spans[0]]
+        for a, b in spans[1:]:
+            if a - cols[-1][1] > 0.5 * hmed:
+                cols.append([a, b])
+            else:
+                cols[-1][1] = max(cols[-1][1], b)
+        if len(cols) < BL_MIN_COLS:
+            continue
+        pad = int(0.3 * hmed)
+        xs = [cols[0][0] - pad] + [(a[1] + b[0]) // 2 for a, b in zip(cols, cols[1:])] + [cols[-1][1] + pad]
+        ys = ([run[0][0] - pad] + [(a[1] + b[0]) // 2 for a, b in zip(run, run[1:])] + [run[-1][1] + pad])
+        grids.append((ys, xs))
+    return grids
 
 
 # Ruled tables on scans. Tesseract reads grid lines as '|' only on clean scans; on a noisy or skewed one the
@@ -307,7 +407,9 @@ def _deskew(img: Image.Image) -> Image.Image:
             best_angle, best_score = a, score
     if abs(best_angle) < 0.15:
         return img
-    return img.rotate(best_angle, resample=Image.BICUBIC, fillcolor=255)
+    straight = img.rotate(best_angle, resample=Image.BICUBIC, fillcolor=255)
+    straight.info['deskew_angle'] = best_angle
+    return straight
 
 
 def _runs(mask: np.ndarray, length: int) -> np.ndarray:
@@ -370,32 +472,194 @@ def _find_grids(img: Image.Image) -> list[tuple[list[int], list[int]]]:
     return sorted(grids, key=lambda g: g[0][0])
 
 
-def _ocr_with_grids(img: Image.Image, grids, langs: str) -> str:
-    """Text above, beside and below each table through the usual layout; tables cell by cell."""
-    blocks, top = [], 0
-    for rows, cols in grids:
-        band = img.crop((0, top, img.width, rows[-1] + 4)).copy()
-        band.paste(255, (cols[0] - 4, max(0, rows[0] - top - 4), cols[-1] + 4, rows[-1] - top + 4))
-        text = _ocr_layout(_tesseract(band, langs, 3)) if band.height > 10 else ''
-        if text:
-            blocks.append(text)
-        table = []
-        for r0, r1 in zip(rows, rows[1:]):
-            row = []
-            for c0, c1 in zip(cols, cols[1:]):
-                cell = img.crop((c0 + 5, r0 + 5, c1 - 4, r1 - 4))
-                cell = ImageOps.expand(cell, border=20, fill=255)
-                row.append(re.sub(r'\s+', ' ', _tesseract(cell, langs, 7)).strip())
-            table.append(row)
-        if any(any(c for c in r) for r in table):
-            blocks.append(table_to_markdown(table))
-        top = rows[-1] + 5
-    rest = img.crop((0, top, img.width, img.height))
-    if rest.height > 10:
-        text = _ocr_layout(_tesseract(rest, langs, 3))
-        if text:
-            blocks.append(text)
+def _to_straight(data: dict, img: Image.Image, straight: Image.Image) -> dict:
+    """Words read on the page as scanned, with boxes moved to where they are on the straightened page: text
+    outside tables keeps Tesseract's own reading (straightening resamples the image and can change a comma)."""
+    angle = straight.info.get('deskew_angle', 0.0) if straight is not img else 0.0
+    if not angle:
+        return data
+    a = np.radians(angle)
+    cx, cy = img.width / 2, img.height / 2
+    out = dict(data)
+    out['left'], out['top'] = [], []
+    for x, y, w, h in zip(data['left'], data['top'], data['width'], data['height']):
+        xc, yc = x + w / 2 - cx, y + h / 2 - cy
+        nx, ny = cx + xc * np.cos(a) + yc * np.sin(a), cy - xc * np.sin(a) + yc * np.cos(a)
+        out['left'].append(int(nx - w / 2))
+        out['top'].append(int(ny - h / 2))
+    return out
+
+
+def _ocr_with_grids(img: Image.Image, grids, langs: str, data: dict | None = None) -> str:
+    """Text above, beside and below each table from one OCR pass of the page; tables cell by cell."""
+    if data is None:
+        data = _tesseract_data(img, langs)
+    boxes = [(cols[0], rows[0], cols[-1], rows[-1]) for rows, cols in grids]
+    segments = [[] for _ in range(len(grids) + 1)]   # words before table k (above or beside it), then the rest
+    for i, t in enumerate(data['text']):
+        if data['level'][i] != 5 or not t.strip():
+            continue
+        xc, yc = data['left'][i] + data['width'][i] / 2, data['top'][i] + data['height'][i] / 2
+        if any(x0 <= xc <= x1 and y0 <= yc <= y1 for x0, y0, x1, y1 in boxes):
+            continue
+        k = next((n for n, (x0, y0, x1, y1) in enumerate(boxes) if yc <= y1), len(grids))
+        segments[k].append(i)
+    blocks = []
+    for k in range(len(grids) + 1):
+        if segments[k]:
+            text = _ocr_layout(_data_text({key: [v[i] for i in segments[k]] for key, v in data.items()}))
+            if text:
+                blocks.append(text)
+        if k < len(grids):
+            rows, cols = grids[k]
+            crops = [[img.crop((c0 + 5, r0 + 5, c1 - 4, r1 - 4)) for c0, c1 in zip(cols, cols[1:])]
+                     for r0, r1 in zip(rows, rows[1:])]
+            table = _read_table(crops, langs)
+            if any(any(c for c in r) for r in table):
+                blocks.append(table_to_markdown(_fix_columns(table)))
     return _fix_lookalikes(_join_broken('\n\n'.join(blocks)), langs)
+
+
+def _read_sheet(cells: list[Image.Image], langs: str) -> list[tuple[str, bool]]:
+    """Cells in one Tesseract call: a sheet of cells one under another (a call per cell is ~30 times slower).
+    Per cell: its text and whether it looks misread (stray marks, a lone letter, letters in a number)."""
+    pads = [ImageOps.expand(c, border=20, fill=255) for c in cells]
+    sheet = Image.new('L', (max(p.width for p in pads), sum(p.height + 30 for p in pads)), 255)
+    spans, y = [], 0
+    for p in pads:
+        sheet.paste(p, (0, y))
+        spans.append((y, y + p.height))
+        y += p.height + 30
+    try:
+        d = pytesseract.image_to_data(sheet, lang=langs, config='--psm 6 -c preserve_interword_spaces=1',
+                                      output_type=pytesseract.Output.DICT)
+    except pytesseract.TesseractError as e:
+        raise ConversionError(f'OCR failed: {e}') from e
+    words = [[] for _ in cells]
+    for i, t in enumerate(d['text']):
+        if d['level'][i] != 5 or not t.strip():
+            continue
+        yc = d['top'][i] + d['height'][i] / 2
+        k = next((n for n, (a, b) in enumerate(spans) if a <= yc < b), None)
+        if k is not None:
+            words[k].append((d['left'][i], t.strip()))
+    out = []
+    for ws in words:
+        ws.sort()
+        kept = [t for _, t in ws if re.search(r'[^\W_]', t)]
+        text = ' '.join(kept).strip(' |_:;`\'"(')
+        bad = (len(kept) != len(ws) or (len(text) == 1 and not text.isdigit())
+               or bool(re.search(r'\d', text) and re.search(r'[^\d\s.,\-]', text)
+                       and not re.search(r'[^\W\d_]{2}', text))
+               or bool(re.search(r'\d[.,;:]$|^[^\w-]|^\d{4,}(?:[.,]\d+)?$', text)))   # '2500': gap lost?
+        out.append((text, bad))
+    return out
+
+
+def _read_table(crops, langs: str) -> list[list[str]]:
+    """All cells in one call; cells that look misread are read again in one call with scan specks filtered
+    out, and only those still in doubt one by one."""
+    flat = [c for row in crops for c in row]
+    first = _read_sheet(flat, langs)
+    texts = [t for t, _ in first]
+    doubt = [k for k, (_, bad) in enumerate(first) if bad]
+    if doubt:
+        again = _read_sheet([flat[k].filter(ImageFilter.MedianFilter(3)) for k in doubt], langs)
+        still = []
+        for k, (text, bad) in zip(doubt, again):
+            old = texts[k]
+            same = re.sub(r'\s', '', text) == re.sub(r'\s', '', old)
+            if text and (not bad or (same and text.count(' ') > old.count(' '))):
+                texts[k] = text
+            else:
+                still.append(k)
+        for k in still[:6]:   # rare: a few cells at most
+            texts[k] = _read_cell(flat[k], langs) or texts[k]
+    n = len(crops[0])
+    table = [texts[r * n:(r + 1) * n] for r in range(len(crops))]
+    _cyrillic_cells(table, crops, langs)
+    return table
+
+
+def _read_cell(cell: Image.Image, langs: str) -> str:
+    """A cell as one text line. Scan specks read as stray marks ('З -'): read again with specks filtered out
+    (not always: the filter can close the thousands gap in '2 500')."""
+    def read(im):
+        raw = _tesseract(ImageOps.expand(im, border=20, fill=255), langs, 7, '-c preserve_interword_spaces=1')
+        return re.sub(r'\s+', ' ', raw).strip(), _clean_cell(raw)
+    raw, text = read(cell)
+    if raw != text or (len(text) == 1 and not text.isdigit()):
+        _, again = read(cell.filter(ImageFilter.MedianFilter(3)))
+        if again and re.sub(r'\s', '', again) != re.sub(r'\s', '', text):
+            return again
+        if again and again.count(' ') > text.count(' '):   # same characters: keep the reading with the gaps
+            return again
+    return text
+
+
+def _cyrillic_cells(table, crops, langs: str) -> None:
+    """With Latin and Cyrillic languages together, a short cell of a Cyrillic table is often read as Latin
+    ('шт.' -> 'LUT.', 'М500' -> 'M500'). Such a cell is read again with the Cyrillic languages only and the new
+    reading is kept when its words are words of those languages."""
+    parts = langs.split('+')
+    cyr = [x for x in parts if x in _CYRILLIC_LANGS]
+    if not cyr or not set(parts) & _LATIN_LANGS:
+        return
+    text = ' '.join(c for r in table for c in r)
+    n_cyr, n_lat = len(re.findall(r'[\u0400-\u04ff]', text)), len(re.findall(r'[A-Za-z]', text))
+    if n_cyr < 1.5 * n_lat:
+        return
+    words = [_wordlist(x) for x in cyr]
+    latin = [(r, c) for r, row in enumerate(table) for c, cell in enumerate(row) if re.search(r'[A-Za-z]', cell)]
+    if not latin:
+        return
+    for (r, c), (again, _) in zip(latin, _read_sheet([crops[r][c] for r, c in latin], '+'.join(cyr))):
+        letters = [re.sub(r'[^\w]|\d|_', '', w).lower() for w in again.split()]
+        if again and not re.search(r'[A-Za-z]', again) and all(
+                not w or any(w in d for d in words) for w in letters):
+            table[r][c] = again
+
+
+def _clean_cell(text: str) -> str:
+    """One cell read as a line: parts after a wide gap that hold no letter or digit are scan specks."""
+    parts = [p for p in re.split(r'\s{3,}', text.strip()) if re.search(r'\w', p)]
+    tokens = re.sub(r'\s+', ' ', ' '.join(parts)).split()
+    while tokens and not re.search(r'\w', tokens[0]):    # stray marks at the edges: '- (', '|'
+        tokens.pop(0)
+    while tokens and not re.search(r'\w', tokens[-1]):
+        tokens.pop()
+    return ' '.join(tokens).strip(' |_:;`\'"(')
+
+
+_DIGIT_LOOKALIKE = str.maketrans({'З': '3', 'з': '3', 'О': '0', 'о': '0', 'O': '0', 'o': '0', 'l': '1', 'I': '1',
+                                  '|': '1', 'б': '6', 'Б': '6'})
+_NUMERO = re.compile(r'^(?:№|N[oо°º2]|М[оеo]|Ne|Nе|N)\.?$')
+
+
+def _fix_columns(table: list[list[str]]) -> list[list[str]]:
+    """In a column of numbers, letters that look like digits are digits ('З' -> '3'); its header read as
+    'Мо' / 'No' is the number sign '№'."""
+    if len(table) < 3:
+        return table
+    width = max(len(r) for r in table)
+    for c in range(width):
+        cells = [r[c] for r in table[1:] if c < len(r) and r[c]]
+        numeric = [x for x in cells if re.fullmatch(r'[\d\s.,\-]+', x)]
+        if not cells or len(numeric) * 2 < len(cells):
+            continue
+        for r in table[1:]:
+            if c < len(r) and r[c]:
+                r[c] = re.sub(r'^[^\w\-]+|[^\w]+$', '', r[c]) or r[c]   # '412,00.' -> '412,00'
+            if c < len(r) and r[c] and r[c] not in numeric:
+                fixed = r[c].translate(_DIGIT_LOOKALIKE)
+                if re.fullmatch(r'[\d\s.,\-]+', fixed) and re.search(r'\d', r[c]):
+                    r[c] = fixed
+                elif re.fullmatch(r'[\d\s.,\-]+', fixed) and len(r[c]) <= 2:
+                    r[c] = fixed
+        if c < len(table[0]) and _NUMERO.match(table[0][c]) and all(re.fullmatch(r'\d+', x) for x in
+                                                                     (r[c] for r in table[1:] if c < len(r) and r[c])):
+            table[0][c] = '№'
+    return table
 
 
 def _table_row(line: str) -> str | None:
@@ -508,6 +772,8 @@ def _tessdata_dir() -> str:
 
 def _fix_lookalikes(text: str, langs: str) -> str:
     parts = set(langs.split('+'))
+    if parts & _CYRILLIC_LANGS:   # Tesseract reads the number sign '№' as 'Мо' / 'Ме' before a number
+        text = re.sub(r'(?<![^\W\d_])(?:Мо|Ме|Мe|Mo|Ne|Nе|М»|М°|N°)(?=\s*\d)', '№', text)
     cyr = sorted(parts & _CYRILLIC_LANGS)
     if not cyr or not parts & _LATIN_LANGS:
         return text
