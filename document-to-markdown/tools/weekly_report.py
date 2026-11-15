@@ -22,6 +22,13 @@ ACTORS = {
                           'image to pdf', 'PDF to Image & Image Converter'],
     'tTTOPBHdN4zAQBFNq': ['audio transcription', 'speech to text', 'mp3 to text', 'video to text', 'srt subtitles',
                           'ukrainian transcription', 'Audio & Video Transcriber'],
+    'lcAfhM4QO9m0EPyjq': ['image to text', 'ocr', 'ocr ukrainian', 'extract text from image', 'Image to Text OCR'],
+    'oEbOsViJ6a0qEL1bp': ['text to speech', 'tts', 'ukrainian text to speech', 'text to mp3', 'Text to Speech'],
+    '9qKqnDJhNhXyABJ3T': ['website screenshot', 'screenshot', 'html to pdf', 'html to image', 'Website Screenshot'],
+    'Shg1h0yVMsZRc6w0x': ['whois', 'dns lookup', 'ssl certificate', 'domain checker', 'Domain WHOIS DNS SSL'],
+    'KVtLbTPknEOj0543A': ['video frames', 'extract frames', 'video thumbnail', 'scene detection', 'Video Frame Extractor'],
+    'schj3W39co6dWaBaP': ['youtube transcript', 'video transcript', 'tiktok transcript', 'youtube subtitles',
+                          'translate video', 'Video Transcript & Translation'],
 }
 
 

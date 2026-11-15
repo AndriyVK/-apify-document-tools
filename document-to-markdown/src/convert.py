@@ -14,6 +14,7 @@ import subprocess
 import tempfile
 from dataclasses import dataclass, field
 
+import numpy as np
 import pdfplumber
 import pypdfium2 as pdfium
 import pytesseract
@@ -259,11 +260,142 @@ def _cell(c) -> str:
 
 def _ocr_image(img: Image.Image, langs: str) -> str:
     img = ImageOps.exif_transpose(img).convert('L')
+    grids = []
     try:
-        text = pytesseract.image_to_string(img, lang=langs, config='--psm 3')
+        if _has_rule(img):   # straightening costs ~0.5 s a page: only where a table may be
+            straight = _deskew(img)
+            grids = _find_grids(straight)
+    except Exception:  # noqa: BLE001 - table search is an extra: on any failure fall back to plain OCR
+        grids = []
+    if grids:
+        return _ocr_with_grids(straight, grids, langs)
+    return _fix_lookalikes(_ocr_layout(_tesseract(img, langs, 3)), langs)
+
+
+def _tesseract(img: Image.Image, langs: str, psm: int) -> str:
+    try:
+        return pytesseract.image_to_string(img, lang=langs, config=f'--psm {psm}')
     except pytesseract.TesseractError as e:
         raise ConversionError(f'OCR failed: {e}') from e
-    return _fix_lookalikes(_ocr_layout(text), langs)
+
+
+# Ruled tables on scans. Tesseract reads grid lines as '|' only on clean scans; on a noisy or skewed one the
+# columns come out as separate text blocks. So the page is straightened, the grid is found from long dark
+# lines, and every cell is read on its own.
+GRID_DARK = 170          # pixel value below which a pixel counts as ink
+GRID_MIN_ROWS = 2        # data rows + header -> at least 3 horizontal lines
+GRID_MIN_COLS = 2
+
+
+def _has_rule(img: Image.Image) -> bool:
+    """A long horizontal dark run (any table rule; on a page skewed by up to ~3 deg it is still >= w/12)."""
+    small = np.asarray(img.resize((max(1, img.width // 2), max(1, img.height // 2)), Image.BILINEAR)) < GRID_DARK
+    wide = small | np.roll(small, 1, axis=1) | np.roll(small, -1, axis=1)
+    return bool(_runs(wide, max(40, small.shape[1] // 24)).any())
+
+
+def _deskew(img: Image.Image) -> Image.Image:
+    """Rotate by the angle (-3..3 deg, step 0.1) that makes text lines sharpest in the row profile."""
+    small = img.resize((max(1, img.width // 4), max(1, img.height // 4)), Image.BILINEAR)
+    best_angle, best_score = 0.0, -1.0
+    for tenth in range(-30, 31):
+        a = tenth / 10
+        ink = np.asarray(small.rotate(a, resample=Image.BILINEAR, fillcolor=255)) < GRID_DARK
+        prof = ink.sum(axis=1).astype(np.float64)
+        score = float(((prof[1:] - prof[:-1]) ** 2).sum())
+        if score > best_score:
+            best_angle, best_score = a, score
+    if abs(best_angle) < 0.15:
+        return img
+    return img.rotate(best_angle, resample=Image.BICUBIC, fillcolor=255)
+
+
+def _runs(mask: np.ndarray, length: int) -> np.ndarray:
+    """Per row of a boolean mask: True where a run of >= length True values ends (window sum test)."""
+    cs = np.cumsum(mask, axis=1, dtype=np.int32)
+    cs = np.concatenate([np.zeros((mask.shape[0], 1), np.int32), cs], axis=1)
+    return (cs[:, length:] - cs[:, :-length]) >= length
+
+
+def _segments(idx: np.ndarray, gap: int = 2) -> list[tuple[int, int]]:
+    """Sorted indices -> (first, last) groups of neighbours."""
+    out = []
+    for i in idx.tolist():
+        if out and i - out[-1][1] <= gap:
+            out[-1] = (out[-1][0], i)
+        else:
+            out.append((i, i))
+    return out
+
+
+def _find_grids(img: Image.Image) -> list[tuple[list[int], list[int]]]:
+    """Ruled tables as (row line y's, column line x's), top to bottom. Empty when there is no full grid."""
+    ink = np.asarray(img) < GRID_DARK
+    h, w = ink.shape
+    wide, tall = ink.copy(), ink.copy()
+    for d in (1, 2):     # bridge breaks of up to 4 px in a rule
+        wide |= np.roll(ink, d, axis=1) | np.roll(ink, -d, axis=1)
+        tall |= np.roll(ink, d, axis=0) | np.roll(ink, -d, axis=0)
+    min_h = max(80, w // 12)
+    hrun = _runs(wide, min_h)
+    hlines = []
+    for y0, y1 in _segments(np.flatnonzero(hrun.any(axis=1))):
+        if y1 - y0 > 12:     # a solid block (photo, black bar), not a rule
+            continue
+        xs = np.flatnonzero(hrun[y0:y1 + 1].any(axis=0))
+        hlines.append(((y0 + y1) // 2, int(xs.min()), int(xs.max()) + min_h))
+    grids, used = [], set()
+    for i in sorted(range(len(hlines)), key=lambda k: hlines[k][1] - hlines[k][2]):   # longest rule first
+        if i in used:
+            continue
+        y, x0, x1 = hlines[i]
+        # a rule of the same table lies inside its width and spans most of it (noise can cut a rule's end)
+        group = [j for j, (yy, a, b) in enumerate(hlines)
+                 if j not in used and a >= x0 - 15 and b <= x1 + 15 and b - a >= 0.6 * (x1 - x0)]
+        rows = sorted(hlines[j][0] for j in group)
+        if len(rows) < GRID_MIN_ROWS + 1:
+            continue
+        top, bottom = rows[0], rows[-1]
+        # column rules: ink from the top rule to the bottom one, looked for only inside the table box
+        left = max(0, x0 - 15)
+        box = tall[top + 3:bottom - 2, left:min(w, x1 + 15)]
+        if box.shape[0] < 10:
+            continue
+        full = np.flatnonzero(box.mean(axis=0) >= 0.9)
+        cols = [left + (c0 + c1) // 2 for c0, c1 in _segments(full) if c1 - c0 <= 12]
+        if len(cols) < GRID_MIN_COLS + 1 or cols[0] > x0 + 15 or cols[-1] < x1 - 15:
+            continue
+        used.update(group)
+        grids.append((rows, cols))
+    return sorted(grids, key=lambda g: g[0][0])
+
+
+def _ocr_with_grids(img: Image.Image, grids, langs: str) -> str:
+    """Text above, beside and below each table through the usual layout; tables cell by cell."""
+    blocks, top = [], 0
+    for rows, cols in grids:
+        band = img.crop((0, top, img.width, rows[-1] + 4)).copy()
+        band.paste(255, (cols[0] - 4, max(0, rows[0] - top - 4), cols[-1] + 4, rows[-1] - top + 4))
+        text = _ocr_layout(_tesseract(band, langs, 3)) if band.height > 10 else ''
+        if text:
+            blocks.append(text)
+        table = []
+        for r0, r1 in zip(rows, rows[1:]):
+            row = []
+            for c0, c1 in zip(cols, cols[1:]):
+                cell = img.crop((c0 + 5, r0 + 5, c1 - 4, r1 - 4))
+                cell = ImageOps.expand(cell, border=20, fill=255)
+                row.append(re.sub(r'\s+', ' ', _tesseract(cell, langs, 7)).strip())
+            table.append(row)
+        if any(any(c for c in r) for r in table):
+            blocks.append(table_to_markdown(table))
+        top = rows[-1] + 5
+    rest = img.crop((0, top, img.width, img.height))
+    if rest.height > 10:
+        text = _ocr_layout(_tesseract(rest, langs, 3))
+        if text:
+            blocks.append(text)
+    return _fix_lookalikes(_join_broken('\n\n'.join(blocks)), langs)
 
 
 def _table_row(line: str) -> str | None:
@@ -307,7 +439,20 @@ def _ocr_layout(text: str) -> str:
                 continue
             value = _fix_tables('\n'.join(_even_rows(rows)))   # separator row after the header
         blocks.append(value)
-    return '\n\n'.join(b for b in blocks if b)
+    return _join_broken('\n\n'.join(b for b in blocks if b))
+
+
+def _join_broken(text: str) -> str:
+    """Tesseract puts a blank line between lines of one paragraph when line spacing is wide: a block that
+    ends without sentence-final punctuation is joined to the next one when that one starts lowercase."""
+    out = []
+    for block in text.split('\n\n'):
+        if (out and block and not block.startswith('|') and not out[-1].startswith('|')
+                and not re.search(r'[.!?:;…»")\]]$', out[-1]) and block[0].islower()):
+            out[-1] += ' ' + block
+        else:
+            out.append(block)
+    return '\n\n'.join(out)
 
 
 def _even_rows(rows: list[str]) -> list[str]:

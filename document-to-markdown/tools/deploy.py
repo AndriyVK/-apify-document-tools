@@ -1,6 +1,7 @@
 """Creates or updates the Actor on Apify from this folder and builds it.
 
-Usage: python tools/deploy.py [--no-build]
+Usage: python tools/deploy.py [--no-build] [--tag beta]
+--tag beta builds under the "beta" tag: the public "latest" build stays as it is until a build is tagged latest.
 Auth: APIFY_TOKEN env var, or none when a proxy adds the Authorization header (Claude cloud network secret).
 The Actor is created private; publishing in the Store is a separate, manual step.
 """
@@ -61,11 +62,12 @@ def main():
         print(f"updated {me['username']}/{meta['name']} ({act['id']}) version {version}")
     if '--no-build' in sys.argv:
         return
-    build = call('POST', f"/acts/{act['id']}/builds?version={version}&tag=latest&waitForFinish=60")
+    tag = sys.argv[sys.argv.index('--tag') + 1] if '--tag' in sys.argv else 'latest'
+    build = call('POST', f"/acts/{act['id']}/builds?version={version}&tag={tag}&waitForFinish=60")
     while build['status'] in ('READY', 'RUNNING'):
         time.sleep(15)
         build = call('GET', f"/actor-builds/{build['id']}?waitForFinish=60")
-    print(f"build {build['buildNumber']}: {build['status']} "
+    print(f"build {build['buildNumber']} [{tag}]: {build['status']} "
           f"({build.get('stats', {}).get('computeUnits', 0):.3f} CU)")
     if build['status'] != 'SUCCEEDED':
         print(raw(f"/logs/{build['id']}")[-4000:])
