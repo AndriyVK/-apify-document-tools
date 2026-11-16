@@ -29,7 +29,7 @@ RAG, and daily digests (schedule it every morning).
 | **Languages** | Any edition, several per run (UA:uk + UA:ru + US:en…) | One region per run |
 | **Volume** | Up to 5,000 articles per query by reading the date range day by day | Often capped at 100 |
 | **Story context** | Topic headlines with related coverage from other outlets (story clusters) | Single article only |
-| **Publisher URL + article page** | Included: **$2.50 per 1,000** (paid plans), $3 on the free plan | Usually add-ons: $3.50-4 per 1,000 in total, plus start fees of $5 per 1,000 runs |
+| **Publisher URL + article page + text** | All included: **$3 per 1,000** (paid plans), $2.50 on Gold and higher | Leaders charge add-ons: $3.30-4 per 1,000 in total, plus start fees of $5 per 1,000 runs |
 | **Full text for AI** | Included, clean text without boilerplate | Often an extra fee per article page |
 | **Start fee** | Apify's minimum ($0.05 per 1,000 runs) - cheap for frequent small runs | Often $5 per 1,000 runs, some $90 |
 
@@ -98,7 +98,7 @@ page cannot be read, the article is still returned with `urlError` or `detailsEr
 
 | Event | Free plan | Paid plans | What counts |
 |---|---|---|---|
-| `article` | $3 per 1,000 | **$2.50 per 1,000** | one article in the results |
+| `article` | $3.50 per 1,000 | **$3 per 1,000** (Bronze, Silver), **$2.50** (Gold and higher) | one article with its publisher URL, details and text |
 
 Plus Apify's standard start fee of $0.05 per 1,000 runs. Duplicates across queries are removed before charging, and
 the run stops before it would exceed your maximum charge per run.
