@@ -84,7 +84,7 @@
             "title": "Related coverage",
             "type": "boolean",
             "default": true,
-            "description": "Add other outlets covering the same story (title, source, link) to each article."
+            "description": "Add other outlets covering the same story (title, source, link) when Google News groups them: usually in topic headlines, rarely in search results."
         },
         "proxyConfiguration": {
             "title": "Proxy",

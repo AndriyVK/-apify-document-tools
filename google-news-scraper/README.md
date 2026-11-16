@@ -10,7 +10,8 @@ headline, publisher, publication time, link and the other outlets covering the s
   how a story is covered in each market.
 - **More than 100 articles per query:** Google News shows at most 100 per search; give a date range (or a time period)
   and the Actor reads it day by day, up to 5,000 articles per query, without duplicates.
-- **Related coverage:** each story comes with the other outlets that wrote about it.
+- **Related coverage:** in topic headlines most stories come with the other outlets that wrote about them (Google
+  News adds these story clusters to topic feeds; search results rarely have them).
 - No proxy and no API key needed; failed feeds are not charged.
 
 Use it for media monitoring and PR, brand and competitor mentions, market and crypto news, news datasets for AI and
@@ -22,7 +23,7 @@ RAG, and daily digests (schedule it every morning).
 |---|---|---|
 | **Languages** | Any edition, several per run (UA:uk + UA:ru + US:en…) | One region per run |
 | **Volume** | Up to 5,000 articles per query by reading the date range day by day | Often capped at 100 |
-| **Story context** | Related coverage from other outlets in every record | Single article only |
+| **Story context** | Topic headlines with related coverage from other outlets (story clusters) | Single article only |
 | **Price** | **$2.50-3 per 1,000 articles**, no add-on fees | $2-5 per 1,000, extra fees per article page or start |
 
 ## Input
@@ -93,7 +94,10 @@ curl -X POST "https://api.apify.com/v2/acts/ai_admin~google-news-scraper/run-syn
 
 ## Limits
 
-- Links point to Google News, which forwards to the publisher; the Actor does not download article pages.
+- Links point to Google News, which forwards to the publisher; the Actor does not return the publisher's direct URL
+  and does not download article pages.
+- `relatedCoverage` is filled when Google News groups a story with other outlets: usually in topic headlines, rarely
+  in search results (then it is an empty list).
 - Google decides which articles a search returns: recent days give up to 100 articles per query per day, older days
   fewer (Google keeps a smaller sample of them), so long ranges return less than days x 100.
 - Publication times are as Google News reports them (UTC).
