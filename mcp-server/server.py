@@ -89,7 +89,7 @@ async def transcribe_audio(urls: list[str], language: str = '', vocabulary: str 
 
 @mcp.tool(description='OCR: extract text from images (PNG, JPG, WebP, TIFF, HEIC) and scanned PDF pages; returns text '
                       'per page plus lines with confidence and bounding boxes. languages: Tesseract codes, e.g. '
-                      '["eng", "ukr"]; pages like "1-3". Price: $1.50 per 1,000 images or pages.')
+                      '["eng", "ukr"]; pages like "1-3". Price: $4 per 1,000 images or pages.')
 async def ocr_images(urls: list[str], languages: list[str] | None = None, pages: str = '', auto_rotate: bool = False,
                      max_charge_usd: float = 1.0) -> list[dict]:
     return await _run_actor('ai_admin/image-to-text-ocr',

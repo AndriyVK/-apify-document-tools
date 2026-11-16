@@ -8,7 +8,7 @@ Tools for Claude, Cursor, ChatGPT and any other MCP client, backed by open-sourc
 | `convert_office_to_pdf` | Word, Excel, PowerPoint, OpenDocument, RTF, HTML, images → PDF or PDF/A-2b, optional merge | $10 / 1,000 documents |
 | `convert_pdf_or_images` | PDF pages → PNG/JPG/WebP/TIFF, images ↔ PDF, iPhone HEIC → JPG, resize | $2 / 1,000 images |
 | `transcribe_audio` | Audio and video → text, timestamped segments, SRT/VTT (Whisper large-v3, 99 languages) | $5 / 1,000 minutes |
-| `ocr_images` | Images and scanned PDFs → text, lines with confidence and boxes (38 languages incl. Ukrainian) | $1.50 / 1,000 images |
+| `ocr_images` | Images and scanned PDFs → text, lines with confidence and boxes (38 languages incl. Ukrainian) | $4 / 1,000 images |
 | `text_to_speech` | Text or PDF/DOCX/HTML → natural speech MP3/WAV/OGG + SRT subtitles (37 voices, 23 languages incl. Ukrainian) | $10 / 1,000 audio minutes ($40 high quality) |
 | `screenshot_website` | Web pages or your HTML → full-page PNG/JPEG/WebP screenshots or PDF; desktop, tablet, mobile; one element by CSS selector | $4 / 1,000 pages |
 | `check_domains` | Bulk WHOIS/RDAP (registrar, expiry, days left), DNS records (A, MX, NS, TXT…), SSL certificate expiry | $2 / 1,000 domains |

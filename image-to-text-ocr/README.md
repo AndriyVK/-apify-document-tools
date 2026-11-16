@@ -18,10 +18,11 @@ confidence and position of every line and word.
 
 ## Why this Actor
 
-| | This Actor | Typical alternatives in the Apify Store (Oct 2026) |
+| | This Actor | Typical alternatives in the Apify Store (Nov 2026) |
 |---|---|---|
-| **Price** | **$1.50 per 1,000 images** | $2-6.50 per 1,000 |
+| **Price** | **$4 per 1,000 images**, no start fee per image | $4-7 per 1,000 (Google Lens wrappers), some add a fee per image |
 | **Output** | Text **plus** every line and word with confidence and bounding box | Often plain text only |
+| **Tables** | Ruled and borderless tables as rows of cells and Markdown, numbers as printed (`40 530,00`) | Columns read one after another, rows mixed up |
 | **Languages** | 38, several at once - incl. Ukrainian, Arabic, Chinese, Japanese, Hindi | Often English-first |
 | **Scans** | Scanned PDFs and multi-page TIFFs page by page, auto-rotate | Often images only |
 | **Privacy** | OCR runs inside the Actor - images are not sent to Google or other OCR APIs | Several wrap Google Lens |
@@ -80,7 +81,7 @@ and is **not charged**.
 
 | Event | Price | What counts |
 |---|---|---|
-| `image` | **$1.50 per 1,000** | one OCR'd image, TIFF frame or PDF page |
+| `image` | **$4 per 1,000** | one OCR'd image, TIFF frame or PDF page |
 
 Plus Apify's standard start fee of $0.05 per 1,000 runs. The run stops before it would exceed your maximum charge per run.
 
