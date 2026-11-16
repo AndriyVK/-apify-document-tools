@@ -13,7 +13,7 @@ Tools for Claude, Cursor, ChatGPT and any other MCP client, backed by open-sourc
 | `screenshot_website` | Web pages or your HTML → full-page PNG/JPEG/WebP screenshots or PDF; desktop, tablet, mobile; one element by CSS selector | $4 / 1,000 pages |
 | `check_domains` | Bulk WHOIS/RDAP (registrar, expiry, days left), DNS records (A, MX, NS, TXT…), SSL certificate expiry | $2 / 1,000 domains |
 | `extract_video_frames` | Video → frames with timecodes: evenly spaced, every N seconds, exact times, scene changes or keyframes; contact sheet | $1 / 1,000 frames |
-| `transcribe_video_links` | YouTube, TikTok, Instagram, Facebook, X and 1,000+ sites → transcript, SRT/VTT, optional translation (captions when available, otherwise Whisper) | $10 / 1,000 videos |
+| `transcribe_video_links` | YouTube, TikTok, Instagram, Facebook, X and 1,000+ sites → transcript, SRT/VTT, optional translation (captions when available, otherwise Whisper) | $6 / 1,000 videos |
 
 Every tool takes public file URLs and a `max_charge_usd` safety limit per call (default $1).
 

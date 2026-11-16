@@ -148,7 +148,7 @@ async def extract_video_frames(urls: list[str], mode: str = 'count', frame_count
 @mcp.tool(description='Video transcripts and subtitles from links: YouTube (videos, Shorts), TikTok, Instagram Reels, '
                       'Facebook, X, Vimeo and 1,000+ sites. Uses the video\'s captions when it has them, otherwise '
                       'Whisper speech recognition; optional translation (translate_to, e.g. "uk", "en", "es"); '
-                      'SRT/VTT subtitle links. Price: $10 per 1,000 videos (captions or up to 3 minutes of speech); '
+                      'SRT/VTT subtitle links. Price: $6 per 1,000 videos (captions or up to 3 minutes of speech); '
                       'longer speech and translation are charged per minute.')
 async def transcribe_video_links(video_urls: list[str], translate_to: str = '', language: str = '',
                                  use_captions: bool = True, max_duration_minutes: int = 60,

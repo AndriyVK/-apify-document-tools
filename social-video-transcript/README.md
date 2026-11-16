@@ -120,17 +120,17 @@ You pay per result. On any paid Apify plan you get the lower price.
 
 | Event | Free plan | Paid plans | What counts |
 |---|---|---|---|
-| `video` | $15 / 1,000 | **$10 / 1,000 videos** | one transcript, from captions (any length) or up to 3 minutes of recognised speech |
+| `video` | $8 / 1,000 | **$6 / 1,000 videos** | one transcript, from captions (any length) or up to 3 minutes of recognised speech |
 | `audio-minute` | $5 / 1,000 | $4 / 1,000 minutes | speech recognition only (TikTok, Instagram, Facebook, X…): each started minute after the first 3 |
 | `youtube-audio-minute` | $12 / 1,000 | $10 / 1,000 minutes | YouTube videos **without** captions: each started minute, charged instead of `video` |
 | `translated-minute` | $10 / 1,000 | $7 / 1,000 minutes | only with `translateTo`: each started minute of translated video (text and subtitles) |
 
 Examples on a paid plan:
-- a YouTube video with captions: $0.01, whatever its length;
-- a 1-minute TikTok: $0.01;
-- the same TikTok translated into Ukrainian: $0.017;
+- a YouTube video with captions: $0.006, whatever its length;
+- a 1-minute TikTok: $0.006;
+- the same TikTok translated into Ukrainian: $0.013;
 - a 10-minute YouTube video without captions: $0.10;
-- a 1-minute TikTok with `crossCheck`: $0.02 (the recognition events are charged twice).
+- a 1-minute TikTok with `crossCheck`: $0.012 (the recognition events are charged twice).
 
 Each run also carries Apify's standard start fee of $0.05 per 1,000 runs. Subtitles are free. If a run reaches your
 maximum charge, the remaining videos are skipped.
