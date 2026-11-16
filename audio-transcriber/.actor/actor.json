@@ -2,7 +2,7 @@
     "actorSpecification": 1,
     "name": "audio-transcriber",
     "title": "Audio & Video Transcriber: Transcription, Speech to Text, SRT",
-    "description": "Audio transcription with Whisper large-v3, $5 per 1,000 minutes: transcribe audio and video (MP3, WAV, M4A, MP4, MOV, WebM) to text, timestamped segments and SRT/VTT subtitles. Speech to text in 99 languages incl. Ukrainian; podcasts, meetings, interviews; long files split. No API key.",
+    "description": "Audio transcription with Whisper large-v3, $6 per 1,000 minutes: transcribe audio and video (MP3, WAV, M4A, MP4, MOV, WebM) to text, timestamped segments and SRT/VTT subtitles. Speech to text in 99 languages incl. Ukrainian; podcasts, meetings, interviews; long files split. No API key.",
     "version": "0.1",
     "buildTag": "latest",
     "input": "./input_schema.json",

@@ -2,7 +2,7 @@
     "actorSpecification": 1,
     "name": "document-to-markdown",
     "title": "Document to Markdown for AI: PDF to Markdown, OCR, Tables, Word",
-    "description": "PDF to Markdown and JSON for LLM and RAG: text and scanned PDFs, images (OCR incl. Ukrainian, Russian), Word DOCX/DOC, Excel XLSX/XLS, PowerPoint, ODT, RTF, HTML. Tables from PDFs and scans, also invoices without lines, as JSON rows; RAG chunks. From $1 per 1,000 pages, OCR only for scans.",
+    "description": "PDF to Markdown and JSON for LLM and RAG: text and scanned PDFs, images (OCR incl. Ukrainian, Russian), Word DOCX/DOC, Excel XLSX/XLS, PowerPoint, ODT, RTF, HTML. Tables from PDFs and scans, also invoices without lines, as JSON rows; RAG chunks. From $2 per 1,000 pages, OCR only for scans.",
     "version": "0.1",
     "buildTag": "latest",
     "input": "./input_schema.json",

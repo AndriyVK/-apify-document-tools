@@ -17,7 +17,7 @@ cell's number format (`1,234.50`).
 
 | | This Actor | Typical alternatives in the Apify Store (Oct 2026) |
 |---|---|---|
-| **Price** | **$1 per 1,000 text pages, $4 per 1,000 OCR pages** - you pay per page, OCR only for scanned pages | $3-5 per 1,000 PDFs plus $15-20 per 1,000 OCR pages |
+| **Price** | **$2 per 1,000 text pages ($1.50 on Gold+), $4 per 1,000 OCR pages** - you pay per page, OCR only for scanned pages | $3-5 per 1,000 PDFs plus $15-20 per 1,000 OCR pages |
 | **Formats** | PDF, scans, images, DOCX/DOC, XLSX/XLS, PPTX/PPT, ODT/ODS/ODP, RTF, HTML - one Actor | Mostly PDF only; Office files need another tool |
 | **Structure** | Headings, lists, tables as Markdown **and** JSON rows, RAG chunks with their heading | Often plain text, tables lost |
 | **Cyrillic** | Ukrainian and Russian OCR built in | English-first OCR |
@@ -77,7 +77,7 @@ Pay per event - you pay only for converted pages:
 
 | Event | Price | What counts |
 |---|---|---|
-| `page` | **$1 per 1,000** | a PDF page read from its text layer; for Office, HTML and text files - every 3,000 characters of output (at least 1 per document) |
+| `page` | **$2 per 1,000** ($2.50 on the free plan, $1.50 on Gold and higher) | a PDF page read from its text layer; for Office, HTML and text files - every 3,000 characters of output (at least 1 per document) |
 | `ocr-page` | **$4 per 1,000** | a scanned PDF page or an image frame read with OCR |
 
 Plus Apify's standard start fee of $0.05 per 1,000 runs. Failed documents and skipped pages are not charged, and pages

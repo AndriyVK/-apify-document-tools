@@ -51,7 +51,7 @@ def _urls(urls: list[str]) -> list[dict[str, str]]:
 
 @mcp.tool(description='Convert documents to Markdown for LLMs: PDF (text and scanned, OCR), images, DOCX/DOC, '
                       'XLSX/XLS, PPTX/PPT, ODT, RTF, HTML. Returns Markdown, tables as JSON rows and optional RAG chunks. '
-                      'ocr_languages: e.g. ["eng", "ukr"]. Price: $1 per 1,000 text pages, $4 per 1,000 OCR pages.')
+                      'ocr_languages: e.g. ["eng", "ukr"]. Price: $2 per 1,000 text pages, $4 per 1,000 OCR pages.')
 async def convert_document_to_markdown(urls: list[str], ocr_languages: list[str] | None = None,
                                        chunk_size: int = 0, max_charge_usd: float = 1.0) -> list[dict]:
     return await _run_actor('ai_admin/document-to-markdown',
@@ -80,7 +80,7 @@ async def convert_pdf_or_images(urls: list[str], output_format: str = 'png', dpi
 
 @mcp.tool(description='Transcribe audio or video files (MP3, WAV, M4A, MP4, MOV, WebM…) to text, timestamped '
                       'segments and SRT/VTT subtitle links with Whisper large-v3; 99 languages, language="" detects it. '
-                      'Price: $5 per 1,000 audio minutes.')
+                      'Price: $6 per 1,000 audio minutes.')
 async def transcribe_audio(urls: list[str], language: str = '', vocabulary: str = '',
                            max_charge_usd: float = 1.0) -> list[dict]:
     return await _run_actor('ai_admin/audio-transcriber',
@@ -122,7 +122,7 @@ async def screenshot_website(urls: list[str] | None = None, html: str = '', imag
 
 @mcp.tool(description='Check domains in bulk: WHOIS/RDAP (registrar, creation and expiry dates, days left), DNS '
                       '(A, AAAA, MX, NS, TXT, CNAME, SOA) and the SSL certificate (issuer, valid to, days left). '
-                      'Price: $2 per 1,000 domains.')
+                      'Price: $3 per 1,000 domains.')
 async def check_domains(domains: list[str], whois: bool = True, dns: bool = True, ssl: bool = True,
                         max_charge_usd: float = 1.0) -> list[dict]:
     return await _run_actor('ai_admin/domain-whois-dns-ssl',
@@ -133,7 +133,7 @@ async def check_domains(domains: list[str], whois: bool = True, dns: bool = True
 @mcp.tool(description='Extract frames from videos (MP4, MOV, WebM…) with timecodes: mode "count" (frame_count evenly '
                       'spaced), "interval" (every interval_seconds), "timestamps" (e.g. ["00:01:05", "90"]), "scenes" '
                       '(scene changes) or "keyframes"; plus a free contact sheet. Good input for vision models. '
-                      'Returns download links. Price: $1 per 1,000 frames.')
+                      'Returns download links. Price: $2 per 1,000 frames.')
 async def extract_video_frames(urls: list[str], mode: str = 'count', frame_count: int = 6,
                                interval_seconds: float = 10, timestamps: list[str] | None = None,
                                image_format: str = 'jpg', max_width: int = 0,

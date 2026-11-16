@@ -15,7 +15,7 @@ Whisper large-v3 model - 99 languages, automatic language detection, files of an
 
 | | This Actor | Typical alternatives in the Apify Store (Oct 2026) |
 |---|---|---|
-| **Price** | **$5 per 1,000 minutes** (30 cents an hour) | $6-28 per 1,000 minutes |
+| **Price** | **$6 per 1,000 minutes** (36 cents an hour; $5 on Gold+), timestamps and SRT/VTT included | $6-28 per 1,000 minutes |
 | **Model** | Whisper **large-v3** - the most accurate Whisper model - for every file | Often smaller, cheaper models, or large-v3 only in a premium mode |
 | **Subtitles** | SRT + VTT + timestamped JSON segments in every run | Often text only, or subtitles as a paid extra |
 | **No API key** | Nothing to sign up for; pay per minute through Apify | Some ask for your own OpenAI / Groq key |
@@ -107,7 +107,7 @@ not replace it. `billedMinutes` shows the doubled count.
 
 | Event | Price | What counts |
 |---|---|---|
-| `audio-minute` | **$5 per 1,000 minutes** | every started minute of transcribed audio (at least 1 per file); twice with `crossCheck` |
+| `audio-minute` | **$6 per 1,000 minutes** ($7 on the free plan, $5 on Gold and higher) | every started minute of transcribed audio (at least 1 per file); twice with `crossCheck` |
 
 Plus Apify's standard start fee of $0.05 per 1,000 runs. Subtitles are free. The run transcribes only as many minutes as
 fit under your maximum charge per run and marks the item with a warning.

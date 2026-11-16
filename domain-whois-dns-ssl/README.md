@@ -18,7 +18,7 @@ checks (MX/SPF/DMARC), lead research and SEO.
 
 | | This Actor | Typical alternatives in the Apify Store (Oct 2026) |
 |---|---|---|
-| **One price, three checks** | Registration + DNS + SSL for **$2 per 1,000 domains** | $2.50-3 per 1,000 for WHOIS alone, some plus start fees |
+| **One price, three checks** | Registration + DNS + SSL for **$3 per 1,000 domains** ($2.50 on Gold+) | $2.50-3 per 1,000 for WHOIS alone, some plus start fees |
 | **Coverage** | RDAP for 1,200+ TLDs with WHOIS fallback (.io, .de…) | Often WHOIS only |
 | **E-mail setup** | MX, SPF and DMARC parsed | Raw TXT records |
 | **Expiry monitoring** | Days until domain **and** certificate expiry in one record - schedule it daily | Two separate tools |
@@ -74,7 +74,7 @@ checks (MX/SPF/DMARC), lead research and SEO.
 
 | Event | Price | What counts |
 |---|---|---|
-| `domain` | **$2 per 1,000** | one checked domain (registration + DNS + SSL together) |
+| `domain` | **$3 per 1,000** ($3.50 on the free plan, $2.50 on Gold and higher) | one checked domain (registration + DNS + SSL together) |
 
 Plus Apify's standard start fee of $0.05 per 1,000 runs. The run stops before it would exceed your maximum charge per run.
 

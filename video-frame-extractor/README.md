@@ -14,7 +14,7 @@ the exact moments you need - each with its timecode and a download link.
 
 | | This Actor | Typical alternatives in the Apify Store (Oct 2026) |
 |---|---|---|
-| **Price** | **$1 per 1,000 frames**, no per-video fee | $2 per 1,000 frames, often plus $2-10 per 1,000 videos |
+| **Price** | **$2 per 1,000 frames** ($1.50 on Gold+), no per-video fee | $2 per 1,000 frames, often plus $2-10 per 1,000 videos |
 | **Modes** | Evenly spaced, every N seconds, exact timestamps, scene changes, keyframes | Two or three modes |
 | **Extras** | Free contact sheet, timecodes, video metadata, JPG/PNG/WebP, downscaling | Contact sheet as a paid add-on or missing |
 
@@ -73,7 +73,7 @@ A video that cannot be downloaded or decoded gets an `error` field instead and i
 
 | Event | Price | What counts |
 |---|---|---|
-| `frame` | **$1 per 1,000** | one extracted frame |
+| `frame` | **$2 per 1,000** ($2.50 on the free plan, $1.50 on Gold and higher) | one extracted frame |
 | `scene-minute` | **$1 per 1,000** | only in `scenes` mode: one started minute of video analysed for scene changes |
 
 Plus Apify's standard start fee of $0.05 per 1,000 runs. The contact sheet is free. The run stops before it would exceed
