@@ -1,8 +1,8 @@
 {
     "actorSpecification": 1,
     "name": "video-frame-extractor",
-    "title": "Video Frame Extractor: Thumbnails, Scenes, Keyframes, Timecodes",
-    "description": "Extract still frames from video files (MP4, MOV, WebM, MKV, AVI): N evenly spaced, every N seconds, exact timestamps, scene changes or keyframes. JPG/PNG/WebP with timecodes, video metadata and a free contact sheet. Ready for AI vision.",
+    "title": "Video Frame Extractor: Video to Images, Thumbnails, Keyframes",
+    "description": "Frame extraction from video files (MP4, MOV, WebM, MKV, AVI): video to images (JPG, PNG, WebP), video thumbnails and screenshots - N evenly spaced, every N seconds, exact timestamps, scene detection or keyframes. Timecodes, video metadata and a free contact sheet. Ready for AI vision.",
     "version": "0.1",
     "buildTag": "latest",
     "input": "./input_schema.json",

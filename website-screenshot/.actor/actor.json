@@ -1,8 +1,8 @@
 {
     "actorSpecification": 1,
     "name": "website-screenshot",
-    "title": "Website Screenshot & URL/HTML to PDF: Full Page, Mobile, Bulk",
-    "description": "Capture full-page or viewport screenshots of websites (PNG, JPEG, WebP) and save web pages or raw HTML as PDF. Desktop, laptop, tablet and phone devices, dark mode, element screenshots, cookie banners hidden, lazy images loaded.",
+    "title": "Website Screenshot & URL/HTML to PDF: Full Page, Mobile, API",
+    "description": "Screenshot API for websites: full-page or viewport web page screenshots (PNG, JPEG, WebP), URL to image, webpage to PDF and raw HTML to PDF. Desktop, laptop, tablet and mobile screenshots, bulk URLs, dark mode, element screenshots, cookie banners hidden, lazy images loaded.",
     "version": "0.1",
     "buildTag": "latest",
     "input": "./input_schema.json",

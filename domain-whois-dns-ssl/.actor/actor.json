@@ -1,8 +1,8 @@
 {
     "actorSpecification": 1,
     "name": "domain-whois-dns-ssl",
-    "title": "Domain WHOIS, DNS & SSL Checker: Bulk Expiry, Registrar, MX",
-    "description": "Check many domains at once: registration (RDAP/WHOIS) with registrar, creation and expiry dates, availability; DNS records A, AAAA, MX, NS, TXT, SPF, DMARC, CAA; SSL certificate issuer, validity and days left. For monitoring, SEO and lead research.",
+    "title": "Domain WHOIS, DNS & SSL Checker: Bulk WHOIS Lookup, Expiry, MX",
+    "description": "Bulk WHOIS lookup and domain checker: RDAP/WHOIS registrar, creation and domain expiry dates, domain availability; DNS lookup of A, AAAA, MX records, NS, TXT, SPF, DMARC, CAA; SSL checker with issuer, SSL expiry and days left. For monitoring, SEO and lead research.",
     "version": "0.1",
     "buildTag": "latest",
     "input": "./input_schema.json",
