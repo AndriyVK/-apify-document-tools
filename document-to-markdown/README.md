@@ -99,11 +99,24 @@ curl -X POST "https://api.apify.com/v2/acts/ai_admin~document-to-markdown/run-sy
 
 Open source: [github.com/AndriyVK/-apify-document-tools](https://github.com/AndriyVK/-apify-document-tools)
 
+## Guides
+
+- [Ukrainian scanned PDFs to Markdown for RAG and LLMs](https://andriyvk.github.io/ukrainian-scans-to-markdown/)
+- [Ukrainian scans, invoices, Word and Excel to Markdown - 5 Apify Actors on 7 files](https://andriyvk.github.io/ukrainian-documents-to-markdown-5-actors-compared/)
+- [MCP server for document and media tools - OCR, PDF and audio tools for Claude or Cursor](https://andriyvk.github.io/mcp-document-tools-for-ai-agents/)
+
+## Related Actors
+
+- [Image to Text OCR](https://apify.com/ai_admin/image-to-text-ocr) - photos and screenshots to text with line and word positions, tables
+- [Office to PDF & PDF/A](https://apify.com/ai_admin/office-to-pdf) - Word, Excel, PowerPoint, HTML → PDF/PDF-A
+- [PDF to Image & Image Converter](https://apify.com/ai_admin/pdf-image-converter) - PDF ↔ PNG/JPG/WebP, HEIC → JPG
+- [Audio & Video Transcriber](https://apify.com/ai_admin/audio-transcriber) - speech to text, SRT and VTT subtitles
+
 ## Limits
 
-- Tables are detected in PDFs with a text layer and in Office/HTML files. In scans and images, tables with ruled
-  grid lines come back as Markdown and JSON tables; borderless tables and grids lost in a noisy, low-resolution
-  scan come out as OCR text.
+- Tables are detected in PDFs with a text layer, in Office/HTML files and in scans and images: ruled tables (also on
+  noisy or slightly rotated scans) and tables without rules that have at least 3 rows and 3 columns with clear gaps.
+  Merged cells and multi-line cells in tables without rules are not reconstructed.
 - With mixed languages such as `["ukr", "eng"]`, Cyrillic words that OCR read with Latin look-alike letters
   (`Apmatypa`) are put back in Cyrillic (`Арматура`) when the Cyrillic word is in Tesseract's dictionary and the
   Latin one is not an English word.

@@ -23,6 +23,11 @@ PARAS = {
            'Сроки доставки сократились на двенадцать процентов после введения нового графика.'],
 }
 TESS = {'en': 'eng', 'uk': 'ukr', 'ru': 'rus'}
+INVOICE = [['№', 'Товар', 'Од.', 'Кількість', 'Ціна', 'Сума'],
+           ['1', 'Цемент М500', 'мішок', '420', '96,50', '40 530,00'],
+           ['2', 'Арматура 12 мм', 'шт.', '180', '412,00', '74 160,00'],
+           ['3', 'Пісок річковий', 'т', '12', '650,00', '7 800,00'],
+           ['4', 'Цегла рядова', 'шт.', '2 500', '9,80', '24 500,00']]
 
 
 def norm(s):
@@ -75,6 +80,21 @@ def main():
         bx = r['lines'][0]['bbox']
         check(f'image-{lang}.png bbox inside image', bx[0] >= 0 and bx[1] >= 0 and bx[0] + bx[2] <= r['width']
               and bx[1] + bx[3] <= r['height'], str(bx))
+    # Ukrainian and Russian together, both orders: the page's own language must win
+    for lang, langs in (('ru', 'ukr+rus'), ('uk', 'rus+ukr')):
+        r = run(f'{d}/image-{lang}.png', langs)[0]
+        worst = min(ratio(p, r['text']) for p in PARAS[lang])
+        exact = all(norm(p) in norm(r['text']) for p in PARAS[lang])
+        check(f'image-{lang}.png with {langs}', exact, f'min ratio {worst:.2f}, used {r.get("languagesUsed")}')
+    # Invoice without table rules (top of scan-noisy-borderless-uk.pdf at 200 dpi): a 5x6 table, exact numbers
+    import pypdfium2 as pdfium
+    page = pdfium.PdfDocument(f'{d}/scan-noisy-borderless-uk.pdf')[0].render(scale=200 / 72).to_pil()
+    page.crop((0, 0, page.width, page.height * 850 // 2363)).save(f'{d}/gen-invoice.png')
+    for langs in ('ukr', 'ukr+rus', 'eng+ukr+rus'):
+        r = run(f'{d}/gen-invoice.png', langs)[0]
+        got = (r.get('tables') or [None])[0]
+        check(f'invoice table with {langs}', got == INVOICE, str(got)[:300])
+        check(f'invoice text with {langs}', all(x in r['text'] for x in ('Рахунок-фактура № 47', '40 530,00', 'Разом')))
     r = run(f'{d}/scan-noisy-uk.pdf', 'ukr+eng')
     worst = min(ratio(p, ' '.join(x['text'] for x in r)) for p in PARAS['uk'])
     check('scan-noisy-uk.pdf', worst >= OCR_MIN and r[0]['total'] >= 1, f'{len(r)} page(s), min ratio {worst:.2f}')

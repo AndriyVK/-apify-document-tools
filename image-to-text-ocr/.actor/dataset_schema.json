@@ -65,6 +65,21 @@
             "error": {
                 "type": "string",
                 "description": "Why the file could not be processed (not charged)"
+            },
+            "tables": {
+                "type": "array",
+                "description": "Tables found on the page: each table is rows of cells, header row first"
+            },
+            "markdown": {
+                "type": "string",
+                "description": "Page text with tables as Markdown tables (only when a table was found)"
+            },
+            "languagesUsed": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                },
+                "description": "Language order actually used, when the page was read with its own language first"
             }
         }
     },

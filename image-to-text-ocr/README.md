@@ -9,6 +9,10 @@ confidence and position of every line and word.
   Dutch, Czech, Turkish, Arabic, Hebrew, Hindi, Chinese, Japanese, Korean, Vietnamese and more.
 - **Structured output.** Plain text with paragraphs, plus lines and (optionally) words with confidence 0-100 and
   bounding boxes in pixels of the original image - ready for highlighting, redaction or data extraction.
+- **Tables from scans and photos** - ruled and without rules (invoices, price lists): returned as `tables` (rows of
+  cells) and a Markdown table, with numbers kept as printed (`40 530,00`, `2 500`).
+- **Several languages done right:** with Ukrainian and Russian together, each page is read with its own language
+  first, so letters like `ы`, `ё`, `і` are not lost.
 - **Auto-rotate** for pages scanned sideways or upside down; small images are upscaled automatically.
 - **Private:** runs on Tesseract inside the Actor - your images are not sent to any third-party OCR service.
 
@@ -65,6 +69,10 @@ One item per image or PDF page:
 }
 ```
 
+When a page has a table, the item also has `tables` (each table as rows of cells, header first) and `markdown` (the
+page text with the table as a Markdown table); in `text` the table comes one row per line, cells separated by a tab.
+`languagesUsed` appears when the page was read with your languages in a different order (its own language first).
+
 `bbox` is `[x, y, width, height]` in pixels. A file that cannot be downloaded or opened gets an `error` field instead
 and is **not charged**.
 
@@ -101,5 +109,6 @@ curl -X POST "https://api.apify.com/v2/acts/ai_admin~image-to-text-ocr/run-sync-
 ## Limits
 
 - Handwriting is recognised poorly; printed text works best. Photos should be in focus, at least ~20 px letter height.
+- Tables without rules are found when they have at least 3 rows and 3 columns with clear gaps between columns.
 - Password-protected PDFs are not supported. Maximum download size is 200 MB per file.
 - For PDFs with a text layer (not scans) use Document to Markdown - it is faster and exact.

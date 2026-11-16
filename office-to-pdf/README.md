@@ -84,6 +84,17 @@ curl -X POST "https://api.apify.com/v2/acts/ai_admin~office-to-pdf/run-sync-get-
 
 Open source: [github.com/AndriyVK/-apify-document-tools](https://github.com/AndriyVK/-apify-document-tools)
 
+## Guides
+
+- [Word, Excel and PowerPoint to PDF/A by API for archives and e-filing](https://andriyvk.github.io/office-to-pdf-a-archive/)
+- [MCP server for document and media tools - OCR, PDF and audio tools for Claude or Cursor](https://andriyvk.github.io/mcp-document-tools-for-ai-agents/)
+
+## Related Actors
+
+- [Document to Markdown for AI](https://apify.com/ai_admin/document-to-markdown) - the other direction: PDFs, scans and Office files → Markdown, tables, RAG chunks
+- [PDF to Image & Image Converter](https://apify.com/ai_admin/pdf-image-converter) - PDF pages → PNG/JPG/WebP, images → PDF
+- [Website Screenshot & URL/HTML to PDF](https://apify.com/ai_admin/website-screenshot) - web pages → PDF in a real browser
+
 ## Limits
 
 - Password-protected files are not supported. Maximum download size is 200 MB per file.

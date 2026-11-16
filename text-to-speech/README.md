@@ -114,6 +114,11 @@ A document that cannot be downloaded or read gets an `error` field instead and i
 Plus Apify's standard start fee of $0.05 per 1,000 runs. Subtitles are free. The run stops before it would exceed your
 maximum charge per run.
 
+## Guides
+
+- [Ukrainian text to speech by API - natural voices, MP3 and subtitles](https://andriyvk.github.io/ukrainian-text-to-speech-api/)
+- [MCP server for document and media tools - OCR, PDF and audio tools for Claude or Cursor](https://andriyvk.github.io/mcp-document-tools-for-ai-agents/)
+
 ## Related Actors
 
 - [Audio & Video Transcriber](https://apify.com/ai_admin/audio-transcriber) - the other direction: speech to text and subtitles

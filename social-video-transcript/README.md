@@ -142,6 +142,11 @@ are sent to Groq's language model API only when you ask for a translation. See
 [Groq's privacy policy](https://groq.com/privacy-policy/). Results stay in your own Apify run storage. Transcribe only
 videos you are allowed to use.
 
+## Guides
+
+- [YouTube subtitles in Ukrainian - transcript and translated SRT by API](https://andriyvk.github.io/youtube-subtitles-in-ukrainian/)
+- [MCP server for document and media tools - OCR, PDF and audio tools for Claude or Cursor](https://andriyvk.github.io/mcp-document-tools-for-ai-agents/)
+
 ## Related Actors
 
 - [Audio & Video Transcriber](https://apify.com/ai_admin/audio-transcriber) - your own audio and video files to text and subtitles

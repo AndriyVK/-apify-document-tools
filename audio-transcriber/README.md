@@ -117,8 +117,15 @@ fit under your maximum charge per run and marks the item with a warning.
 The speech track is sent to [Groq](https://groq.com)'s speech-to-text API, which runs the Whisper model; see
 [Groq's privacy policy](https://groq.com/privacy-policy/). This Actor keeps files only in your own Apify run storage.
 
+## Guides
+
+- [YouTube subtitles in Ukrainian - transcript and translated SRT by API](https://andriyvk.github.io/youtube-subtitles-in-ukrainian/) (the same speech recognition, incl. `crossCheck`)
+- [MCP server for document and media tools - OCR, PDF and audio tools for Claude or Cursor](https://andriyvk.github.io/mcp-document-tools-for-ai-agents/)
+
 ## Related Actors
 
+- [Video Transcript & Translation](https://apify.com/ai_admin/social-video-transcript) - links instead of files: YouTube, TikTok, Instagram, Facebook, X
+- [Text to Speech](https://apify.com/ai_admin/text-to-speech) - the other direction: text to natural speech and subtitles
 - [Document to Markdown for AI](https://apify.com/ai_admin/document-to-markdown) - PDFs, scans, Office files → Markdown
 - [Office to PDF & PDF/A](https://apify.com/ai_admin/office-to-pdf) · [PDF to Image & Image Converter](https://apify.com/ai_admin/pdf-image-converter)
 

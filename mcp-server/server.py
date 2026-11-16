@@ -26,7 +26,7 @@ mcp = MCPServer(
     instructions='Give the tools public URLs of files. Results include Markdown text, JSON tables, download links '
                  'for produced files and transcripts. Requires the APIFY_TOKEN environment variable.',
     website_url='https://github.com/AndriyVK/-apify-document-tools',
-    version='0.3.0',
+    version='0.4.0',
 )
 
 
@@ -142,6 +142,21 @@ async def extract_video_frames(urls: list[str], mode: str = 'count', frame_count
                             {'sources': _urls(urls), 'mode': mode, 'frameCount': frame_count,
                              'intervalSeconds': interval_seconds, 'timestamps': timestamps or [],
                              'format': image_format, 'maxWidth': max_width}, max_charge_usd)
+
+
+
+@mcp.tool(description='Video transcripts and subtitles from links: YouTube (videos, Shorts), TikTok, Instagram Reels, '
+                      'Facebook, X, Vimeo and 1,000+ sites. Uses the video\'s captions when it has them, otherwise '
+                      'Whisper speech recognition; optional translation (translate_to, e.g. "uk", "en", "es"); '
+                      'SRT/VTT subtitle links. Price: $10 per 1,000 videos (captions or up to 3 minutes of speech); '
+                      'longer speech and translation are charged per minute.')
+async def transcribe_video_links(video_urls: list[str], translate_to: str = '', language: str = '',
+                                 use_captions: bool = True, max_duration_minutes: int = 60,
+                                 max_charge_usd: float = 1.0) -> list[dict]:
+    return await _run_actor('ai_admin/social-video-transcript',
+                            {'videoUrls': [u for u in video_urls if u and u.strip()], 'translateTo': translate_to,
+                             'language': language, 'useCaptions': use_captions,
+                             'maxDurationMinutes': max_duration_minutes}, max_charge_usd)
 
 
 if __name__ == '__main__':

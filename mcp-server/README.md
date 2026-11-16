@@ -13,6 +13,7 @@ Tools for Claude, Cursor, ChatGPT and any other MCP client, backed by open-sourc
 | `screenshot_website` | Web pages or your HTML → full-page PNG/JPEG/WebP screenshots or PDF; desktop, tablet, mobile; one element by CSS selector | $4 / 1,000 pages |
 | `check_domains` | Bulk WHOIS/RDAP (registrar, expiry, days left), DNS records (A, MX, NS, TXT…), SSL certificate expiry | $2 / 1,000 domains |
 | `extract_video_frames` | Video → frames with timecodes: evenly spaced, every N seconds, exact times, scene changes or keyframes; contact sheet | $1 / 1,000 frames |
+| `transcribe_video_links` | YouTube, TikTok, Instagram, Facebook, X and 1,000+ sites → transcript, SRT/VTT, optional translation (captions when available, otherwise Whisper) | $10 / 1,000 videos |
 
 Every tool takes public file URLs and a `max_charge_usd` safety limit per call (default $1).
 
@@ -24,7 +25,7 @@ Use Apify's hosted MCP server with exactly these tools:
 {
   "mcpServers": {
     "document-tools": {
-      "url": "https://mcp.apify.com?tools=ai_admin/document-to-markdown,ai_admin/office-to-pdf,ai_admin/pdf-image-converter,ai_admin/audio-transcriber,ai_admin/image-to-text-ocr,ai_admin/text-to-speech,ai_admin/website-screenshot,ai_admin/domain-whois-dns-ssl,ai_admin/video-frame-extractor"
+      "url": "https://mcp.apify.com?tools=ai_admin/document-to-markdown,ai_admin/office-to-pdf,ai_admin/pdf-image-converter,ai_admin/audio-transcriber,ai_admin/image-to-text-ocr,ai_admin/text-to-speech,ai_admin/website-screenshot,ai_admin/domain-whois-dns-ssl,ai_admin/video-frame-extractor,ai_admin/social-video-transcript"
     }
   }
 }

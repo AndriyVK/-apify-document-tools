@@ -275,12 +275,12 @@ def _ocr_image(img: Image.Image, langs: str) -> str:
     try:
         if _find_borderless(data):   # columns of words without rules: read again on the straightened page
             straight = _deskew(img)
-            sdata = data if straight is img else _tesseract_data(straight, langs)
-            grids = _find_borderless(sdata)
+            moved = _to_straight(data, img, straight)   # words as Tesseract split them on the page as scanned
+            grids = _find_borderless(moved)
     except Exception:  # noqa: BLE001
         grids = []
     if grids:
-        return _ocr_with_grids(straight, grids, langs, _to_straight(data, img, straight))
+        return _ocr_with_grids(straight, grids, langs, moved)
     return _fix_lookalikes(_ocr_layout(_data_text(data)), langs)
 
 
@@ -577,8 +577,77 @@ def _read_table(crops, langs: str) -> list[list[str]]:
             texts[k] = _read_cell(flat[k], langs) or texts[k]
     n = len(crops[0])
     table = [texts[r * n:(r + 1) * n] for r in range(len(crops))]
+    _even_thousands(table, crops, langs)
+    for r, row in enumerate(table):
+        for c, cell in enumerate(row):
+            row[c] = _gap_thousands(crops[r][c], cell)
     _cyrillic_cells(table, crops, langs)
     return table
+
+
+def _gap_thousands(cell: Image.Image, text: str) -> str:
+    """'2500' where the image shows '2 500': Tesseract can drop a narrow thousands gap. The glyphs are measured:
+    when every thousands boundary is a gap at least twice as wide as the gaps between the other characters,
+    the spaces go back. Anything that does not split into exactly one glyph per character stays as read."""
+    m = re.fullmatch(r'(\d{4,})([.,]\d+)?', text)
+    if not m:
+        return text
+    ink = (np.asarray(cell.filter(ImageFilter.MedianFilter(3))) < 140).any(axis=0)
+    runs, x = [], 0
+    while x < len(ink):
+        if ink[x]:
+            start = x
+            while x < len(ink) and ink[x]:
+                x += 1
+            runs.append((start, x))
+        else:
+            x += 1
+    if len(runs) != len(text):
+        return text
+    gaps = [b[0] - a[1] for a, b in zip(runs, runs[1:])]
+    n = len(m.group(1))
+    marks = [i for i in range(1, n) if (n - i) % 3 == 0]          # gap before digit i starts a group
+    others = [g for i, g in enumerate(gaps, 1) if i not in marks]
+    if not others:
+        return text
+    usual = statistics.median(others)
+    if all(gaps[i - 1] >= max(2 * usual, usual + 6) for i in marks):
+        digits = m.group(1)
+        grouped = ''.join((' ' if i in marks else '') + ch for i, ch in enumerate(digits))
+        return grouped + (m.group(2) or '')
+    return text
+
+
+_GROUPED = re.compile(r'\d{1,3}(?:([ .,])\d{3})+(?:([.,])\d+)?')
+
+
+def _even_thousands(table, crops, langs: str) -> None:
+    """In a column where numbers group thousands with a space ('74 160,00'), a number grouped with a dot
+    ('40.530,00') is most likely a misread gap: read again, and when the digits stay the same, group it like
+    the rest of the column. A column that really uses dots is left alone."""
+    for c in range(len(table[0])):
+        styles = {}
+        for r in range(1, len(table)):
+            m = _GROUPED.fullmatch(table[r][c]) if c < len(table[r]) else None
+            if m:
+                styles[r] = (m.group(1), m.group(2))
+        if len(styles) < 3:
+            continue
+        seps = [g for g, _ in styles.values()]
+        main = max(set(seps), key=seps.count)
+        if main != ' ' or seps.count(main) * 2 <= len(seps):
+            continue
+        for r, (g, dec) in styles.items():
+            if g == main or g == dec:
+                continue
+            old = table[r][c]
+            again = _read_cell(crops[r][c].filter(ImageFilter.MedianFilter(3)), langs)
+            same = re.sub(r'\D', '', again) == re.sub(r'\D', '', old)
+            if same and _GROUPED.fullmatch(again) and _GROUPED.fullmatch(again).group(1) == main:
+                table[r][c] = again
+            else:
+                head, _, tail = old.rpartition(dec) if dec else (old, '', '')
+                table[r][c] = head.replace(g, main) + (dec + tail if dec else '')
 
 
 def _read_cell(cell: Image.Image, langs: str) -> str:
