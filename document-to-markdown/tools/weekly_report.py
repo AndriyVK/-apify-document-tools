@@ -30,7 +30,8 @@ ACTORS = {
     'Shg1h0yVMsZRc6w0x': ['whois', 'dns lookup', 'ssl certificate', 'domain checker', 'Domain WHOIS DNS SSL'],
     'KVtLbTPknEOj0543A': ['video frames', 'extract frames', 'video thumbnail', 'scene detection', 'Video Frame Extractor'],
     'schj3W39co6dWaBaP': ['youtube transcript', 'video transcript', 'tiktok transcript', 'youtube subtitles',
-                          'translate video', 'Video Transcript & Translation'],
+                          'translate video', 'Video Transcript & Translation', 'youtube translation',
+                          'video translation', 'translate youtube video', 'reels to text', 'instagram transcript'],
 }
 
 
