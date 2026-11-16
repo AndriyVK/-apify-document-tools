@@ -1,6 +1,7 @@
 """Weekly health report for the published Actors (read-only, plus one default-input run each).
 
-Usage: python tools/weekly_report.py
+Usage: python tools/weekly_report.py [--positions-only]
+--positions-only: catalogue data and search positions only, no default-input runs (free).
 For every Actor: build/notice status, users (7/30/90 days), store search positions, rating, x402 eligibility,
 public run outcomes over 30 days, and a fresh run on the default input (the same check as Apify's daily auto-test).
 Exit code 1 if any Actor has a notice or a failing default-input run. Auth as in deploy.py.
@@ -66,6 +67,8 @@ def report(actor_id, queries) -> bool:
               f"bookmarks={listing.get('bookmarkCount')}, x402={listing.get('isWhiteListedForAgenticPayments')}; "
               f"public runs 30d: {r}")
 
+    if '--positions-only' in sys.argv:   # catalogue only: no runs, nothing charged
+        return True
     run = call('POST', f'/acts/{actor_id}/runs?waitForFinish=120')
     while run['status'] in ('READY', 'RUNNING'):
         time.sleep(5)
