@@ -51,6 +51,17 @@ RAG, and daily digests (schedule it every morning).
 
 For a fixed period use `"dateFrom": "2026-11-01", "dateTo": "2026-11-15"` instead of `timeframe`.
 
+Two ready-made inputs that show every field (articles from sites open to automated visitors):
+
+```json
+{"queries": ["штучний інтелект"], "editions": ["UA:uk"], "timeframe": "7d", "maxArticlesPerQuery": 10, "fullText": true}
+```
+
+```json
+{"queries": ["artificial intelligence (site:theguardian.com OR site:bbc.com OR site:npr.org)"], "editions": ["US:en"],
+ "timeframe": "7d", "maxArticlesPerQuery": 10, "fullText": true}
+```
+
 ## Output
 
 ```json

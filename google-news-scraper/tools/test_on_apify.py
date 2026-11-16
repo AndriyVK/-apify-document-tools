@@ -49,6 +49,14 @@ def main():
           len(items) == 50 and texts >= 30)
     print('   details errors:', sorted({(i.get('detailsError') or '')[:40] for i in items if i.get('detailsError')})[:6])
     print('  ', items[0]['edition'], items[0]['publishedAt'], items[0]['title'][:70], '|', items[0]['source'])
+    # Show cases (articles from sites open to automated visitors): every field should be filled
+    for demo in ({'queries': ['штучний інтелект'], 'editions': ['UA:uk']},
+                 {'queries': ['artificial intelligence (site:theguardian.com OR site:bbc.com OR site:npr.org '
+                              'OR site:govtech.com OR site:pbs.org)'], 'editions': ['US:en']}):
+        r, items = run(act['id'], {**demo, 'maxArticlesPerQuery': 10, 'fullText': True, 'timeframe': '7d'})
+        full = sum(1 for i in items if i.get('url') and i.get('text') and i.get('imageUrl'))
+        check(f"show case {demo['editions'][0]}: URL + text + image {full}/{len(items)} ({cost(r)})",
+              len(items) == 10 and full >= 9)
     r, items = run(act['id'], {'queries': ['bitcoin'], 'dateFrom': '2026-10-01', 'dateTo': '2026-10-31',
                                'maxArticlesPerQuery': 1000, 'includeRelatedCoverage': False,
                                'resolveUrls': False})
