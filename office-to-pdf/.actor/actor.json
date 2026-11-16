@@ -1,8 +1,8 @@
 {
     "actorSpecification": 1,
     "name": "office-to-pdf",
-    "title": "Office to PDF & PDF/A: Word, Excel, PowerPoint, HTML, Images",
-    "description": "Convert Word, Excel, PowerPoint (incl. legacy DOC, XLS, PPT), OpenDocument, RTF, CSV, HTML and images to PDF or archival PDF/A-2b for courts, tax portals and archives. $10 per 1,000 documents, batch and merge, files stay inside the Actor.",
+    "title": "Office to PDF & PDF/A: Word to PDF, DOCX, Excel, PowerPoint",
+    "description": "Document to PDF converter: Word to PDF (DOCX, DOC), Excel to PDF (XLSX, XLS), PowerPoint to PDF (PPTX, PPT), OpenDocument, RTF, CSV, HTML and images. Archival PDF/A-2b for courts, tax portals and e-filing; batch and merge into one PDF. $10 per 1,000 documents, files stay inside the Actor.",
     "version": "0.1",
     "buildTag": "latest",
     "input": "./input_schema.json",
