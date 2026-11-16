@@ -1,0 +1,13 @@
+{
+    "actorOutputSchemaVersion": 1,
+    "title": "News articles",
+    "description": "One dataset item per article.",
+    "properties": {
+        "results": {
+            "type": "string",
+            "title": "Articles",
+            "description": "Dataset items: title, source, publishedAt, googleNewsUrl, relatedCoverage.",
+            "template": "{{links.apiDefaultDatasetUrl}}/items"
+        }
+    }
+}

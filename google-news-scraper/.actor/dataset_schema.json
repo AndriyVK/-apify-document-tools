@@ -1,0 +1,119 @@
+{
+    "actorSpecification": 1,
+    "fields": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+            "query": {
+                "type": [
+                    "string",
+                    "null"
+                ],
+                "description": "Search query this article was found for"
+            },
+            "topic": {
+                "type": [
+                    "string",
+                    "null"
+                ],
+                "description": "Topic, for topic headlines"
+            },
+            "edition": {
+                "type": [
+                    "string",
+                    "null"
+                ],
+                "description": "Google News edition, COUNTRY:language"
+            },
+            "position": {
+                "type": [
+                    "integer",
+                    "null"
+                ],
+                "description": "Rank within the query, newest first"
+            },
+            "title": {
+                "type": [
+                    "string",
+                    "null"
+                ],
+                "description": "Headline"
+            },
+            "source": {
+                "type": [
+                    "string",
+                    "null"
+                ],
+                "description": "Publisher name"
+            },
+            "sourceUrl": {
+                "type": [
+                    "string",
+                    "null"
+                ],
+                "description": "Publisher site"
+            },
+            "sourceDomain": {
+                "type": [
+                    "string",
+                    "null"
+                ],
+                "description": "Publisher domain"
+            },
+            "publishedAt": {
+                "type": [
+                    "string",
+                    "null"
+                ],
+                "description": "Publication time, ISO 8601 UTC"
+            },
+            "googleNewsUrl": {
+                "type": [
+                    "string",
+                    "null"
+                ],
+                "description": "Article link (opens the article through Google News)"
+            },
+            "articleId": {
+                "type": [
+                    "string",
+                    "null"
+                ],
+                "description": "Google News article id"
+            },
+            "relatedCoverage": {
+                "type": "array",
+                "description": "Other outlets on the same story: title, source, googleNewsUrl"
+            }
+        }
+    },
+    "views": {
+        "overview": {
+            "title": "Articles",
+            "transformation": {
+                "fields": [
+                    "publishedAt",
+                    "title",
+                    "source",
+                    "query",
+                    "topic",
+                    "edition",
+                    "googleNewsUrl"
+                ]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "googleNewsUrl": {
+                        "label": "Link",
+                        "format": "link"
+                    },
+                    "publishedAt": {
+                        "label": "Published",
+                        "format": "date"
+                    }
+                }
+            }
+        }
+    }
+}

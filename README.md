@@ -14,6 +14,7 @@ from Apify Store, call them from your code, or plug them into AI agents through 
 | [Text to Speech](text-to-speech/) | Text, PDF and Word → MP3/WAV/OGG with SRT/VTT subtitles, 37 neural voices in 23 languages incl. 3 Ukrainian, no API key | [apify.com/ai_admin/text-to-speech](https://apify.com/ai_admin/text-to-speech) |
 | [Website Screenshot & URL/HTML to PDF](website-screenshot/) | Full-page or viewport screenshots (PNG/JPEG/WebP), web pages and raw HTML → PDF, device presets, dark mode, element shots | [apify.com/ai_admin/website-screenshot](https://apify.com/ai_admin/website-screenshot) |
 | [Domain WHOIS, DNS & SSL Checker](domain-whois-dns-ssl/) | Bulk RDAP/WHOIS (registrar, expiry, availability), DNS incl. MX/SPF/DMARC/CAA, SSL issuer and days left | [apify.com/ai_admin/domain-whois-dns-ssl](https://apify.com/ai_admin/domain-whois-dns-ssl) |
+| [Google News Scraper](google-news-scraper/) | Google News articles by keyword, topic or site in any country and language (incl. Ukrainian and Russian), date ranges beyond 100 articles, related coverage | [apify.com/ai_admin/google-news-scraper](https://apify.com/ai_admin/google-news-scraper) |
 | [Video Frame Extractor](video-frame-extractor/) | Video → still frames: evenly spaced, every N seconds, exact timestamps, scene changes or keyframes, contact sheet | [apify.com/ai_admin/video-frame-extractor](https://apify.com/ai_admin/video-frame-extractor) |
 
 Ready-made examples (Apify tasks): [document-to-markdown examples](https://apify.com/ai_admin/document-to-markdown/examples),
@@ -23,7 +24,7 @@ Ready-made examples (Apify tasks): [document-to-markdown examples](https://apify
 ## Use from AI agents (MCP)
 
 All Actors are available as MCP tools - hosted (no install):
-`https://mcp.apify.com?tools=ai_admin/document-to-markdown,ai_admin/office-to-pdf,ai_admin/pdf-image-converter,ai_admin/audio-transcriber,ai_admin/image-to-text-ocr,ai_admin/text-to-speech,ai_admin/website-screenshot,ai_admin/domain-whois-dns-ssl,ai_admin/video-frame-extractor,ai_admin/social-video-transcript`
+`https://mcp.apify.com?tools=ai_admin/document-to-markdown,ai_admin/office-to-pdf,ai_admin/pdf-image-converter,ai_admin/audio-transcriber,ai_admin/image-to-text-ocr,ai_admin/text-to-speech,ai_admin/website-screenshot,ai_admin/domain-whois-dns-ssl,ai_admin/video-frame-extractor,ai_admin/social-video-transcript,ai_admin/google-news-scraper`
 Or as a local stdio server in [mcp-server/](mcp-server/).
 
 ## Built with
