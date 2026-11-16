@@ -15,7 +15,8 @@ from deploy import call  # noqa: E402
 
 ACTORS = {
     'rjJ9rgDEj2QDspQ0M': ['document to markdown', 'pdf to markdown', 'docx to markdown', 'pdf ocr', 'ocr ukrainian',
-                          'excel to markdown', 'Document to Markdown for AI'],
+                          'excel to markdown', 'Document to Markdown for AI', 'extract tables from pdf',
+                          'pdf to json', 'rag chunks', 'scanned pdf', 'word to markdown'],
     'gwRuM7Y7jiidFkCRC': ['office to pdf', 'docx to pdf', 'word to pdf', 'excel to pdf', 'pdf/a',
                           'Office to PDF & PDF/A'],
     'l9zg7OIxw7cNXE8Fx': ['pdf to image', 'pdf to png', 'pdf to jpg', 'heic to jpg', 'image converter',
