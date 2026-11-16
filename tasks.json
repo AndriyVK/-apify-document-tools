@@ -733,60 +733,6 @@
         ]
       },
       {
-        "name": "ocr-rotated-scans",
-        "title": "OCR rotated or upside-down scans",
-        "description": "Auto-detect page orientation and fix it before OCR - for scans fed in sideways.",
-        "samples": [
-          "scan-en.pdf"
-        ],
-        "input": {
-          "languages": [
-            "eng"
-          ],
-          "autoRotate": true
-        },
-        "fields": [
-          "sources",
-          "languages",
-          "autoRotate"
-        ]
-      },
-      {
-        "name": "ocr-multipage-tiff",
-        "title": "OCR multi-page TIFF",
-        "description": "Recognise text on every frame of multi-page TIFF files from scanners and fax.",
-        "samples": [
-          "multi-frame.tiff"
-        ],
-        "input": {
-          "languages": [
-            "eng"
-          ]
-        },
-        "fields": [
-          "sources",
-          "languages",
-          "pages"
-        ]
-      },
-      {
-        "name": "ocr-iphone-heic-photos",
-        "title": "OCR iPhone HEIC photos",
-        "description": "Extract text from iPhone HEIC photos of documents without converting them first.",
-        "samples": [
-          "photo-sample.heic"
-        ],
-        "input": {
-          "languages": [
-            "eng"
-          ]
-        },
-        "fields": [
-          "sources",
-          "languages"
-        ]
-      },
-      {
         "name": "bulk-ocr-images",
         "title": "Bulk OCR for many images",
         "description": "OCR hundreds of image URLs in one run - one result per image, pay per image.",
@@ -798,6 +744,62 @@
         "input": {
           "languages": [
             "eng",
+            "ukr",
+            "rus"
+          ]
+        },
+        "fields": [
+          "sources",
+          "languages"
+        ]
+      },
+      {
+        "name": "extract-table-from-image",
+        "title": "Extract a table from an image (OCR)",
+        "description": "Tables from photos and scans as rows of cells and Markdown - ruled or without lines, numbers kept as printed.",
+        "samples": [
+          "invoice-noisy-uk.png",
+          "scan-noisy-uk.pdf"
+        ],
+        "input": {
+          "languages": [
+            "ukr",
+            "eng"
+          ]
+        },
+        "fields": [
+          "sources",
+          "languages"
+        ]
+      },
+      {
+        "name": "invoice-table-ocr",
+        "title": "Invoice table OCR - items, quantities, prices",
+        "description": "Read invoice and price-list tables from scans and photos: one row per item, amounts like 40 530,00 kept exact.",
+        "samples": [
+          "invoice-noisy-uk.png"
+        ],
+        "input": {
+          "languages": [
+            "ukr",
+            "eng"
+          ]
+        },
+        "fields": [
+          "sources",
+          "languages"
+        ]
+      },
+      {
+        "name": "ocr-cyrillic-ukrainian-russian",
+        "title": "OCR Cyrillic - Ukrainian and Russian together",
+        "description": "Mixed Ukrainian and Russian images: each page is read with its own language first, so i, ы and ё are not lost.",
+        "samples": [
+          "image-uk.png",
+          "image-ru.png"
+        ],
+        "input": {
+          "languages": [
             "ukr",
             "rus"
           ]

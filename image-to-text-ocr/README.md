@@ -1,4 +1,4 @@
-# Image to Text OCR: Bulk Images & Scanned PDFs, 38 Languages
+# Image to Text OCR: Tables, Invoices & Scans, 38 Languages
 
 Extract text from images and scanned PDFs in bulk - screenshots, photos of documents, receipts, scans - with the
 confidence and position of every line and word.
@@ -84,6 +84,11 @@ and is **not charged**.
 | `image` | **$4 per 1,000** | one OCR'd image, TIFF frame or PDF page |
 
 Plus Apify's standard start fee of $0.05 per 1,000 runs. The run stops before it would exceed your maximum charge per run.
+
+## Guides
+
+- [Ukrainian and Russian text from images - 5 Apify OCR Actors compared, only one read the invoice table](https://andriyvk.github.io/ocr-cyrillic-images-5-actors-compared/)
+- [MCP server for document and media tools - OCR, PDF and audio tools for Claude or Cursor](https://andriyvk.github.io/mcp-document-tools-for-ai-agents/)
 
 ## Related Actors
 

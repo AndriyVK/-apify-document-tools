@@ -1,8 +1,8 @@
 {
     "actorSpecification": 1,
     "name": "image-to-text-ocr",
-    "title": "Image to Text OCR: Bulk Images & Scanned PDFs, 38 Languages",
-    "description": "Extract text from images (PNG, JPG, WebP, TIFF, HEIC) and scanned PDF pages in bulk. Returns plain text plus lines and words with confidence and bounding boxes. 38 languages incl. Ukrainian, Chinese, Arabic. Auto-rotate.",
+    "title": "Image to Text OCR: Tables, Invoices & Scans, 38 Languages",
+    "description": "Extract text and tables from images and scanned PDFs in bulk: invoices, receipts, price lists, screenshots. Ruled and borderless tables as rows of cells, numbers as printed. 38 languages incl. Ukrainian and Russian (Cyrillic), Tesseract, auto-rotate. Lines and words with confidence and boxes.",
     "version": "0.1",
     "buildTag": "latest",
     "input": "./input_schema.json",
