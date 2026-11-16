@@ -1,4 +1,5 @@
-"""Apify Actor: Google News articles by keyword or topic, for any country and language, from the public RSS feeds."""
+"""Apify Actor: Google News articles by keyword or topic, for any country and language, with publisher URLs and
+(optionally) the article page details and text."""
 from __future__ import annotations
 
 import asyncio
@@ -8,10 +9,13 @@ from datetime import datetime, timedelta, timezone
 import httpx
 from apify import Actor
 
+from .article import details
+from .resolve import resolve_async
 from .news import (FEED_CAP, InputError, edition, parse_day, parse_feed, search_url, topic_url, windows)
 
 EVENT_ARTICLE = 'article'
 CONCURRENCY = 4
+ENRICH_CONCURRENCY = 8
 TIMEFRAME_DAYS = {'1h': 1, '1d': 1, '7d': 7, '30d': 30, '1y': 365}
 HEADERS = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '
                          'Chrome/130.0 Safari/537.36', 'Accept-Language': 'en;q=0.8'}
@@ -34,13 +38,17 @@ async def fetch(client: httpx.AsyncClient, url: str) -> list[dict]:
 
 
 class Run:
-    def __init__(self, client: httpx.AsyncClient, max_per_query: int, include_related: bool):
+    def __init__(self, client: httpx.AsyncClient, max_per_query: int, include_related: bool,
+                 resolve_urls: bool = True, details: bool = False, full_text: bool = False):
         self.client, self.max_per_query, self.include_related = client, max_per_query, include_related
+        self.resolve_urls, self.details, self.full_text = resolve_urls or details or full_text, \
+            details or full_text, full_text
         self.charging = Actor.get_charging_manager()
         self.seen: set[str] = set()
         self.pushed = 0
         self.limit_hit = False
         self.sem = asyncio.Semaphore(CONCURRENCY)
+        self.enrich_sem = asyncio.Semaphore(ENRICH_CONCURRENCY)
 
     def _left(self) -> int | None:
         return self.charging.calculate_max_event_charge_count_within_limit(EVENT_ARTICLE)
@@ -49,27 +57,52 @@ class Run:
         async with self.sem:
             return await fetch(self.client, url)
 
+    async def _enrich(self, a: dict) -> dict:
+        """Publisher URL (and page details) for one article; problems are noted on the item, never fatal."""
+        async with self.enrich_sem:
+            if self.resolve_urls and a.get('articleId'):
+                for attempt in range(3):
+                    res = await resolve_async(self.client, a['articleId'])
+                    if res.get('status') not in (429, 503):
+                        break
+                    await asyncio.sleep(2 ** attempt * 2 + random.random())
+                if res.get('url'):
+                    a['url'] = res['url']
+                    if res.get('ampUrl'):
+                        a['ampUrl'] = res['ampUrl']
+                else:
+                    a['urlError'] = res.get('error')
+            if self.details and a.get('url'):
+                got = await details(self.client, a['url'], self.full_text)
+                a.update(got.get('details') or {})
+                if got.get('detailsError'):
+                    a['detailsError'] = got['detailsError']
+        return a
+
     async def push(self, articles: list[dict], extra: dict, budget: int) -> int:
         """Pushes new (not yet seen) articles, newest first, up to budget and the user's charge limit."""
         articles.sort(key=lambda a: a['publishedAt'] or '', reverse=True)
-        n = 0
+        picked = []
+        left = self._left()
         for a in articles:
-            if n >= budget:
+            if len(picked) >= budget:
                 break
             key = a['articleId'] or a['googleNewsUrl']
             if key in self.seen:
                 continue
-            left = self._left()
-            if left is not None and left <= 0:
+            if left is not None and left <= len(picked):
                 self.limit_hit = True
                 break
             self.seen.add(key)
             if not self.include_related:
                 a = {k: v for k, v in a.items() if k != 'relatedCoverage'}
+            picked.append(a)
+        if self.resolve_urls:
+            picked = await asyncio.gather(*(self._enrich(a) for a in picked))
+        for n, a in enumerate(picked):
             await Actor.push_data({**extra, 'position': n + 1, **a}, charged_event_name=EVENT_ARTICLE)
-            n += 1
-        self.pushed += n
-        return n
+        self.pushed += len(picked)
+        return len(picked)
 
     async def query(self, q: str, ed_name: str, ed: dict, timeframe: str | None, day_from, day_to) -> dict:
         extra = {'query': q, 'edition': ed['ceid']}
@@ -122,7 +155,9 @@ async def main() -> None:
             proxy_url = await proxy.new_url() if proxy else None
         async with httpx.AsyncClient(timeout=httpx.Timeout(30, connect=10), headers=HEADERS, follow_redirects=True,
                                      proxy=proxy_url) as client:
-            run = Run(client, max_per_query, bool(inp.get('includeRelatedCoverage', True)))
+            run = Run(client, max_per_query, bool(inp.get('includeRelatedCoverage', True)),
+                      bool(inp.get('resolveUrls', True)), bool(inp.get('articleDetails', False)),
+                      bool(inp.get('fullText', False)))
             failed = []
             for name, ed in eds:
                 for q in queries:

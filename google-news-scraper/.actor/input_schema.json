@@ -80,6 +80,24 @@
             "sectionCaption": "Output",
             "description": "Google News shows up to 100 articles per search. Above 100, the date range (or time period, 30 days by default) is read day by day to collect more."
         },
+        "resolveUrls": {
+            "title": "Publisher URLs",
+            "type": "boolean",
+            "default": true,
+            "description": "Turn Google News links into the direct URL of the article on the publisher's site (url, plus ampUrl when there is one). Included in the article price."
+        },
+        "articleDetails": {
+            "title": "Article details",
+            "type": "boolean",
+            "default": false,
+            "description": "Open each article on the publisher's site and add its image, description, author, page date, site name and word count. Included in the article price; slower."
+        },
+        "fullText": {
+            "title": "Full article text",
+            "type": "boolean",
+            "default": false,
+            "description": "Also add the clean article text (boilerplate removed), ready for AI, RAG and summaries. Included in the article price."
+        },
         "includeRelatedCoverage": {
             "title": "Related coverage",
             "type": "boolean",

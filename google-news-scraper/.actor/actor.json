@@ -2,7 +2,7 @@
     "actorSpecification": 1,
     "name": "google-news-scraper",
     "title": "Google News Scraper: Headlines by Keyword, Topic & Language",
-    "description": "Google News scraper and news API: articles by keyword, topic or site for any country and language (Ukrainian, Russian, English, German and 40+ more editions). Title, source, date, link, related coverage for topics; date ranges beyond the 100-article limit. No proxy, no API key.",
+    "description": "Google News scraper and news API: articles by keyword, topic or site for any country and language (Ukrainian, Russian, English and 40+ editions) with direct publisher URLs, image, author and full text in one price. Date ranges beyond the 100-article limit. No proxy, no API key.",
     "version": "0.1",
     "buildTag": "latest",
     "input": "./input_schema.json",

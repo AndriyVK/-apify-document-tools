@@ -41,9 +41,17 @@ def main():
                                'maxArticlesPerQuery': 30, 'topics': ['BUSINESS']})
     check(f"2 editions + topic: {len(items)} items ({cost(r)})", 60 <= len(items) <= 260)
     check('charged = items', (r.get('chargedEventCounts') or {}).get('article') == len(items))
+    urls = sum(1 for i in items if (i.get('url') or '').startswith('http') and 'news.google.com' not in i['url'])
+    check(f'publisher URLs {urls}/{len(items)}', urls >= 0.9 * len(items))
+    r, items = run(act['id'], {'queries': ['artificial intelligence'], 'maxArticlesPerQuery': 50, 'fullText': True})
+    texts = sum(1 for i in items if i.get('text'))
+    check(f"full text {texts}/{len(items)}, images {sum(1 for i in items if i.get('imageUrl'))} ({cost(r)})",
+          len(items) == 50 and texts >= 30)
+    print('   details errors:', sorted({(i.get('detailsError') or '')[:40] for i in items if i.get('detailsError')})[:6])
     print('  ', items[0]['edition'], items[0]['publishedAt'], items[0]['title'][:70], '|', items[0]['source'])
     r, items = run(act['id'], {'queries': ['bitcoin'], 'dateFrom': '2026-10-01', 'dateTo': '2026-10-31',
-                               'maxArticlesPerQuery': 1000, 'includeRelatedCoverage': False})
+                               'maxArticlesPerQuery': 1000, 'includeRelatedCoverage': False,
+                               'resolveUrls': False})
     check(f"30-day split: {len(items)} items, unique {len({i['articleId'] for i in items})} ({cost(r)})",
           len(items) > 150 and len({i['articleId'] for i in items}) == len(items))
     print('FAILED' if bad else 'ALL OK', bad)

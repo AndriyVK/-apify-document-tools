@@ -56,11 +56,18 @@ if '--live' in sys.argv:
     print(p.stderr[-800:] if not items else '', end='')
     check(f'2 editions x 30 -> {len(items)} items', 40 <= len(items) <= 60)
     check('fields present', all(i.get('title') and i.get('googleNewsUrl') and i.get('publishedAt') for i in items))
-    p, items = run({'queries': ['bitcoin'], 'dateFrom': '2026-11-01', 'dateTo': '2026-11-04', 'maxArticlesPerQuery': 300})
+    urls = [i for i in items if (i.get('url') or '').startswith('http') and 'news.google.com' not in i['url']]
+    check(f'publisher URLs {len(urls)}/{len(items)}', len(urls) >= 0.9 * len(items))
+    p, items = run({'queries': ['artificial intelligence'], 'maxArticlesPerQuery': 10, 'fullText': True})
+    check(f"full text {sum(1 for i in items if i.get('text'))}/10, images {sum(1 for i in items if i.get('imageUrl'))}",
+          sum(1 for i in items if i.get('text')) >= 6)
+    p, items = run({'queries': ['bitcoin'], 'dateFrom': '2026-11-01', 'dateTo': '2026-11-04', 'maxArticlesPerQuery': 300,
+                    'resolveUrls': False})
     days = sorted({i['publishedAt'][:10] for i in items})
     check(f'day split: {len(items)} items over {days}', len(items) > 100 and days[0] >= '2026-10-31')
     check('no duplicates', len({i['articleId'] for i in items}) == len(items))
-    p, items = run({'topics': ['business', 'TOP'], 'editions': ['DE:de'], 'includeRelatedCoverage': False})
+    p, items = run({'topics': ['business', 'TOP'], 'editions': ['DE:de'], 'includeRelatedCoverage': False,
+                    'resolveUrls': False})
     check(f'topics -> {len(items)} items, no relatedCoverage', len(items) > 20 and
           all('relatedCoverage' not in i for i in items) and {i['topic'] for i in items} == {'BUSINESS', 'TOP'})
     p, items = run({'queries': ['x'], 'editions': ['Ukraine']})

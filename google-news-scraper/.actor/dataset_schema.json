@@ -74,6 +74,83 @@
                 ],
                 "description": "Article link (opens the article through Google News)"
             },
+            "url": {
+                "type": [
+                    "string",
+                    "null"
+                ],
+                "description": "Direct URL of the article on the publisher's site"
+            },
+            "ampUrl": {
+                "type": [
+                    "string",
+                    "null"
+                ],
+                "description": "AMP version of the article, when there is one"
+            },
+            "urlError": {
+                "type": [
+                    "string",
+                    "null"
+                ],
+                "description": "Why the publisher URL could not be resolved"
+            },
+            "imageUrl": {
+                "type": [
+                    "string",
+                    "null"
+                ],
+                "description": "Main image of the article (with article details)"
+            },
+            "description": {
+                "type": [
+                    "string",
+                    "null"
+                ],
+                "description": "Article summary from the publisher page"
+            },
+            "author": {
+                "type": [
+                    "string",
+                    "null"
+                ],
+                "description": "Author(s)"
+            },
+            "pageDate": {
+                "type": [
+                    "string",
+                    "null"
+                ],
+                "description": "Date on the publisher page"
+            },
+            "siteName": {
+                "type": [
+                    "string",
+                    "null"
+                ],
+                "description": "Site name"
+            },
+            "wordCount": {
+                "type": [
+                    "integer",
+                    "null"
+                ],
+                "description": "Words in the article text"
+            },
+            "text": {
+                "type": [
+                    "string",
+                    "null"
+                ],
+                "description": "Clean article text (with full text)"
+            },
+            "detailsError": {
+                "type": [
+                    "string",
+                    "null"
+                ],
+                "description": "Why the publisher page could not be read"
+            },
             "articleId": {
                 "type": [
                     "string",
@@ -98,19 +175,24 @@
                     "query",
                     "topic",
                     "edition",
-                    "googleNewsUrl"
+                    "url",
+                    "imageUrl"
                 ]
             },
             "display": {
                 "component": "table",
                 "properties": {
-                    "googleNewsUrl": {
-                        "label": "Link",
+                    "url": {
+                        "label": "Article",
                         "format": "link"
                     },
                     "publishedAt": {
                         "label": "Published",
                         "format": "date"
+                    },
+                    "imageUrl": {
+                        "label": "Image",
+                        "format": "image"
                     }
                 }
             }
