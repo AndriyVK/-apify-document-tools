@@ -1,8 +1,8 @@
 {
     "actorSpecification": 1,
     "name": "text-to-speech",
-    "title": "Text to Speech: PDF, DOCX → MP3 + Subtitles, Ukrainian +22 More",
-    "description": "Natural neural voices licensed for commercial use: text, PDF and Word files to MP3/WAV/OGG with SRT/VTT subtitles. 37 voices in 23 languages incl. 3 Ukrainian voices (rare on the market), English, German, Spanish. No API key, no per-character fees.",
+    "title": "Text to Speech (TTS): PDF, DOCX→MP3 + Subtitles, Ukrainian +22",
+    "description": "Text to speech (TTS) and AI voice generator, neural voices licensed for commercial use: text, PDF and Word to MP3/WAV/OGG with SRT/VTT subtitles. 37 voices, 23 languages incl. Ukrainian (3 voices), Russian, Polish, German, English, Spanish. Speech synthesis with no API key or per-character fees.",
     "version": "0.1",
     "buildTag": "latest",
     "input": "./input_schema.json",
