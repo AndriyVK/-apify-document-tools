@@ -103,6 +103,11 @@ page cannot be read, the article is still returned with `urlError` or `detailsEr
 Plus Apify's standard start fee of $0.05 per 1,000 runs. Duplicates across queries are removed before charging, and
 the run stops before it would exceed your maximum charge per run.
 
+## Guides
+
+- [Monitor Ukrainian and Russian news with Google News - direct links, full article text and several countries in one run](https://andriyvk.github.io/google-news-monitoring-ukrainian-russian/)
+  ([українською](https://andriyvk.github.io/uk/monitorynh-novyn-google-news/))
+
 ## Related Actors
 
 - [Video Transcript & Translation](https://apify.com/ai_admin/social-video-transcript) - YouTube, TikTok, Reels to text
