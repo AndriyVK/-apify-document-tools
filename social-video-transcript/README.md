@@ -144,6 +144,8 @@ videos you are allowed to use.
 
 ## Guides
 
+- [Translate TikTok, Reels and YouTube videos with Ukrainian subtitles by API](https://andriyvk.github.io/translate-videos-ukrainian-subtitles-api/)
+  ([українською](https://andriyvk.github.io/uk/pereklad-video-ukrainskoyu-subtytry/))
 - [YouTube subtitles in Ukrainian - transcript and translated SRT by API](https://andriyvk.github.io/youtube-subtitles-in-ukrainian/)
 - [MCP server for document and media tools - OCR, PDF and audio tools for Claude or Cursor](https://andriyvk.github.io/mcp-document-tools-for-ai-agents/)
 
