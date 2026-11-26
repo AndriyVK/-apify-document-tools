@@ -51,12 +51,20 @@ def _urls(urls: list[str]) -> list[dict[str, str]]:
 
 @mcp.tool(description='Convert documents to Markdown for LLMs: PDF (text and scanned, OCR), images, DOCX/DOC, '
                       'XLSX/XLS, PPTX/PPT, ODT, RTF, HTML. Returns Markdown, tables as JSON rows and optional RAG chunks. '
-                      'ocr_languages: e.g. ["eng", "ukr"]. Price: $2 per 1,000 text pages, $4 per 1,000 OCR pages.')
+                      'ocr_languages: e.g. ["eng", "ukr"]; page_range like "1-3, 5" (only those pages are charged); password '
+                      'for protected PDFs; remove_headers_footers drops repeated page headers, footers and page numbers. '
+                      'Price: $2 per 1,000 text pages, $4 per 1,000 OCR pages.')
 async def convert_document_to_markdown(urls: list[str], ocr_languages: list[str] | None = None,
-                                       chunk_size: int = 0, max_charge_usd: float = 1.0) -> list[dict]:
-    return await _run_actor('ai_admin/document-to-markdown',
-                            {'sources': _urls(urls), 'ocrLanguages': ocr_languages or ['eng'], 'chunkSize': chunk_size},
-                            max_charge_usd)
+                                       chunk_size: int = 0, page_range: str = '', password: str = '',
+                                       remove_headers_footers: bool = False,
+                                       max_charge_usd: float = 1.0) -> list[dict]:
+    inp = {'sources': _urls(urls), 'ocrLanguages': ocr_languages or ['eng'], 'chunkSize': chunk_size,
+           'removeHeadersFooters': remove_headers_footers}
+    if page_range:
+        inp['pageRange'] = page_range
+    if password:
+        inp['password'] = password
+    return await _run_actor('ai_admin/document-to-markdown', inp, max_charge_usd)
 
 
 @mcp.tool(description='Convert Word, Excel, PowerPoint, OpenDocument, RTF, HTML and images to PDF, or to archival '
@@ -80,11 +88,21 @@ async def convert_pdf_or_images(urls: list[str], output_format: str = 'png', dpi
 
 @mcp.tool(description='Transcribe audio or video files (MP3, WAV, M4A, MP4, MOV, WebM…) to text, timestamped '
                       'segments and SRT/VTT subtitle links with Whisper large-v3; 99 languages, language="" detects it. '
-                      'Price: $6 per 1,000 audio minutes.')
-async def transcribe_audio(urls: list[str], language: str = '', vocabulary: str = '',
+                      'podcast_feeds: RSS feed URLs (newest episodes); word_timestamps: start/end of every word; '
+                      'translate_to (e.g. "uk", "en"): translated text and subtitles; summarize: summary, key points '
+                      'and action items (free). Price: $6 per 1,000 audio minutes; translation adds one audio minute '
+                      'per minute.')
+async def transcribe_audio(urls: list[str] | None = None, language: str = '', vocabulary: str = '',
+                           podcast_feeds: list[str] | None = None, max_episodes_per_feed: int = 1,
+                           word_timestamps: bool = False, translate_to: str = '', summarize: bool = False,
                            max_charge_usd: float = 1.0) -> list[dict]:
-    return await _run_actor('ai_admin/audio-transcriber',
-                            {'sources': _urls(urls), 'language': language, 'vocabulary': vocabulary}, max_charge_usd)
+    inp = {'sources': _urls(urls or []), 'language': language, 'vocabulary': vocabulary,
+           'wordTimestamps': word_timestamps, 'summarize': summarize}
+    if podcast_feeds:
+        inp.update(podcastFeeds=podcast_feeds, maxEpisodesPerFeed=max_episodes_per_feed)
+    if translate_to:
+        inp['translateTo'] = translate_to
+    return await _run_actor('ai_admin/audio-transcriber', inp, max_charge_usd)
 
 
 @mcp.tool(description='OCR: extract text from images (PNG, JPG, WebP, TIFF, HEIC) and scanned PDF pages; returns text '
@@ -132,16 +150,19 @@ async def check_domains(domains: list[str], whois: bool = True, dns: bool = True
 
 @mcp.tool(description='Extract frames from videos (MP4, MOV, WebM…) with timecodes: mode "count" (frame_count evenly '
                       'spaced), "interval" (every interval_seconds), "timestamps" (e.g. ["00:01:05", "90"]), "scenes" '
-                      '(scene changes) or "keyframes"; plus a free contact sheet. Good input for vision models. '
+                      '(scene changes) or "keyframes"; start_time/end_time (e.g. "1:30") limit the part of the video; '
+                      'skip_blank_frames drops black or single-colour frames; plus a free contact sheet. Good input for vision models. '
                       'Returns download links. Price: $2 per 1,000 frames.')
 async def extract_video_frames(urls: list[str], mode: str = 'count', frame_count: int = 6,
                                interval_seconds: float = 10, timestamps: list[str] | None = None,
-                               image_format: str = 'jpg', max_width: int = 0,
+                               image_format: str = 'jpg', max_width: int = 0, start_time: str = '',
+                               end_time: str = '', skip_blank_frames: bool = False,
                                max_charge_usd: float = 1.0) -> list[dict]:
     return await _run_actor('ai_admin/video-frame-extractor',
                             {'sources': _urls(urls), 'mode': mode, 'frameCount': frame_count,
                              'intervalSeconds': interval_seconds, 'timestamps': timestamps or [],
-                             'format': image_format, 'maxWidth': max_width}, max_charge_usd)
+                             'format': image_format, 'maxWidth': max_width, 'startTime': start_time,
+                             'endTime': end_time, 'skipBlankFrames': skip_blank_frames}, max_charge_usd)
 
 
 
