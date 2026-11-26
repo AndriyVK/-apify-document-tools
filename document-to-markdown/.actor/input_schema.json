@@ -95,6 +95,25 @@
             "minimum": 1,
             "maximum": 5000,
             "default": 500
+        },
+        "pageRange": {
+            "title": "PDF pages",
+            "type": "string",
+            "editor": "textfield",
+            "description": "Only these PDF pages, e.g. 1-3, 5, 10- (from page 10 to the end). Empty means all pages. Only the selected pages are charged."
+        },
+        "password": {
+            "title": "PDF password",
+            "type": "string",
+            "editor": "textfield",
+            "isSecret": true,
+            "description": "Password for protected PDFs (the same one for all PDFs in the run). Stored encrypted, never logged."
+        },
+        "removeHeadersFooters": {
+            "title": "Remove headers, footers and page numbers",
+            "type": "boolean",
+            "default": false,
+            "description": "Drop lines that repeat at the top or bottom of most PDF pages (running titles, company names, \"Page 3 of 10\") so the Markdown and RAG chunks hold only the content."
         }
     },
     "required": [

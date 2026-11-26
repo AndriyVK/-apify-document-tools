@@ -12,7 +12,8 @@ import httpx
 from apify import Actor
 
 from .download import DownloadError, download
-from .frames import FORMATS, FrameError, contact_sheet, grab, plan_times, probe, select_frames, timecode
+from .frames import (FORMATS, FrameError, contact_sheet, grab, is_blank, plan_times, probe, select_frames,
+                     timecode, window)
 
 EVENT_FRAME = 'frame'
 EVENT_SCENE_MINUTE = 'scene-minute'  # scene detection decodes the whole video
@@ -52,6 +53,8 @@ async def main() -> None:
         max_frames = min(max(int(inp.get('maxFramesPerVideo') or 100), 1), 2000)
         max_width = int(inp.get('maxWidth') or 0)
         sheet = bool(inp.get('contactSheet', True))
+        start_in, end_in = inp.get('startTime'), inp.get('endTime')
+        skip_blank = bool(inp.get('skipBlankFrames', False))
         if mode == 'timestamps' and not stamps:
             await Actor.fail(status_message='mode "timestamps" needs a list of timestamps.')
             return
@@ -76,17 +79,31 @@ async def main() -> None:
                         stem = _stem(name, idx)
                         meta = await asyncio.to_thread(probe, src)
                         ext, _ = FORMATS[fmt]
+                        t0, t1 = window(meta['duration'], start_in, end_in)
+                        skipped = 0
                         if mode in ('scenes', 'keyframes'):
                             got = await asyncio.to_thread(select_frames, src, outdir, stem, fmt, max_width, mode,
-                                                          threshold, limit)
+                                                          threshold, limit, t0, t1)
+                            if skip_blank:
+                                kept = [(t, f) for t, f in got if not is_blank(f)]
+                                skipped, got = len(got) - len(kept), kept
                         else:
                             times = plan_times(mode, meta['duration'], interval=interval, count=count,
-                                               timestamps=stamps, max_frames=limit)
+                                               timestamps=stamps, max_frames=limit, start=t0, end=t1)
                             got = []
                             for n, t in enumerate(times, 1):
                                 dest = os.path.join(outdir, f'{stem}-{n:05d}.{ext}')
-                                if await asyncio.to_thread(grab, src, t, dest, fmt, max_width):
-                                    got.append((round(t, 3), dest))
+                                if not await asyncio.to_thread(grab, src, t, dest, fmt, max_width):
+                                    continue
+                                if skip_blank and is_blank(dest):
+                                    # a fade or a black gap: try a little later, inside the window, once
+                                    t2 = min(t + 0.7, (t1 if t1 != math.inf else t + 0.7) - 0.05)
+                                    ok2 = t2 > t and await asyncio.to_thread(grab, src, t2, dest, fmt, max_width)
+                                    if not ok2 or is_blank(dest):
+                                        skipped += 1
+                                        continue
+                                    t = t2
+                                got.append((round(t, 3), dest))
                         if not got:
                             raise FrameError('no frames could be extracted (check the timestamps or the threshold)')
                     except (DownloadError, FrameError, httpx.HTTPError) as e:
@@ -102,6 +119,10 @@ async def main() -> None:
                                        'url': await store.get_public_url(key), 'bytes': os.path.getsize(path)})
                     item = {'url': url, 'fileName': name or None, 'mode': mode, **meta,
                             'frameCount': len(frames), 'frames': frames}
+                    if start_in not in (None, '') or end_in not in (None, ''):
+                        item['window'] = {'start': t0, 'end': None if t1 == math.inf else round(t1, 3)}
+                    if skip_blank:
+                        item['blankFramesSkipped'] = skipped
                     if sheet:
                         key = f'{stem}-contact-sheet.jpg'
                         dest = os.path.join(tmp, key)
@@ -113,7 +134,8 @@ async def main() -> None:
                     # One event per extracted frame, after the files are saved; the contact sheet is free
                     await Actor.charge(EVENT_FRAME, count=len(frames))
                     if mode == 'scenes':
-                        await Actor.charge(EVENT_SCENE_MINUTE, count=max(1, math.ceil(meta['duration'] / 60)))
+                        span = (min(t1, meta['duration']) if t1 != math.inf else meta['duration']) - t0
+                        await Actor.charge(EVENT_SCENE_MINUTE, count=max(1, math.ceil(span / 60)))
                     total_frames += len(frames)
                     ok += 1
         await Actor.set_status_message(f'Extracted {total_frames} frame(s) from {ok} video(s), failed {failed}.')

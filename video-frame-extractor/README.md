@@ -16,7 +16,7 @@ the exact moments you need - each with its timecode and a download link.
 |---|---|---|
 | **Price** | **$2 per 1,000 frames** ($1.50 on Gold+), no per-video fee | $2 per 1,000 frames, often plus $2-10 per 1,000 videos |
 | **Modes** | Evenly spaced, every N seconds, exact timestamps, scene changes, keyframes | Two or three modes |
-| **Extras** | Free contact sheet, timecodes, video metadata, JPG/PNG/WebP, downscaling | Contact sheet as a paid add-on or missing |
+| **Extras** | Free contact sheet, timecodes, video metadata, JPG/PNG/WebP, downscaling, time window, blank-frame skipping (not charged) | Contact sheet as a paid add-on or missing |
 
 ## Input
 
@@ -41,6 +41,8 @@ the exact moments you need - each with its timecode and a download link.
 | `timestamps` | Times for `timestamps` |
 | `sceneThreshold` | 0.1 = sensitive … 0.5 = hard cuts only |
 | `maxFramesPerVideo` | Upper limit for every mode |
+| `startTime`, `endTime` | Work only on this part of the video (seconds like `90.5` or `hh:mm:ss`); every mode respects it, and scene analysis is charged only for that part |
+| `skipBlankFrames` | Drop black, white and flat-colour frames (fades, title cards); in interval and count modes the Actor looks 0.7 s later for a real picture. Skipped frames are not charged |
 | `format`, `maxWidth` | Image format and optional downscaling |
 | `contactSheet` | One overview image per video (free) |
 

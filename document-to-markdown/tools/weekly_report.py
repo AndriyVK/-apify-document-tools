@@ -40,6 +40,8 @@ ACTORS = {
     'schj3W39co6dWaBaP': ['youtube transcript', 'video transcript', 'tiktok transcript', 'youtube subtitles',
                           'translate video', 'Video Transcript & Translation', 'youtube translation',
                           'video translation', 'translate youtube video', 'reels to text', 'instagram transcript'],
+    'xFyXgsGKGKPeM2kU2': ['google news', 'google news scraper', 'news scraper', 'news', 'news api', 'headlines',
+                          'ukrainian news', 'news monitoring'],
 }
 
 

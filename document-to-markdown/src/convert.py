@@ -110,11 +110,14 @@ def check_signature(path: str, ext: str) -> None:
 
 
 def convert(path: str, ext: str, *, ocr_mode: str = 'auto', ocr_languages: str = 'eng',
-            max_pages: int = 500, page_budget=None) -> Result:
-    """page_budget(text_pages, ocr_pages) -> bool lets the caller stop before work it cannot charge for."""
+            max_pages: int = 500, page_budget=None, password: str | None = None, page_range: str | None = None,
+            remove_headers_footers: bool = False) -> Result:
+    """page_budget(text_pages, ocr_pages) -> bool lets the caller stop before work it cannot charge for.
+    password, page_range ("1-3, 5, 10-") and remove_headers_footers apply to PDFs."""
     check_signature(path, ext)
     if ext in PDF_EXT:
-        return _convert_pdf(path, ocr_mode, ocr_languages, max_pages, page_budget)
+        return _convert_pdf(path, ocr_mode, ocr_languages, max_pages, page_budget, password, page_range,
+                            remove_headers_footers)
     if ext in IMAGE_EXT:
         return _convert_image(path, ocr_languages, max_pages)
     if ext in LIBREOFFICE_TARGET:
@@ -129,23 +132,58 @@ def convert(path: str, ext: str, *, ocr_mode: str = 'auto', ocr_languages: str =
 
 # ---------------------------------------------------------------- PDF
 
-def _convert_pdf(path, ocr_mode, langs, max_pages, page_budget) -> Result:
+def parse_page_range(spec: str | None, total: int) -> list[int]:
+    """"1-3, 5, 10-" -> 0-based page indexes in document order; empty spec -> all pages."""
+    if not spec or not str(spec).strip():
+        return list(range(total))
+    pages: set[int] = set()
+    for part in str(spec).replace(' ', '').split(','):
+        if not part:
+            continue
+        m = re.fullmatch(r'(\d*)-(\d*)|(\d+)', part)
+        if not m or part == '-':
+            raise ConversionError(f'page range "{spec}" is not like "1-3, 5, 10-"')
+        if m.group(3):
+            a = b = int(m.group(3))
+        else:
+            a = int(m.group(1) or 1)
+            b = int(m.group(2) or total)
+        if a < 1 or b < a:
+            raise ConversionError(f'page range "{part}" is not valid')
+        pages.update(range(a - 1, min(b, total)))
+    return sorted(pages)
+
+
+def _convert_pdf(path, ocr_mode, langs, max_pages, page_budget, password=None, page_range=None,
+                 remove_hf=False) -> Result:
     res = Result()
     try:
-        pdf = pdfplumber.open(path)
+        pdf = pdfplumber.open(path, password=password or '')
     except Exception as e:  # noqa: BLE001 - pdfminer raises many exception types
+        if 'password' in repr(e).lower():
+            raise ConversionError('the PDF is password-protected: give the password in the "password" input'
+                                  if not password else 'wrong PDF password') from e
         raise ConversionError(f'cannot open PDF: {e}') from e
     with pdf:
         res.source_pages = len(pdf.pages)
         info = pdf.metadata or {}
         res.metadata = {k.lower(): str(v) for k, v in info.items() if k in ('Title', 'Author', 'Subject', 'CreationDate') and v}
-        pages = pdf.pages[:max_pages]
-        if len(pdf.pages) > max_pages:
-            res.warnings.append(f'only the first {max_pages} of {len(pdf.pages)} pages were converted')
+        wanted = parse_page_range(page_range, len(pdf.pages))
+        if page_range and not wanted:
+            raise ConversionError(f'page range "{page_range}" is outside the document ({len(pdf.pages)} pages)')
+        if len(wanted) > max_pages:
+            res.warnings.append(f'only the first {max_pages} of {len(wanted)} selected pages were converted')
+            wanted = wanted[:max_pages]
+        pages = [pdf.pages[i] for i in wanted]
+        if remove_hf:
+            pages, removed = _crop_headers_footers(pages)
+            if removed:
+                res.warnings.append(f'removed {removed} repeated header/footer or page-number lines')
         body_size = _body_font_size(pages)
-        parts = []
+        parts, ocr_texts = [], []
         doc = None
-        for n, page in enumerate(pages, 1):
+        for idx, page in zip(wanted, pages):
+            n = idx + 1
             text_md = '' if ocr_mode == 'always' else _pdf_page_markdown(page, body_size)
             need_ocr = ocr_mode == 'always' or (ocr_mode == 'auto' and _looks_scanned(page, text_md))
             if page_budget and not page_budget(0 if need_ocr else 1, 1 if need_ocr else 0):
@@ -153,18 +191,97 @@ def _convert_pdf(path, ocr_mode, langs, max_pages, page_budget) -> Result:
                 break
             if need_ocr:
                 if doc is None:
-                    doc = pdfium.PdfDocument(path)
-                img = doc[n - 1].render(scale=OCR_DPI / 72).to_pil()
+                    doc = pdfium.PdfDocument(path, password=password or None)
+                img = doc[idx].render(scale=OCR_DPI / 72).to_pil()
                 text_md = _ocr_image(img, langs)
+                if remove_hf:
+                    ocr_texts.append(len(parts))
                 res.ocr_pages += 1
             else:
                 res.page_count += 1
-            if text_md.strip():
-                parts.append(text_md.strip())
+            parts.append(text_md.strip())
         if doc is not None:
             doc.close()
-    res.markdown = '\n\n'.join(parts) + '\n'
+    if len(ocr_texts) >= 2:  # scanned pages: OCR keeps line breaks, so repeated edge lines are found by text
+        cleaned, removed = strip_headers_footers([parts[i] for i in ocr_texts])
+        for i, text in zip(ocr_texts, cleaned):
+            parts[i] = text
+        if removed:
+            res.warnings.append(f'removed {removed} repeated header/footer lines from scanned pages')
+    res.markdown = '\n\n'.join(p for p in parts if p) + '\n'
     return res
+
+
+_PAGE_NO = re.compile(r'^(?:[-\u2013\u2014\s]*(?:page|p\.|стор\.?|сторінка|страница|стр\.?|seite|página|pagina)?\s*'
+                      r'\d{1,4}(?:\s*(?:/|of|з|из|von|de)\s*\d{1,4})?[-\u2013\u2014\s]*)$', re.I)
+
+
+def _hf_key(line: str) -> str:
+    """Line identity for header/footer detection: digits ignored, so "Page 3" and "Page 4" match."""
+    return re.sub(r'\d+', '#', re.sub(r'[*_#>`]', '', line)).strip().lower()
+
+
+def _crop_headers_footers(pages, band: float = 0.12):
+    """Text-layer pages: lines in the top/bottom `band` of the page that repeat on most pages (digits ignored) or are
+    bare page numbers are cut off by cropping the page, so the body text below/above them is never touched."""
+    info = []
+    for p in pages:
+        try:
+            lines = p.extract_text_lines(strip=True)
+        except Exception:  # noqa: BLE001
+            lines = []
+        h = float(p.height)
+        info.append(([ln for ln in lines if ln['bottom'] <= h * band], [ln for ln in lines if ln['top'] >= h * (1 - band)]))
+    counts: dict[str, int] = {}
+    for top, bottom in info:
+        for k in {_hf_key(ln['text']) for ln in top + bottom}:
+            counts[k] = counts.get(k, 0) + 1
+    need = max(2, (len(pages) + 1) // 2)
+
+    def removable(ln):
+        return (len(pages) >= 2 and counts.get(_hf_key(ln['text']), 0) >= need) or bool(_PAGE_NO.match(ln['text']))
+
+    out, removed = [], 0
+    for p, (top, bottom) in zip(pages, info):
+        cut_top = max((ln['bottom'] for ln in top if removable(ln)), default=0)
+        cut_bottom = min((ln['top'] for ln in bottom if removable(ln)), default=float(p.height))
+        n = sum(1 for ln in top + bottom if removable(ln))
+        if n:
+            # keep any non-removable line that sits inside the cut zone (e.g. a title under a header) by cutting less
+            keep_top = [ln['top'] for ln in top if not removable(ln) and ln['top'] < cut_top]
+            keep_bottom = [ln['bottom'] for ln in bottom if not removable(ln) and ln['bottom'] > cut_bottom]
+            if keep_top:
+                cut_top = min(cut_top, min(keep_top))
+            if keep_bottom:
+                cut_bottom = max(cut_bottom, max(keep_bottom))
+            p = p.crop((0, cut_top + 0.01, float(p.width), cut_bottom - 0.01), relative=False, strict=False)
+            removed += n
+        out.append(p)
+    return out, removed
+
+
+def strip_headers_footers(pages: list[str], edge: int = 2) -> tuple[list[str], int]:
+    """Removes lines that repeat at the top or bottom of most pages (running headers, footers) and bare page numbers
+    there. Only the first and last `edge` lines of a page are candidates, so body text is never touched."""
+    split = [[ln for ln in p.split('\n')] for p in pages]
+    def edges(lines):
+        idx = [i for i, ln in enumerate(lines) if ln.strip()]
+        return idx[:edge] + [i for i in idx[-edge:] if i not in idx[:edge]]
+    counts: dict[str, int] = {}
+    for lines in split:
+        for k in {_hf_key(lines[i]) for i in edges(lines)}:
+            counts[k] = counts.get(k, 0) + 1
+    need = max(2, (len(pages) + 1) // 2)
+    removed, out = 0, []
+    for lines in split:
+        drop = set()
+        for i in edges(lines):
+            key = _hf_key(lines[i])
+            if (len(pages) >= 2 and counts.get(key, 0) >= need and len(key) <= 120) or _PAGE_NO.match(lines[i].strip()):
+                drop.add(i)
+        removed += len(drop)
+        out.append('\n'.join(ln for i, ln in enumerate(lines) if i not in drop).strip())
+    return out, removed
 
 
 def _looks_scanned(page, text_md: str) -> bool:

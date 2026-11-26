@@ -21,6 +21,7 @@ cell's number format (`1,234.50`).
 | **Formats** | PDF, scans, images, DOCX/DOC, XLSX/XLS, PPTX/PPT, ODT/ODS/ODP, RTF, HTML - one Actor | Mostly PDF only; Office files need another tool |
 | **Structure** | Headings, lists, tables as Markdown **and** JSON rows, RAG chunks with their heading | Often plain text, tables lost |
 | **Cyrillic** | Ukrainian and Russian OCR built in | English-first OCR |
+| **PDF control** | Page ranges, protected PDFs, header/footer and page-number removal | Some offer these, many do not |
 
 ## Input
 
@@ -45,6 +46,9 @@ cell's number format (`1,234.50`).
 | `includeTables` | Return tables as JSON rows (header first) |
 | `chunkSize` | Characters per RAG chunk, `0` = no chunks |
 | `maxPagesPerDocument` | Pages beyond the limit are skipped and not charged |
+| `pageRange` | PDF pages to convert, e.g. `1-3, 5, 10-` (page 10 to the end); only these pages are charged |
+| `password` | Password for protected PDFs (stored encrypted, never logged) |
+| `removeHeadersFooters` | Drop running headers, footers and page numbers that repeat on most PDF pages - clean text for RAG |
 
 ## Output
 

@@ -59,8 +59,11 @@ def make_chunks(path: str, outdir: str, duration: float) -> list[tuple[str, floa
     return chunks
 
 
-def transcribe_chunk(client: httpx.Client, path: str, *, model: str, language: str | None, prompt: str | None) -> dict:
+def transcribe_chunk(client: httpx.Client, path: str, *, model: str, language: str | None, prompt: str | None,
+                     words: bool = False) -> dict:
     data = {'model': model, 'response_format': 'verbose_json', 'temperature': '0'}
+    if words:
+        data['timestamp_granularities[]'] = ['word', 'segment']
     if language:
         data['language'] = language
     if prompt:
@@ -262,7 +265,8 @@ def _fill_gaps(client, path: str, workdir: str, segments: list[dict], duration: 
 
 
 def transcribe(path: str, workdir: str, *, quality: str = 'accurate', language: str | None = None,
-               prompt: str | None = None, max_minutes: int | None = None, media_seconds: float | None = None) -> dict:
+               prompt: str | None = None, max_minutes: int | None = None, media_seconds: float | None = None,
+               word_timestamps: bool = False) -> dict:
     """Returns {'text', 'segments', 'language', 'duration', 'minutes', 'truncated', 'model', 'gaps'}. media_seconds: the video's own
     length from the site; audio past it (a longer music track) is not transcribed."""
     duration = probe_duration(path)
@@ -272,16 +276,22 @@ def transcribe(path: str, workdir: str, *, quality: str = 'accurate', language: 
     if max_minutes is not None and duration > max_minutes * 60:
         duration, truncated = max_minutes * 60.0, True
     model = MODELS.get(quality, MODELS['accurate'])
-    segments, texts, detected = [], [], None
+    segments, texts, detected, all_words = [], [], None, []
     prompt = _prompt(prompt, language)
     words = _prompt_words(prompt)
     with httpx.Client(timeout=httpx.Timeout(300, connect=30)) as client:
         for chunk, offset in make_chunks(path, workdir, duration):
             tail = texts[-1][-200:] if texts else ''
             res = transcribe_chunk(client, chunk, model=model, language=language,
-                                   prompt=(prompt + ' ' + tail).strip())
+                                   prompt=(prompt + ' ' + tail).strip(), words=word_timestamps)
             if _echoed(res, words):          # the prompt came back instead of the speech: again without it
-                res = transcribe_chunk(client, chunk, model=model, language=language, prompt=tail or None)
+                res = transcribe_chunk(client, chunk, model=model, language=language, prompt=tail or None,
+                                       words=word_timestamps)
+            for w in res.get('words') or []:
+                if offset + float(w.get('start', 0)) < duration and str(w.get('word', '')).strip():
+                    all_words.append({'start': round(offset + float(w['start']), 2),
+                                      'end': round(min(offset + float(w['end']), duration), 2),
+                                      'word': str(w['word']).strip()})
             detected = detected or res.get('language')
             texts.append((res.get('text') or '').strip())
             for s in res.get('segments') or []:
@@ -297,9 +307,14 @@ def transcribe(path: str, workdir: str, *, quality: str = 'accurate', language: 
                                     language=language or _ISO.get((detected or '').lower()))
     # the full text is rebuilt from the kept segments, so dropped made-up lines do not come back through it
     texts = [' '.join(s['text'] for s in segments)] if segments else []
-    return {'text': '\n'.join(t for t in texts if t), 'segments': segments, 'language': detected,
-            'duration': round(duration, 2), 'minutes': max(1, math.ceil(duration / 60)), 'truncated': truncated,
-            'model': model, 'gaps': gaps}
+    out = {'text': '\n'.join(t for t in texts if t), 'segments': segments, 'language': detected,
+           'duration': round(duration, 2), 'minutes': max(1, math.ceil(duration / 60)), 'truncated': truncated,
+           'model': model, 'gaps': gaps}
+    if word_timestamps:
+        # words of dropped (made-up, silent) segments are dropped too
+        out['words'] = [w for w in all_words
+                        if any(s['start'] - 0.3 <= w['start'] <= s['end'] + 0.3 for s in segments)]
+    return out
 
 
 def _ts(seconds: float, sep: str) -> str:

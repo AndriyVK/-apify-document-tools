@@ -9,7 +9,7 @@ import tempfile
 
 from PIL import Image
 
-from src.frames import FrameError, contact_sheet, grab, plan_times, probe, select_frames
+from src.frames import FrameError, contact_sheet, grab, is_blank, plan_times, probe, select_frames, window
 
 COLOURS = [(0, 0, 0), (255, 255, 255), (255, 0, 0), (255, 255, 0)]
 
@@ -77,9 +77,40 @@ def main():
         os.makedirs(os.path.join(tmp, 'l'))
         got = select_frames(vid, os.path.join(tmp, 'l'), 'v', 'jpg', 0, 'keyframes', 0, 2)
         check('maxFrames limits selection', len(got) == 2)
+        # Time window (startTime/endTime)
+        t0, t1 = window(m['duration'], '4', '0:10')
+        check('window 4..10', (t0, t1) == (4.0, 10.0))
+        times = plan_times('interval', m['duration'], interval=2, count=0, timestamps=[], max_frames=100,
+                           start=t0, end=t1)
+        check('interval=2 inside window', times == [4.0, 6.0, 8.0, 10.0], str(times))
+        times = plan_times('count', m['duration'], interval=0, count=3, timestamps=[], max_frames=100, start=t0, end=t1)
+        check('count=3 inside window', [round(t, 1) for t in times] == [5.0, 7.0, 9.0], str(times))
+        times = plan_times('timestamps', m['duration'], interval=0, count=0, timestamps=['1', '5', '11'],
+                           max_frames=100, start=t0, end=t1)
+        check('timestamps outside window dropped', times == [5.0], str(times))
+        os.makedirs(os.path.join(tmp, 'w'))
+        got = select_frames(vid, os.path.join(tmp, 'w'), 'v', 'jpg', 0, 'scenes', 0.3, 100, t0, t1)
+        check('scenes inside window: 4 (open), 6, 9', [round(t) for t, _ in got] == [4, 6, 9], str([t for t, _ in got]))
+        for bad_w in (('8', '5'), ('20', '')):
+            try:
+                window(m['duration'], *bad_w)
+                check(f'bad window {bad_w} rejected', False)
+            except FrameError as e:
+                check(f'bad window {bad_w} rejected', True, str(e))
+        # Blank frames: flat colours are blank, a test pattern is not
+        check('flat frame is blank', is_blank(os.path.join(tmp, 'c0.png')) and is_blank(os.path.join(tmp, 'c2.png')))
+        pat = os.path.join(tmp, 'pattern.mp4')
+        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-f', 'lavfi', '-t', '2', '-i', 'testsrc2=s=640x360:r=25',
+                        '-pix_fmt', 'yuv420p', pat], check=True)
+        check('pattern frame grabbed', grab(pat, 1, os.path.join(tmp, 'p.jpg'), 'jpg', 0))
+        check('pattern frame is not blank', not is_blank(os.path.join(tmp, 'p.jpg')))
         sheet = os.path.join(tmp, 'sheet.jpg')
         contact_sheet([(1.5, os.path.join(tmp, f'c{i}.png')) for i in range(4)], sheet)
         check('contact sheet', Image.open(sheet).size[0] > 1000)
+        if not os.path.exists(f'{d}/video-en.mp4'):
+            print('(corpus videos not found: real-file checks skipped)')
+            print('FAILED' if bad else 'ALL OK', bad)
+            sys.exit(1 if bad else 0)
         real = probe(f'{d}/video-en.mp4')
         check('real mp4 probe', real['width'] == 320 and real['duration'] > 40, str(real))
         check('real mp4 grab', grab(f'{d}/video-en.mp4', 20, os.path.join(tmp, 'r.jpg'), 'jpg', 0))

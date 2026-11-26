@@ -19,6 +19,20 @@
                 }
             ]
         },
+        "podcastFeeds": {
+            "title": "Podcast feeds (RSS)",
+            "type": "array",
+            "editor": "stringList",
+            "description": "Podcast RSS feed URLs: the newest episodes are transcribed (with podcast and episode titles and dates)."
+        },
+        "maxEpisodesPerFeed": {
+            "title": "Episodes per feed",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 3,
+            "description": "How many of the newest episodes to transcribe from each feed."
+        },
         "language": {
             "title": "Language",
             "type": "string",
@@ -60,9 +74,74 @@
             "type": "boolean",
             "description": "Also save SRT and VTT subtitle files with download links (free).",
             "default": true
+        },
+        "wordTimestamps": {
+            "title": "Word timestamps",
+            "type": "boolean",
+            "default": false,
+            "description": "Add every word with its start and end time (for karaoke captions, search, editing). Free."
+        },
+        "translateTo": {
+            "title": "Translate to",
+            "type": "string",
+            "editor": "select",
+            "default": "",
+            "enum": [
+                "",
+                "en",
+                "uk",
+                "ru",
+                "de",
+                "fr",
+                "es",
+                "pt",
+                "it",
+                "pl",
+                "nl",
+                "tr",
+                "cs",
+                "ro",
+                "sv",
+                "ar",
+                "hi",
+                "id",
+                "vi",
+                "zh",
+                "ja",
+                "ko"
+            ],
+            "enumTitles": [
+                "No translation",
+                "English",
+                "Ukrainian",
+                "Russian",
+                "German",
+                "French",
+                "Spanish",
+                "Portuguese",
+                "Italian",
+                "Polish",
+                "Dutch",
+                "Turkish",
+                "Czech",
+                "Romanian",
+                "Swedish",
+                "Arabic",
+                "Hindi",
+                "Indonesian",
+                "Vietnamese",
+                "Chinese (Simplified)",
+                "Japanese",
+                "Korean"
+            ],
+            "description": "Also translate the transcript and subtitles (SRT/VTT) into this language. Charged as one more audio minute per minute."
+        },
+        "summarize": {
+            "title": "Summary and key points",
+            "type": "boolean",
+            "default": false,
+            "description": "Add a short summary, key points and action items (decisions, tasks, deadlines) for each file. Free."
         }
     },
-    "required": [
-        "sources"
-    ]
+    "required": []
 }

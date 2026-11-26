@@ -12,7 +12,9 @@ from apify import Actor
 
 from .crosscheck import compare
 from .download import DownloadError, download
+from .podcast import FeedError, episodes
 from .transcribe import TranscriptionError, to_srt, to_vtt, transcribe
+from .translate import LANGUAGES, TranslationError, summarize, translate
 
 EVENT_MINUTE = 'audio-minute'
 
@@ -34,10 +36,19 @@ def _stem(name: str, idx: int) -> str:
 async def main() -> None:
     async with Actor:
         inp = await Actor.get_input() or {}
-        urls = _sources(inp)
-        if not urls:
-            await Actor.fail(status_message='Input "sources" is empty: add at least one audio or video URL.')
+        jobs = [{'url': u} for u in _sources(inp)]
+        feeds = [str(f).strip() for f in inp.get('podcastFeeds') or [] if str(f).strip()]
+        if not jobs and not feeds:
+            await Actor.fail(status_message='Add at least one audio or video URL in "sources" or a podcast feed.')
             return
+        target = (inp.get('translateTo') or '').strip().lower() or None
+        if target and target not in LANGUAGES:
+            await Actor.fail(status_message=f'Unknown "translateTo" language "{target}". '
+                                            f'Use one of: {", ".join(sorted(LANGUAGES))}.')
+            return
+        want_summary = bool(inp.get('summarize'))
+        want_words = bool(inp.get('wordTimestamps'))
+        max_episodes = min(max(int(inp.get('maxEpisodesPerFeed') or 3), 1), 100)
         if not os.environ.get('GROQ_API_KEY') and os.environ.get('APIFY_IS_AT_HOME'):
             await Actor.fail(status_message='The Actor is not configured (speech service key missing). '
                                             'Please report this issue to the Actor author.')
@@ -53,8 +64,17 @@ async def main() -> None:
         ok = failed = 0
         async with httpx.AsyncClient(timeout=httpx.Timeout(300, connect=20),
                                      headers={'User-Agent': 'audio-transcriber (Apify Actor)'}) as client:
-            for idx, url in enumerate(urls, 1):
-                item = {'url': url}
+            for feed in feeds:
+                try:
+                    title, eps = await episodes(client, feed, max_episodes)
+                    jobs += [{**e, 'podcastTitle': title, 'feedUrl': feed} for e in eps]
+                    Actor.log.info(f'{feed}: {len(eps)} episode(s)')
+                except FeedError as e:
+                    failed += 1
+                    await Actor.push_data({'feedUrl': feed, 'error': str(e)})
+            for idx, job in enumerate(jobs, 1):
+                url = job['url']
+                item = dict(job)
                 left = charging.calculate_max_event_charge_count_within_limit(EVENT_MINUTE)
                 if left == 0:
                     Actor.log.warning('Maximum charge per run reached, remaining files were skipped.')
@@ -65,7 +85,7 @@ async def main() -> None:
                     try:
                         name, _ = await download(client, url, src)
                         res = await asyncio.to_thread(transcribe, src, tmp, quality=quality, language=language,
-                                                      prompt=prompt, max_minutes=left)
+                                                      prompt=prompt, max_minutes=left, word_timestamps=want_words)
                     except (DownloadError, TranscriptionError, httpx.HTTPError) as e:
                         failed += 1
                         item['error'] = str(e) or type(e).__name__
@@ -92,6 +112,27 @@ async def main() -> None:
                             segments=res['segments'], seconds=round(time.monotonic() - started, 1))
                 if res.get('gaps'):
                     item['gaps'] = res['gaps']
+                if want_words:
+                    item['words'] = res.get('words') or []
+                translated = None
+                if target and res['segments']:
+                    # translation is charged like one more transcribed minute per minute of audio
+                    if left is None or left >= minutes + res['minutes']:
+                        try:
+                            translated = await asyncio.to_thread(translate, res['segments'], target)
+                            item['translation'] = {'language': target,
+                                                   'text': ' '.join(s['text'] for s in translated),
+                                                   'segments': translated}
+                            minutes += res['minutes']
+                        except Exception as e:  # noqa: BLE001 - the transcript is still good
+                            warnings.append(f'translation failed: {e}')
+                    else:
+                        warnings.append('translation skipped: maximum charge per run')
+                if want_summary and res['text'].strip():
+                    try:  # free: a few thousand tokens per file
+                        item['summary'] = await asyncio.to_thread(summarize, res['text'])
+                    except Exception as e:  # noqa: BLE001
+                        warnings.append(f'summary failed: {e}')
                 if checked:
                     item['crossCheck'] = checked
                 if res['truncated']:
@@ -106,6 +147,12 @@ async def main() -> None:
                         key = f'{stem}.{ext}'
                         await store.set_value(key, body, content_type=f'{ctype}; charset=utf-8')
                         item[f'{ext}Url'] = await store.get_public_url(key)
+                    if translated:
+                        for ext, body, ctype in ((f'{target}.srt', to_srt(translated), 'application/x-subrip'),
+                                                 (f'{target}.vtt', to_vtt(translated), 'text/vtt')):
+                            key = f'{stem}.{ext}'
+                            await store.set_value(key, body, content_type=f'{ctype}; charset=utf-8')
+                            item['translation'][ext.split('.')[-1] + 'Url'] = await store.get_public_url(key)
                 await Actor.push_data(item)
                 # Charge per started minute of transcribed audio, after the result is saved
                 await Actor.charge(EVENT_MINUTE, count=minutes)

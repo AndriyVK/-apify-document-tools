@@ -94,6 +94,9 @@ async def main() -> None:
         max_pages = int(inp.get('maxPagesPerDocument') or 500)
         chunk_size = int(inp.get('chunkSize') or 0)
         include_tables = inp.get('includeTables', True)
+        password = inp.get('password') or None
+        page_range = (inp.get('pageRange') or '').strip() or None
+        remove_hf = bool(inp.get('removeHeadersFooters', False))
 
         charging = Actor.get_charging_manager()
         pricing = charging.get_pricing_info()
@@ -123,7 +126,8 @@ async def main() -> None:
                         budget.cost = Decimal(0)
 
                         res = await asyncio.to_thread(convert, path, ext, ocr_mode=ocr_mode, ocr_languages=langs,
-                                                      max_pages=max_pages, page_budget=budget)
+                                                      max_pages=max_pages, page_budget=budget, password=password,
+                                                      page_range=page_range, remove_headers_footers=remove_hf)
                     except (ConversionError, httpx.HTTPError) as e:
                         failed += 1
                         item.update(error=str(e) or type(e).__name__)

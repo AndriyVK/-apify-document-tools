@@ -52,18 +52,33 @@ def parse_time(s: str) -> float:
     return secs
 
 
+def window(duration: float, start: str | float | None, end: str | float | None) -> tuple[float, float]:
+    """[start, end] part of the video to work on (seconds); empty values mean the start / the end of the video."""
+    s = parse_time(str(start)) if start not in (None, '') else 0.0
+    e = parse_time(str(end)) if end not in (None, '') else (duration if duration > 0 else math.inf)
+    if duration > 0:
+        e = min(e, duration)
+    if s >= e:
+        raise FrameError(f'startTime {s:g}s is not before endTime {e:g}s'
+                         + (f' (the video is {duration:g}s long)' if duration > 0 else ''))
+    return s, e
+
+
 def plan_times(mode: str, duration: float, *, interval: float, count: int, timestamps: list[str],
-               max_frames: int) -> list[float]:
+               max_frames: int, start: float = 0.0, end: float | None = None) -> list[float]:
     if duration <= 0 and mode != 'timestamps':
         raise FrameError('the video duration is unknown; use mode "timestamps"')
+    end = duration if end is None or end == math.inf else end
+    span = max(end - start, 0)
     if mode == 'interval':
-        n = min(max_frames, int(math.floor(duration / interval)) + 1)
-        times = [i * interval for i in range(n)]
+        n = min(max_frames, int(math.floor(span / interval)) + 1)
+        times = [start + i * interval for i in range(n)]
     elif mode == 'count':
         n = min(max_frames, count)
-        times = [(i + 0.5) * duration / n for i in range(n)]
+        times = [start + (i + 0.5) * span / n for i in range(n)]
     elif mode == 'timestamps':
-        times = [parse_time(t) for t in timestamps][:max_frames]
+        times = [parse_time(t) for t in timestamps]
+        times = [t for t in times if start <= t <= end][:max_frames]
         if duration > 0:
             times = [t for t in times if t < duration]
     else:
@@ -84,8 +99,9 @@ def grab(path: str, t: float, dest: str, fmt: str, max_width: int) -> bool:
 
 
 def select_frames(path: str, outdir: str, stem: str, fmt: str, max_width: int, mode: str,
-                  threshold: float, max_frames: int) -> list[tuple[float, str]]:
-    """Scene changes or keyframes in one ffmpeg pass. Returns [(time, file)]."""
+                  threshold: float, max_frames: int, start: float = 0.0,
+                  end: float | None = None) -> list[tuple[float, str]]:
+    """Scene changes or keyframes in one ffmpeg pass, optionally only in [start, end]. Returns [(time, file)]."""
     ext, opts = FORMATS[fmt]
     pattern = os.path.join(outdir, f'{stem}-sel%05d.{ext}')
     # Scenes: the first frame opens the first scene, then every frame that differs enough from the previous one
@@ -93,13 +109,26 @@ def select_frames(path: str, outdir: str, stem: str, fmt: str, max_width: int, m
     if max_width:
         filters.append(f"scale='min({max_width},iw)':-2")
     pre = ['-skip_frame', 'nokey'] if mode == 'keyframes' else []
-    p = _run(['ffmpeg', '-v', 'info', '-y', *pre, '-i', path, '-vf', ','.join(filters), '-fps_mode', 'vfr',
+    if start > 0:
+        pre += ['-ss', f'{start:.3f}']
+    post = ['-t', f'{end - start:.3f}'] if end not in (None, math.inf) else []
+    p = _run(['ffmpeg', '-v', 'info', '-y', *pre, '-i', path, *post, '-vf', ','.join(filters), '-fps_mode', 'vfr',
               '-frames:v', str(max_frames), *opts, '-f', 'image2', pattern], 1800)
     if p.returncode != 0:
         raise FrameError('ffmpeg could not decode the video: ' + (p.stderr.strip().splitlines() or ['?'])[-1][:200])
-    times = [float(m) for m in re.findall(r'pts_time:\s*([0-9.]+)', p.stderr)]
+    times = [float(m) + start for m in re.findall(r'pts_time:\s*([0-9.]+)', p.stderr)]
     files = sorted(f for f in os.listdir(outdir) if f.startswith(f'{stem}-sel'))
     return [(round(t, 3), os.path.join(outdir, f)) for t, f in zip(times, files)]
+
+
+def is_blank(path: str) -> bool:
+    """Nearly uniform frame (black, white or one flat colour: fades, title cards, dropped signal)."""
+    from PIL import ImageStat
+    with Image.open(path) as im:
+        g = im.convert('L')
+        g.thumbnail((160, 160))
+        st = ImageStat.Stat(g)
+    return st.stddev[0] < 4.0
 
 
 def timecode(t: float) -> str:

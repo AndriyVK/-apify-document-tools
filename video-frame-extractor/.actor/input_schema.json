@@ -6,7 +6,7 @@
         "sources": {
             "title": "Video URLs",
             "type": "array",
-            "description": "Direct links to video files (MP4, MOV, WebM, MKV, AVI, M4V, MPEG, 3GP\u2026), up to 2 GB each. Pages like YouTube are not supported - use a direct file link. Files in your own Apify key-value store work too: set the store's access to \"Anyone with ID can read\" and use https://api.apify.com/v2/key-value-stores/<store ID>/records/<key>.",
+            "description": "Direct links to video files (MP4, MOV, WebM, MKV, AVI, M4V, MPEG, 3GP…), up to 2 GB each. Pages like YouTube are not supported - use a direct file link. Files in your own Apify key-value store work too: set the store's access to \"Anyone with ID can read\" and use https://api.apify.com/v2/key-value-stores/<store ID>/records/<key>.",
             "editor": "requestListSources",
             "prefill": [
                 {
@@ -77,6 +77,24 @@
             "minimum": 1,
             "maximum": 2000,
             "default": 100
+        },
+        "startTime": {
+            "title": "Start time",
+            "type": "string",
+            "editor": "textfield",
+            "description": "Optional: work from this moment, in seconds (90.5) or hh:mm:ss. Empty means the beginning."
+        },
+        "endTime": {
+            "title": "End time",
+            "type": "string",
+            "editor": "textfield",
+            "description": "Optional: work up to this moment, in seconds or hh:mm:ss. Empty means the end of the video."
+        },
+        "skipBlankFrames": {
+            "title": "Skip blank frames",
+            "type": "boolean",
+            "default": false,
+            "description": "Drop black, white and flat-colour frames (fades, title cards). In interval and count modes the Actor tries 0.7 s later for a real picture. Skipped frames are free."
         },
         "format": {
             "title": "Image format",

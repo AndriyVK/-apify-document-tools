@@ -19,6 +19,7 @@ Whisper large-v3 model - 99 languages, automatic language detection, files of an
 | **Model** | Whisper **large-v3** - the most accurate Whisper model - for every file | Often smaller, cheaper models, or large-v3 only in a premium mode |
 | **Subtitles** | SRT + VTT + timestamped JSON segments in every run | Often text only, or subtitles as a paid extra |
 | **No API key** | Nothing to sign up for; pay per minute through Apify | Some ask for your own OpenAI / Groq key |
+| **Beyond text** | Translation with subtitles in 21 languages, summary and action items, word timestamps, podcast RSS feeds - in one run | Separate tools or paid add-ons |
 | **Long files** | Hours-long recordings are split and stitched with continuous timestamps | Tools that send the file to a Whisper API in one request hit its 25 MB limit |
 
 ## Input
@@ -41,6 +42,10 @@ Whisper large-v3 model - 99 languages, automatic language detection, files of an
 | `crossCheck` | Recognise the audio again with the other model and list where the two disagree (see below). Each minute is charged twice |
 | `vocabulary` | Names and terms to spell correctly; Ukrainian city names (Kyiv, Lviv, Kharkiv…) are built in when `language` is `en`, `uk` or `ru` |
 | `subtitles` | Save SRT and VTT files (free) |
+| `podcastFeeds`, `maxEpisodesPerFeed` | Podcast RSS feeds: the newest episodes are transcribed, with podcast and episode titles and dates |
+| `wordTimestamps` | Every word with its start and end time - for karaoke captions, search and editing (free) |
+| `translateTo` | Translate the transcript and the SRT/VTT subtitles into one of 21 languages (en, uk, ru, de, fr, es, pt, it, pl, nl, tr, cs, ro, sv, ar, hi, id, vi, zh, ja, ko) |
+| `summarize` | Summary, key points and action items (decisions, tasks, deadlines) for each file (free) |
 
 ## Output
 
@@ -56,6 +61,19 @@ Whisper large-v3 model - 99 languages, automatic language detection, files of an
   "segments": [{ "start": 0.0, "end": 4.6, "text": "Добрий день!" }],
   "srtUrl": "https://api.apify.com/v2/key-value-stores/.../records/0001-interview.srt?signature=...",
   "vttUrl": "https://api.apify.com/v2/key-value-stores/.../records/0001-interview.vtt?signature=..."
+}
+```
+
+With the new options the item also has (values shortened):
+
+```json
+{
+  "words": [{ "start": 0.0, "end": 0.42, "word": "Добрий" }, { "start": 0.42, "end": 0.9, "word": "день!" }],
+  "translation": { "language": "en", "text": "Good afternoon! Today we will talk about...", "segments": [],
+                   "srtUrl": "https://api.apify.com/.../0001-interview.en.srt", "vttUrl": "https://api.apify.com/.../0001-interview.en.vtt" },
+  "summary": { "summary": "The guests discuss...", "keyPoints": ["..."], "actionItems": ["Send the draft by Friday"] },
+  "podcastTitle": "Planet Money", "episodeTitle": "Are wildfires making the future uninsurable?",
+  "publishedAt": "2026-11-13T23:49:12+00:00", "feedUrl": "https://feeds.npr.org/510289/podcast.xml"
 }
 ```
 
@@ -107,14 +125,15 @@ not replace it. `billedMinutes` shows the doubled count.
 
 | Event | Price | What counts |
 |---|---|---|
-| `audio-minute` | **$6 per 1,000 minutes** ($7 on the free plan, $5 on Gold and higher) | every started minute of transcribed audio (at least 1 per file); twice with `crossCheck` |
+| `audio-minute` | **$6 per 1,000 minutes** ($7 on the free plan, $5 on Gold and higher) | every started minute of transcribed audio (at least 1 per file); twice with `crossCheck`; one more per minute with `translateTo` |
 
-Plus Apify's standard start fee of $0.05 per 1,000 runs. Subtitles are free. The run transcribes only as many minutes as
+Plus Apify's standard start fee of $0.05 per 1,000 runs. Subtitles, word timestamps and summaries are free. The run transcribes only as many minutes as
 fit under your maximum charge per run and marks the item with a warning.
 
 ## Privacy
 
-The speech track is sent to [Groq](https://groq.com)'s speech-to-text API, which runs the Whisper model; see
+The speech track is sent to [Groq](https://groq.com)'s speech-to-text API, which runs the Whisper model; with
+`translateTo` or `summarize` the transcript text also goes to a language model on Groq; see
 [Groq's privacy policy](https://groq.com/privacy-policy/). This Actor keeps files only in your own Apify run storage.
 
 ## Guides
