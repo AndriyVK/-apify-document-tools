@@ -81,6 +81,11 @@ A video that cannot be downloaded or decoded gets an `error` field instead and i
 Plus Apify's standard start fee of $0.05 per 1,000 runs. The contact sheet is free. The run stops before it would exceed
 your maximum charge per run.
 
+## Guides
+
+- [Extract frames from video by API - scene detection, blank frame skipping and a free contact sheet](https://andriyvk.github.io/extract-frames-from-video-api/)
+  ([українською](https://andriyvk.github.io/uk/kadry-z-video-api/))
+
 ## Related Actors
 
 - [Image to Text OCR](https://apify.com/ai_admin/image-to-text-ocr) - read the text on the extracted frames
