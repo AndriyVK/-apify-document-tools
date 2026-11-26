@@ -47,7 +47,10 @@ def make_chunks(path: str, outdir: str, duration: float) -> list[tuple[str, floa
         start = i * CHUNK_SECONDS
         dest = os.path.join(outdir, f'chunk-{i:04d}.mp3')
         length = min(CHUNK_SECONDS, duration - start)  # never decode (and pay for) audio past the limit
-        res = subprocess.run(['ffmpeg', '-v', 'error', '-y', '-ss', str(start), '-t', f'{length:.3f}', '-i', path,
+        # no -ss for the first chunk: seeking to 0 in an MP3 drops its first frames, and with them the first sound of
+        # the speech ("Склад" heard as "Клад"; audio-transcriber run HxUWrS0QWeej1pDsX, 26.11.2026)
+        seek = ['-ss', str(start)] if start > 0 else []
+        res = subprocess.run(['ffmpeg', '-v', 'error', '-y', *seek, '-t', f'{length:.3f}', '-i', path,
                               '-vn', '-ac', '1', '-ar', '16000', '-b:a', '32k', dest],
                              capture_output=True, text=True, timeout=900)
         if res.returncode != 0 or not os.path.exists(dest):
@@ -141,6 +144,27 @@ GLOSSARY = {
     'ru': 'Киев, Львов, Харьков, Одесса, Днепр, Запорожье, Винница, Николаев, Херсон, Чернигов, Полтава, '
           'Ивано-Франковск, Тернополь, Луцк, Ровно, Ужгород, Черновцы, Житомир, Сумы, Черкассы, Кривой Рог, Мариуполь.',
 }
+
+
+def iso_language(name: str | None) -> str | None:
+    """Whisper reports the language by name ("ukrainian"); the two-letter code, or None."""
+    name = (name or '').strip().lower()
+    return name if len(name) == 2 else _ISO.get(name)
+
+
+def _misheard_names(text: str, language: str | None) -> bool:
+    """With automatic language detection the place-name hint is not sent; a word close to (but not) one of the names
+    ("Lvi", "Elvive" for Lviv) means the chunk is worth a second pass with the language and the hint."""
+    names = {n.strip().lower() for n in GLOSSARY.get(language or '', '').rstrip('.').split(',')}
+    names = {n for n in names if len(n) >= 4 and ' ' not in n and '-' not in n}
+    for w in set(re.findall(r'\w{3,}', text.lower())):
+        if w in names:
+            continue
+        for n in names:
+            if w[:2] == n[:2] or w[-2:] == n[-2:] or n in w:
+                if difflib.SequenceMatcher(None, w, n).ratio() >= 0.75:
+                    return True
+    return False
 
 
 def _prompt(vocabulary: str | None, language: str | None) -> str:
@@ -287,6 +311,15 @@ def transcribe(path: str, workdir: str, *, quality: str = 'accurate', language: 
             if _echoed(res, words):          # the prompt came back instead of the speech: again without it
                 res = transcribe_chunk(client, chunk, model=model, language=language, prompt=tail or None,
                                        words=word_timestamps)
+            spoken = iso_language(res.get('language'))
+            if not language and spoken in GLOSSARY and _misheard_names(res.get('text') or '', spoken):
+                # detected language with a place name that looks misheard: once more with the language and the names
+                hint = _prompt(None, spoken)
+                again = transcribe_chunk(client, chunk, model=model, language=spoken,
+                                         prompt=(hint + ' ' + tail).strip(), words=word_timestamps)
+                if not _echoed(again, _prompt_words(hint)) and (again.get('text') or '').strip():
+                    again.setdefault('language', res.get('language'))
+                    res = again
             for w in res.get('words') or []:
                 if offset + float(w.get('start', 0)) < duration and str(w.get('word', '')).strip():
                     all_words.append({'start': round(offset + float(w['start']), 2),

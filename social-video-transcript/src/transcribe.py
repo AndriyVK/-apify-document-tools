@@ -47,7 +47,10 @@ def make_chunks(path: str, outdir: str, duration: float) -> list[tuple[str, floa
         start = i * CHUNK_SECONDS
         dest = os.path.join(outdir, f'chunk-{i:04d}.mp3')
         length = min(CHUNK_SECONDS, duration - start)  # never decode (and pay for) audio past the limit
-        res = subprocess.run(['ffmpeg', '-v', 'error', '-y', '-ss', str(start), '-t', f'{length:.3f}', '-i', path,
+        # no -ss for the first chunk: seeking to 0 in an MP3 drops its first frames, and with them the first sound of
+        # the speech ("Склад" heard as "Клад"; found in audio-transcriber, 26.11.2026)
+        seek = ['-ss', str(start)] if start > 0 else []
+        res = subprocess.run(['ffmpeg', '-v', 'error', '-y', *seek, '-t', f'{length:.3f}', '-i', path,
                               '-vn', '-ac', '1', '-ar', '16000', '-b:a', '32k', dest],
                              capture_output=True, text=True, timeout=900)
         if res.returncode != 0 or not os.path.exists(dest):

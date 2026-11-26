@@ -44,7 +44,7 @@ Whisper large-v3 model - 99 languages, automatic language detection, files of an
 | `subtitles` | Save SRT and VTT files (free) |
 | `podcastFeeds`, `maxEpisodesPerFeed` | Podcast RSS feeds: the newest episodes are transcribed, with podcast and episode titles and dates |
 | `wordTimestamps` | Every word with its start and end time - for karaoke captions, search and editing (free) |
-| `translateTo` | Translate the transcript and the SRT/VTT subtitles into one of 21 languages (en, uk, ru, de, fr, es, pt, it, pl, nl, tr, cs, ro, sv, ar, hi, id, vi, zh, ja, ko) |
+| `translateTo` | Translate the transcript and the SRT/VTT subtitles into one of 21 languages (en, uk, ru, de, fr, es, pt, it, pl, nl, tr, cs, ro, sv, ar, hi, id, vi, zh, ja, ko). If the audio is already in that language, nothing is translated or charged (`translation.note` says so) |
 | `summarize` | Summary, key points and action items (decisions, tasks, deadlines) for each file (free) |
 
 ## Output
@@ -125,7 +125,7 @@ not replace it. `billedMinutes` shows the doubled count.
 
 | Event | Price | What counts |
 |---|---|---|
-| `audio-minute` | **$6 per 1,000 minutes** ($7 on the free plan, $5 on Gold and higher) | every started minute of transcribed audio (at least 1 per file); twice with `crossCheck`; one more per minute with `translateTo` |
+| `audio-minute` | **$6 per 1,000 minutes** ($7 on the free plan, $5 on Gold and higher) | every started minute of transcribed audio (at least 1 per file); twice with `crossCheck`; one more per minute with `translateTo` (not when the audio is already in that language) |
 
 Plus Apify's standard start fee of $0.05 per 1,000 runs. Subtitles, word timestamps and summaries are free. The run transcribes only as many minutes as
 fit under your maximum charge per run and marks the item with a warning.

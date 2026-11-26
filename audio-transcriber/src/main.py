@@ -13,10 +13,11 @@ from apify import Actor
 from .crosscheck import compare
 from .download import DownloadError, download
 from .podcast import FeedError, episodes
-from .transcribe import TranscriptionError, to_srt, to_vtt, transcribe
+from .transcribe import TranscriptionError, iso_language as _iso, to_srt, to_vtt, transcribe
 from .translate import LANGUAGES, TranslationError, summarize, translate
 
 EVENT_MINUTE = 'audio-minute'
+EXAMPLE_SOURCE = 'https://api.apify.com/v2/key-value-stores/FloomuI2DrQCJazY8/records/speech-en.mp3'  # schema default
 
 
 def _sources(inp: dict) -> list[str]:
@@ -38,10 +39,13 @@ async def main() -> None:
         inp = await Actor.get_input() or {}
         jobs = [{'url': u} for u in _sources(inp)]
         feeds = [str(f).strip() for f in inp.get('podcastFeeds') or [] if str(f).strip()]
+        if feeds and [j['url'] for j in jobs] == [EXAMPLE_SOURCE]:
+            # the platform fills "sources" with the schema's example when only feeds were given: not wanted, not charged
+            jobs = []
         if not jobs and not feeds:
             await Actor.fail(status_message='Add at least one audio or video URL in "sources" or a podcast feed.')
             return
-        target = (inp.get('translateTo') or '').strip().lower() or None
+        target_in = target = (inp.get('translateTo') or '').strip().lower() or None
         if target and target not in LANGUAGES:
             await Actor.fail(status_message=f'Unknown "translateTo" language "{target}". '
                                             f'Use one of: {", ".join(sorted(LANGUAGES))}.')
@@ -73,6 +77,7 @@ async def main() -> None:
                     failed += 1
                     await Actor.push_data({'feedUrl': feed, 'error': str(e)})
             for idx, job in enumerate(jobs, 1):
+                target = target_in
                 url = job['url']
                 item = dict(job)
                 left = charging.calculate_max_event_charge_count_within_limit(EVENT_MINUTE)
@@ -115,6 +120,12 @@ async def main() -> None:
                 if want_words:
                     item['words'] = res.get('words') or []
                 translated = None
+                spoken = _iso(res.get('language'))
+                if target and res['segments'] and spoken == target.split('-')[0]:
+                    # translating into the language that is spoken would only copy the text: skip it, free
+                    item['translation'] = {'language': target, 'skipped': True,
+                                           'note': f'the audio is already in "{target}": no translation, not charged'}
+                    target = None
                 if target and res['segments']:
                     # translation is charged like one more transcribed minute per minute of audio
                     if left is None or left >= minutes + res['minutes']:
