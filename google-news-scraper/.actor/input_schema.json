@@ -80,6 +80,21 @@
             "sectionCaption": "Output",
             "description": "Google News shows up to 100 articles per search. Above 100, the date range (or time period, 30 days by default) is read day by day to collect more."
         },
+        "sortBy": {
+            "title": "Order",
+            "type": "string",
+            "editor": "select",
+            "enum": [
+                "newest",
+                "relevance"
+            ],
+            "enumTitles": [
+                "Newest first",
+                "Google News relevance (as on the site)"
+            ],
+            "default": "newest",
+            "description": "newest: the most recent articles first. relevance: Google News' own order (more established outlets, which more often allow full text)."
+        },
         "resolveUrls": {
             "title": "Publisher URLs",
             "type": "boolean",
@@ -90,13 +105,13 @@
             "title": "Article details",
             "type": "boolean",
             "default": false,
-            "description": "Open each article on the publisher's site and add its image, description, author, page date, site name and word count. Included in the article price; slower."
+            "description": "Open each article on the publisher's site and add its image, description, author, page date, site name and word count. Charged as the article-page add-on, only for pages that were read; slower."
         },
         "fullText": {
             "title": "Full article text",
             "type": "boolean",
             "default": false,
-            "description": "Also add the clean article text (boilerplate removed), ready for AI, RAG and summaries. Included in the article price."
+            "description": "Also add the clean article text (boilerplate removed), ready for AI, RAG and summaries. With this option the article-page add-on is charged only for articles whose text was extracted."
         },
         "includeRelatedCoverage": {
             "title": "Related coverage",

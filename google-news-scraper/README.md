@@ -3,7 +3,8 @@
 Get Google News articles as clean JSON: by keyword, by topic or by publisher site, in any Google News edition -
 **Ukrainian, Russian, English, German, French, Spanish, Polish, Japanese and 40+ more**. One record per article:
 headline, publisher, publication time, the **direct URL on the publisher's site** and, if you want, the article's
-image, description, author and **full text** - all for one price per article.
+image, description, author and **full text**. The publisher URL is in the article price; the page details and text
+are a small add-on charged **only when the page was actually read** - blocked or paywalled sites cost you nothing extra.
 
 - **Search like on Google News:** `"exact phrase"`, `OR`, `-exclude`, `site:reuters.com`, `intitle:word`.
 - **Topic headlines:** TOP, WORLD, NATION, BUSINESS, TECHNOLOGY, ENTERTAINMENT, SCIENCE, SPORTS, HEALTH.
@@ -29,7 +30,7 @@ RAG, and daily digests (schedule it every morning).
 | **Languages** | Any edition, several per run (UA:uk + UA:ru + US:en…) | One region per run |
 | **Volume** | Up to 5,000 articles per query by reading the date range day by day | Often capped at 100 |
 | **Story context** | Topic headlines with related coverage from other outlets (story clusters) | Single article only |
-| **Publisher URL + article page + text** | All included: **$3 per 1,000** (paid plans), $2.50 on Gold and higher | Leaders charge add-ons: $3.30-4 per 1,000 in total, plus start fees of $5 per 1,000 runs |
+| **Publisher URL + article page + text** | **$3 per 1,000** in total (paid plans), $2.50 on Gold and higher; the page add-on only when the page was read | Leaders charge add-ons: $3.30-4 per 1,000 in total, plus start fees of $5 per 1,000 runs |
 | **Full text for AI** | Included, clean text without boilerplate | Often an extra fee per article page |
 | **Start fee** | Apify's minimum ($0.05 per 1,000 runs) - cheap for frequent small runs | Often $5 per 1,000 runs, some $90 |
 
@@ -42,12 +43,16 @@ RAG, and daily digests (schedule it every morning).
   "editions": ["UA:uk", "US:en"],
   "timeframe": "7d",
   "maxArticlesPerQuery": 100,
+  "sortBy": "newest",
   "includeRelatedCoverage": true,
   "resolveUrls": true,
   "articleDetails": false,
   "fullText": false
 }
 ```
+
+`sortBy`: `newest` (most recent first) or `relevance` (Google News' own order: more established outlets,
+which more often allow full text).
 
 For a fixed period use `"dateFrom": "2026-11-01", "dateTo": "2026-11-15"` instead of `timeframe`.
 
@@ -98,7 +103,8 @@ page cannot be read, the article is still returned with `urlError` or `detailsEr
 
 | Event | Free plan | Paid plans | What counts |
 |---|---|---|---|
-| `article` | $3.50 per 1,000 | **$3 per 1,000** (Bronze, Silver), **$2.50** (Gold and higher) | one article with its publisher URL, details and text |
+| `article` | $3 per 1,000 | **$2.50 per 1,000** (Bronze, Silver), **$2** (Gold and higher) | one article with its publisher URL |
+| `article-page` | $0.50 per 1,000 | **$0.50 per 1,000** | add-on with `articleDetails` / `fullText`: only for articles whose page was read (with `fullText`: whose text was extracted) |
 
 Plus Apify's standard start fee of $0.05 per 1,000 runs. Duplicates across queries are removed before charging, and
 the run stops before it would exceed your maximum charge per run.

@@ -39,8 +39,15 @@ def _extract(html: str, url: str, full_text: bool) -> dict:
 async def details(client, url: str, full_text: bool) -> dict:
     """{'details': {...}} or {'detailsError': '...'}; never raises for site problems."""
     try:
-        r = await client.get(url, headers={**HEADERS, 'Accept-Language': 'en;q=0.8,*;q=0.5'},
-                             timeout=httpx.Timeout(45, connect=15))
+        for attempt in range(2):  # one retry: dropped connections and resets are often momentary
+            try:
+                r = await client.get(url, headers={**HEADERS, 'Accept-Language': 'en;q=0.8,*;q=0.5'},
+                                     timeout=httpx.Timeout(45, connect=15))
+                break
+            except (httpx.TransportError, httpx.TimeoutException):
+                if attempt:
+                    raise
+                await asyncio.sleep(1.5)
         if r.status_code != 200:
             return {'detailsError': f'publisher site answered HTTP {r.status_code}'}
         if 'html' not in r.headers.get('content-type', 'text/html'):

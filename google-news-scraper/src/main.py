@@ -14,6 +14,8 @@ from .resolve import resolve_async
 from .news import (FEED_CAP, InputError, edition, parse_day, parse_feed, search_url, topic_url, windows)
 
 EVENT_ARTICLE = 'article'
+EVENT_PAGE = 'article-page'  # add-on: charged only when the publisher page gave its details / text
+SORTS = ('newest', 'relevance')
 CONCURRENCY = 4
 ENRICH_CONCURRENCY = 8
 TIMEFRAME_DAYS = {'1h': 1, '1d': 1, '7d': 7, '30d': 30, '1y': 365}
@@ -39,11 +41,14 @@ async def fetch(client: httpx.AsyncClient, url: str) -> list[dict]:
 
 class Run:
     def __init__(self, client: httpx.AsyncClient, max_per_query: int, include_related: bool,
-                 resolve_urls: bool = True, details: bool = False, full_text: bool = False):
+                 resolve_urls: bool = True, details: bool = False, full_text: bool = False, sort: str = 'newest'):
         self.client, self.max_per_query, self.include_related = client, max_per_query, include_related
+        self.sort = sort
         self.resolve_urls, self.details, self.full_text = resolve_urls or details or full_text, \
             details or full_text, full_text
         self.charging = Actor.get_charging_manager()
+        # the add-on exists only once the Actor's pricing has the event (before that, the page is in the article price)
+        self.page_priced = EVENT_PAGE in (self.charging.get_pricing_info().per_event_prices or {})
         self.seen: set[str] = set()
         self.pushed = 0
         self.limit_hit = False
@@ -51,7 +56,21 @@ class Run:
         self.enrich_sem = asyncio.Semaphore(ENRICH_CONCURRENCY)
 
     def _left(self) -> int | None:
-        return self.charging.calculate_max_event_charge_count_within_limit(EVENT_ARTICLE)
+        """How many more articles fit into the user's maximum charge (with the page add-on when it is on)."""
+        if not self.details:
+            return self.charging.calculate_max_event_charge_count_within_limit(EVENT_ARTICLE)
+        info = self.charging.get_pricing_info()
+        unit = sum(info.per_event_prices.get(e) or 0 for e in (EVENT_ARTICLE, EVENT_PAGE))  # 0 if not priced
+        if not unit or info.max_total_charge_usd.is_infinite():
+            return None
+        return max(0, int((info.max_total_charge_usd - self.charging.calculate_total_charged_amount()) // unit))
+
+    def _page_ok(self, a: dict) -> bool:
+        """The page add-on is charged only for articles whose page was read (and, with fullText, gave the text)."""
+        if not self.details or a.get('detailsError') or not self.page_priced:
+            return False
+        return bool(a.get('text')) if self.full_text else any(
+            a.get(k) for k in ('imageUrl', 'description', 'author', 'pageDate', 'siteName', 'wordCount'))
 
     async def _feed(self, url: str) -> list[dict]:
         async with self.sem:
@@ -81,7 +100,9 @@ class Run:
 
     async def push(self, articles: list[dict], extra: dict, budget: int) -> int:
         """Pushes new (not yet seen) articles, newest first, up to budget and the user's charge limit."""
-        articles.sort(key=lambda a: a['publishedAt'] or '', reverse=True)
+        if self.sort == 'newest':
+            articles.sort(key=lambda a: a['publishedAt'] or '', reverse=True)
+        # 'relevance' keeps Google News' own order
         picked = []
         left = self._left()
         for a in articles:
@@ -101,6 +122,8 @@ class Run:
             picked = await asyncio.gather(*(self._enrich(a) for a in picked))
         for n, a in enumerate(picked):
             await Actor.push_data({**extra, 'position': n + 1, **a}, charged_event_name=EVENT_ARTICLE)
+            if self._page_ok(a):
+                await Actor.charge(EVENT_PAGE)
         self.pushed += len(picked)
         return len(picked)
 
@@ -155,9 +178,13 @@ async def main() -> None:
             proxy_url = await proxy.new_url() if proxy else None
         async with httpx.AsyncClient(timeout=httpx.Timeout(30, connect=10), headers=HEADERS, follow_redirects=True,
                                      proxy=proxy_url) as client:
+            sort = inp.get('sortBy') or 'newest'
+            if sort not in SORTS:
+                await Actor.fail(status_message=f'sortBy must be one of {", ".join(SORTS)}.')
+                return
             run = Run(client, max_per_query, bool(inp.get('includeRelatedCoverage', True)),
                       bool(inp.get('resolveUrls', True)), bool(inp.get('articleDetails', False)),
-                      bool(inp.get('fullText', False)))
+                      bool(inp.get('fullText', False)), sort)
             failed = []
             for name, ed in eds:
                 for q in queries:
