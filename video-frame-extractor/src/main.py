@@ -85,8 +85,24 @@ async def main() -> None:
                             got = await asyncio.to_thread(select_frames, src, outdir, stem, fmt, max_width, mode,
                                                           threshold, limit, t0, t1)
                             if skip_blank:
-                                kept = [(t, f) for t, f in got if not is_blank(f)]
-                                skipped, got = len(got) - len(kept), kept
+                                kept = []
+                                for i, (t, f) in enumerate(got):
+                                    if not is_blank(f):
+                                        kept.append((t, f))
+                                        continue
+                                    # a fade-in or a black gap: look a little later, before the next scene starts
+                                    nxt = got[i + 1][0] if i + 1 < len(got) else (t1 if t1 != math.inf
+                                                                                 else meta['duration'])
+                                    for dt in (0.7, 2.0):
+                                        t2 = t + dt
+                                        if t2 < nxt - 0.05 and await asyncio.to_thread(grab, src, t2, f, fmt,
+                                                                                        max_width) \
+                                                and not is_blank(f):
+                                            kept.append((round(t2, 3), f))
+                                            break
+                                    else:
+                                        skipped += 1
+                                got = kept
                         else:
                             times = plan_times(mode, meta['duration'], interval=interval, count=count,
                                                timestamps=stamps, max_frames=limit, start=t0, end=t1)
@@ -104,6 +120,10 @@ async def main() -> None:
                                         continue
                                     t = t2
                                 got.append((round(t, 3), dest))
+                        if not got and skipped:
+                            raise FrameError(f'all {skipped} extracted frame(s) were blank (black or one flat colour); '
+                                             'the video may have no picture there. Turn off skipBlankFrames to get '
+                                             'them anyway')
                         if not got:
                             raise FrameError('no frames could be extracted (check the timestamps or the threshold)')
                     except (DownloadError, FrameError, httpx.HTTPError) as e:
@@ -123,6 +143,12 @@ async def main() -> None:
                         item['window'] = {'start': t0, 'end': None if t1 == math.inf else round(t1, 3)}
                     if skip_blank:
                         item['blankFramesSkipped'] = skipped
+                    span_s = (min(t1, meta['duration']) if t1 != math.inf else meta['duration']) - t0
+                    if mode == 'scenes' and len(frames) <= 1 and span_s > 30:
+                        item['note'] = (f'Only {len(frames)} scene found at sceneThreshold {threshold:g}: the video '
+                                        'has no hard cuts here (interview, lecture, screen recording?). Lower '
+                                        'sceneThreshold (e.g. 0.1) or use mode "interval".')
+                        Actor.log.warning(f'{url}: {item["note"]}')
                     if sheet:
                         key = f'{stem}-contact-sheet.jpg'
                         dest = os.path.join(tmp, key)

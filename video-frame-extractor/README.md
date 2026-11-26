@@ -42,7 +42,7 @@ the exact moments you need - each with its timecode and a download link.
 | `sceneThreshold` | 0.1 = sensitive … 0.5 = hard cuts only |
 | `maxFramesPerVideo` | Upper limit for every mode |
 | `startTime`, `endTime` | Work only on this part of the video (seconds like `90.5` or `hh:mm:ss`); every mode respects it, and scene analysis is charged only for that part |
-| `skipBlankFrames` | Drop black, white and flat-colour frames (fades, title cards); in interval and count modes the Actor looks 0.7 s later for a real picture. Skipped frames are not charged |
+| `skipBlankFrames` | Drop black, white and flat-colour frames (fades, title cards); the Actor looks 0.7 s and 2 s later for a real picture (in scenes mode too, so a fade-in still gives its first scene). Skipped frames are not charged |
 | `format`, `maxWidth` | Image format and optional downscaling |
 | `contactSheet` | One overview image per video (free) |
 
@@ -105,3 +105,5 @@ curl -X POST "https://api.apify.com/v2/acts/ai_admin~video-frame-extractor/run-s
 
 - Direct file links only (no YouTube, TikTok or other page links). Maximum 2 GB per file.
 - Scene detection compares brightness and colour between frames: slow fades may produce no frame; lower the sensitivity.
+- Videos without hard cuts (interviews, lectures, screen recordings) give only the first scene; the result then has a
+  `note` with advice: lower `sceneThreshold` (e.g. 0.1) or use mode `interval`.

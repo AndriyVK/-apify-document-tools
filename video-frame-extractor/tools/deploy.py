@@ -62,7 +62,8 @@ def main():
         print(f"updated {me['username']}/{meta['name']} ({act['id']}) version {version}")
     if '--no-build' in sys.argv:
         return
-    build = call('POST', f"/acts/{act['id']}/builds?version={version}&tag=latest&waitForFinish=60")
+    tag = sys.argv[sys.argv.index("--tag") + 1] if "--tag" in sys.argv else "latest"
+    build = call("POST", f"/acts/{act['id']}/builds?version={version}&tag={tag}&waitForFinish=60")
     while build['status'] in ('READY', 'RUNNING'):
         time.sleep(15)
         build = call('GET', f"/actor-builds/{build['id']}?waitForFinish=60")
