@@ -9,17 +9,22 @@ import trafilatura
 from .resolve import HEADERS
 
 MAX_BYTES = 5_000_000
+MIN_WORDS = 50  # below this the precise pass probably missed the article body
 
 
 def _extract(html: str, url: str, full_text: bool) -> dict:
-    d = {}
-    for precise in (True, False):  # precise first; when it finds no text, retry favouring recall
+    d, words = {}, -1
+    for precise in (True, False):  # precise first; when it finds little or no text, retry favouring recall
         doc = trafilatura.bare_extraction(html, url=url, with_metadata=True, include_comments=False,
                                           include_tables=False, favor_precision=precise, favor_recall=not precise)
-        if doc is not None:
-            d = doc.as_dict() if hasattr(doc, 'as_dict') else dict(doc)
-            if (d.get('text') or '').strip():
-                break
+        if doc is None:
+            continue
+        got = doc.as_dict() if hasattr(doc, 'as_dict') else dict(doc)
+        n = len((got.get('text') or '').split())
+        if n > words:  # keep the longer text (a precise pass sometimes keeps only a caption or a teaser)
+            d, words = got, n
+        if words >= MIN_WORDS:
+            break
     if not d:
         return {}
     out = {'imageUrl': d.get('image'), 'description': d.get('description'), 'author': d.get('author'),
