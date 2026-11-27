@@ -66,7 +66,7 @@ Pay per event:
 |---|---|---|
 | `document` | **$10 per 1,000** | one successfully converted document (any number of pages) |
 
-Plus Apify's standard start fee of $0.05 per 1,000 runs. Merging is free. The run converts only as many documents as fit
+Plus a start fee of $0.002 per run ($0.001 per GB of run memory, 2 GB by default), so that a run without results covers its platform cost. Merging is free. The run converts only as many documents as fit
 under your maximum charge per run.
 
 ## Use with AI agents and code

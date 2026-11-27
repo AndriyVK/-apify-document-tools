@@ -88,7 +88,7 @@ does not load at all gets an `error` field instead and is **not charged**.
 |---|---|---|
 | `screenshot` | **$4 per 1,000** | one screenshot or PDF |
 
-Plus Apify's standard start fee of $0.05 per 1,000 runs. The run stops before it would exceed your maximum charge per run.
+Plus a start fee of $0.005 per run ($0.0025 per GB of run memory, 2 GB by default), so that a run without results covers its platform cost. The run stops before it would exceed your maximum charge per run.
 
 ## Related Actors
 

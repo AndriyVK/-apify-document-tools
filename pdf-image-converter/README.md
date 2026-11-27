@@ -68,7 +68,7 @@ A file that cannot be downloaded or opened gets an `error` field instead and is 
 |---|---|---|
 | `page` | **$2 per 1,000** | one produced image (a rendered PDF page or a converted image frame), or one PDF made from an image |
 
-Plus Apify's standard start fee of $0.05 per 1,000 runs. Merging and ZIP are free. The run stops before it would exceed
+Plus a start fee of $0.001 per run ($0.0005 per GB of run memory, 2 GB by default), so that a run without results covers its platform cost. Merging and ZIP are free. The run stops before it would exceed
 your maximum charge per run.
 
 ## Related Actors

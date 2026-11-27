@@ -111,7 +111,7 @@ A document that cannot be downloaded or read gets an `error` field instead and i
 | `audio-minute` | **$10 per 1,000** (1 cent a minute, $0.60 per hour) | one started minute of audio with a `medium` or `low` voice |
 | `hq-audio-minute` | **$40 per 1,000** (4 cents a minute, $2.40 per hour) | one started minute of audio with a `high` voice (needs ~7× more computing) |
 
-Plus Apify's standard start fee of $0.05 per 1,000 runs. Subtitles are free. The run stops before it would exceed your
+Plus a start fee of $0.006 per run ($0.0015 per GB of run memory, 4 GB by default), so that a run without results covers its platform cost. Subtitles are free. The run stops before it would exceed your
 maximum charge per run.
 
 ## Guides
