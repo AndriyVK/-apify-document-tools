@@ -113,6 +113,8 @@ the run stops before it would exceed your maximum charge per run.
 
 - [Monitor Ukrainian and Russian news with Google News - direct links, full article text and several countries in one run](https://andriyvk.github.io/google-news-monitoring-ukrainian-russian/)
   ([українською](https://andriyvk.github.io/uk/monitorynh-novyn-google-news/))
+- [5 Google News scrapers on the same queries - full text, direct links, several countries in one run](https://andriyvk.github.io/google-news-scrapers-compared/)
+  ([українською](https://andriyvk.github.io/uk/google-news-skrapery-porivniannia/))
 
 ## Related Actors
 
