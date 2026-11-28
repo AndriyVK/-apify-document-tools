@@ -138,6 +138,8 @@ The speech track is sent to [Groq](https://groq.com)'s speech-to-text API, which
 
 ## Guides
 
+- [Transcribe audio and podcasts by API - word timestamps, translation into 21 languages and a free summary](https://andriyvk.github.io/transcribe-audio-podcasts-api/)
+  ([українською](https://andriyvk.github.io/uk/rozshyfrovka-audio-podkastiv-api/))
 - [YouTube subtitles in Ukrainian - transcript and translated SRT by API](https://andriyvk.github.io/youtube-subtitles-in-ukrainian/) (the same speech recognition, incl. `crossCheck`)
 - [MCP server for document and media tools - OCR, PDF and audio tools for Claude or Cursor](https://andriyvk.github.io/mcp-document-tools-for-ai-agents/)
 
